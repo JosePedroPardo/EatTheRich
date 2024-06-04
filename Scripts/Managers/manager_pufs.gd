@@ -3,7 +3,7 @@ extends Node2D
 
 signal spawn_puf
 
-@export var limit_spwan_puf: int = 15
+@export var limit_spawn_puf: int = 15
 @export var spawn_time: int = 15
 @export var spawn_initial_pufs: Array = []
 
@@ -19,14 +19,14 @@ signal spawn_puf
 @onready var selected_pufs: Array = []
 @onready var puf: PackedScene = preload("res://Scenes/puf.tscn")
 @onready var timer_spawn: Timer = $Timer_spawn
-@onready var mouse_position
+@onready var mouse_position: Vector2
 
 func _ready():
 	timer_spawn.wait_time = spawn_time
 	timer_spawn.start()
 
 func _process(delta):
-	if spawn_initial_pufs.size() == limit_spwan_puf:
+	if spawn_initial_pufs.size() == limit_spawn_puf:
 		timer_spawn.stop()
 
 func _input(event):
@@ -48,7 +48,7 @@ func _deselect_all():
 	for selected in selected_pufs:
 		_call_to_method(selected, DefinitionsHelper.DESELECT)
 
-func _call_to_method(selected: Node3D, method: String):
+func _call_to_method(selected: Node2D, method: String):
 	if selected.has_method(method):
 		selected.call(method)
 
@@ -58,37 +58,23 @@ func _clean_selecteds():
 
 func _on_timer_spawn_timeout():
 	var new_puf = puf.instantiate()
-	new_puf.position = get_random_position()
+	var random_position: Vector2
+	while true:
+		random_position = get_random_position()
+		if not _is_position_occupied(random_position):
+			break
+	new_puf.position = random_position
 	parent.add_child(new_puf)
 	_save_selected(new_puf, spawn_initial_pufs)
-	emit_signal("spawn_puf", puf)
+	emit_signal("spawn_puf", new_puf)
 
-func get_random_position():
-	var vpr_width = randf_range(min_width, max_width)
-	var vpr_height = randf_range(min_height, max_height)
-	var top_left = Vector2(spawn_position.x - vpr_width/2, spawn_position.y - vpr_height/2)
-	var top_right = Vector2(spawn_position.x + vpr_width/2, spawn_position.y - vpr_height/2)
-	var bottom_left = Vector2(spawn_position.x - vpr_width/2, spawn_position.y + vpr_height/2)
-	var bottom_right = Vector2(spawn_position.x + vpr_width/2, spawn_position.y + vpr_height/2)
-	var pos_side = ["up", "down", "right", "left"].pick_random()
-	var spawn_pos1 = Vector2.ZERO
-	var spawn_pos2 = Vector2.ZERO
-	
-	match pos_side:
-		"up":
-			spawn_pos1 = top_left
-			spawn_pos2 = top_right
-		"down":
-			spawn_pos1 = bottom_left
-			spawn_pos2 = bottom_right
-		"right":
-			spawn_pos1 = top_right
-			spawn_pos2 = bottom_right
-		"left":
-			spawn_pos1 = top_left
-			spawn_pos2 = bottom_left
-	
-	var x_spawn = randf_range(spawn_pos1.x, spawn_pos2.x)
-	var y_spawn = randf_range(spawn_pos1.y, spawn_pos2.y)
+func get_random_position() -> Vector2:
+	var x_spawn = randf_range(spawn_position.x - max_width / 2, spawn_position.x + max_width / 2)
+	var y_spawn = randf_range(spawn_position.y - max_height / 2, spawn_position.y + max_height / 2)
 	return Vector2(x_spawn, y_spawn)
 
+func _is_position_occupied(random_position: Vector2) -> bool:
+	for puf in spawn_initial_pufs:
+		if puf != null and puf.position == random_position:
+			return true
+	return false
