@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://o0if5egfwut4"]
+[gd_scene load_steps=6 format=3 uid="uid://o0if5egfwut4"]
 
 [ext_resource type="PackedScene" uid="uid://ls1sa1vyqjkn" path="res://Scenes/scenario2D.tscn" id="1_1ss2t"]
 [ext_resource type="PackedScene" uid="uid://bg2ohhatacu6c" path="res://Scenes/ui.tscn" id="1_ct4x2"]
+[ext_resource type="PackedScene" uid="uid://cl76bcgy7g0e8" path="res://Scenes/manager_pufs.tscn" id="1_hblf1"]
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_camera_2d.gd" id="1_iwbwh"]
 [ext_resource type="PackedScene" uid="uid://b4xp0w52hwj68" path="res://Scenes/puf.tscn" id="3_ec2n0"]
 
@@ -9,9 +10,11 @@
 
 [node name="UI" parent="." instance=ExtResource("1_ct4x2")]
 
+[node name="ManagerPufs" parent="." instance=ExtResource("1_hblf1")]
+spawn_time = 2
+
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(4, 4)
-limit_smoothed = true
 script = ExtResource("1_iwbwh")
 ZOOM_SPEED = 0.5
 

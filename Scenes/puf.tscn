@@ -1,91 +1,112 @@
-[gd_scene load_steps=24 format=3 uid="uid://b4xp0w52hwj68"]
+[gd_scene load_steps=12 format=3 uid="uid://b4xp0w52hwj68"]
 
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="1_2o3lj"]
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_a7dnk"]
 [ext_resource type="Texture2D" uid="uid://cjkyqlgkn2ami" path="res://Resources/Tileset/pufs/poor.png" id="1_w53pc"]
-[ext_resource type="AnimationLibrary" uid="uid://c10xbuskq6eb3" path="res://Animations/Pufs/Pufs_animations.res" id="2_v8np5"]
 [ext_resource type="Texture2D" uid="uid://hb72505fu6u3" path="res://Resources/UI/Selected.png" id="3_elfo1"]
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="4_ha86j"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_bimhb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ug8ye"]
 size = Vector2(12, 16)
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8ckuo"]
-animation = &"Assemble"
+[sub_resource type="CircleShape2D" id="CircleShape2D_bimhb"]
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_k4vmc"]
-animation = &"Wait"
+[sub_resource type="Animation" id="Animation_46elm"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpritePuf:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpritePuf:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_bqx0x"]
-animation = &"Walk"
+[sub_resource type="Animation" id="Animation_7cue3"]
+resource_name = "walk"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpritePuf:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [9, 11]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpritePuf:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.6, 0.9, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0.174533, 0.174533, -0.174533, -0.174533, 0.0]
+}
 
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fev6t"]
-animation = &"idle"
+[sub_resource type="Animation" id="Animation_7uoy7"]
+resource_name = "Idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpritePuf:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ydv3s"]
-advance_mode = 2
-advance_condition = &"wait"
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_42ca7"]
+_data = {
+"RESET": SubResource("Animation_46elm"),
+"idle": SubResource("Animation_7uoy7"),
+"walk": SubResource("Animation_7cue3")
+}
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_drv3h"]
-advance_mode = 2
-advance_condition = &"walk"
+[node name="CharacterBody2D" type="CharacterBody2D"]
+light_mask = 10
+visibility_layer = 2
+collision_layer = 2
+collision_mask = 2
+input_pickable = true
+script = ExtResource("1_a7dnk")
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qdbek"]
-advance_mode = 2
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tww04"]
-advance_mode = 2
-advance_condition = &"walk"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1y37r"]
-advance_mode = 2
-advance_condition = &"idle"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2ltrh"]
-advance_mode = 2
-advance_condition = &"idle"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qr8jg"]
-advance_mode = 2
-advance_condition = &"wait"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ogmw3"]
-advance_mode = 2
-advance_condition = &"assemble"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8rdq0"]
-advance_mode = 2
-advance_condition = &"assemble"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jm6ci"]
-advance_mode = 2
-advance_condition = &"assemble"
-
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_qsr1p"]
-states/Assemble/node = SubResource("AnimationNodeAnimation_8ckuo")
-states/Assemble/position = Vector2(472, 100)
-states/End/position = Vector2(724, 110)
-states/Start/position = Vector2(184, 100)
-states/Wait/node = SubResource("AnimationNodeAnimation_k4vmc")
-states/Wait/position = Vector2(554, -48)
-states/Walk/node = SubResource("AnimationNodeAnimation_bqx0x")
-states/Walk/position = Vector2(582, 272)
-states/idle/node = SubResource("AnimationNodeAnimation_fev6t")
-states/idle/position = Vector2(291, 100)
-transitions = ["Walk", "Wait", SubResource("AnimationNodeStateMachineTransition_ydv3s"), "Wait", "Walk", SubResource("AnimationNodeStateMachineTransition_drv3h"), "Start", "idle", SubResource("AnimationNodeStateMachineTransition_qdbek"), "idle", "Walk", SubResource("AnimationNodeStateMachineTransition_tww04"), "Walk", "idle", SubResource("AnimationNodeStateMachineTransition_1y37r"), "Wait", "idle", SubResource("AnimationNodeStateMachineTransition_2ltrh"), "idle", "Wait", SubResource("AnimationNodeStateMachineTransition_qr8jg"), "Wait", "Assemble", SubResource("AnimationNodeStateMachineTransition_ogmw3"), "Walk", "Assemble", SubResource("AnimationNodeStateMachineTransition_8rdq0"), "idle", "Assemble", SubResource("AnimationNodeStateMachineTransition_jm6ci")]
-graph_offset = Vector2(-52, -94)
-
-[node name="Puf" type="Node2D" groups=["Puf"]]
+[node name="InteractionArea" type="CollisionShape2D" parent="."]
 light_mask = 2
 visibility_layer = 2
-script = ExtResource("1_a7dnk")
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_ug8ye")
 
 [node name="Shadow" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(0, 11)
-scale = Vector2(1.12006, 1.17066)
+position = Vector2(0, 10.4513)
+scale = Vector2(1.12006, 1.0139)
 texture = ExtResource("1_2o3lj")
 
 [node name="SelectedCircle" type="Sprite2D" parent="."]
@@ -123,34 +144,11 @@ theme_override_fonts/font = ExtResource("4_ha86j")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-light_mask = 10
-visibility_layer = 2
-collision_layer = 2
-collision_mask = 2
-input_pickable = true
-
-[node name="Shape" type="CollisionShape2D" parent="CharacterBody2D"]
-light_mask = 2
-visibility_layer = 2
-position = Vector2(0, 4)
-shape = SubResource("RectangleShape2D_ug8ye")
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": ExtResource("2_v8np5")
+"": SubResource("AnimationLibrary_42ca7")
 }
-
-[node name="AnimationTree" type="AnimationTree" parent="."]
-tree_root = SubResource("AnimationNodeStateMachine_qsr1p")
-anim_player = NodePath("../AnimationPlayer")
-parameters/conditions/assemble = false
-parameters/conditions/idle = false
-parameters/conditions/wait = false
-parameters/conditions/walk = false
 
 [node name="WaitTime" type="Timer" parent="."]
 
-[connection signal="area_shape_entered" from="InteractionComponents/InteractArea" to="." method="_on_interact_area_area_shape_entered"]
-[connection signal="area_shape_exited" from="InteractionComponents/InteractArea" to="." method="_on_interact_area_area_shape_exited"]
-[connection signal="input_event" from="CharacterBody2D" to="." method="_on_character_body_2d_input_event"]
+[connection signal="input_event" from="." to="." method="_on_input_event"]

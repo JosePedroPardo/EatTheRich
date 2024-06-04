@@ -103,6 +103,11 @@ left_click={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(172, 6),"global_position":Vector2(176, 47),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
+right_click={
+"deadzone": 0.5,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":2,"position":Vector2(122, 18),"global_position":Vector2(126, 59),"factor":1.0,"button_index":2,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
 
 [layer_names]
 
@@ -111,6 +116,7 @@ left_click={
 2d_render/layer_3="Items"
 2d_render/layer_4="Enviroment"
 2d_render/layer_5="GUI"
+2d_render/layer_6="Limits_map"
 2d_physics/layer_1="Ground"
 2d_navigation/layer_1="Ground"
 2d_physics/layer_2="Entities"
@@ -121,3 +127,5 @@ left_click={
 2d_navigation/layer_4="Enviroment"
 2d_physics/layer_5="GUI"
 2d_navigation/layer_5="GUI"
+2d_physics/layer_6="Limits_map"
+2d_navigation/layer_6="Limits_map"
