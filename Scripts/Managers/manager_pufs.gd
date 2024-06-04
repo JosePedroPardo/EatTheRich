@@ -1,6 +1,8 @@
 class_name ManagerPufs
 extends Node2D
 
+signal spawn_puf
+
 @export var limit_spwan_puf: int = 15
 @export var spawn_time: int = 15
 @export var spawn_initial_pufs: Array = []
@@ -30,19 +32,21 @@ func _process(delta):
 func _input(event):
 	if event is InputEventMouseMotion:
 		mouse_position = get_viewport().get_mouse_position()
+	if event.is_action_pressed("left_click"):
+		print(mouse_position)
 
 func _save_selected(selected: Node2D, array: Array):
-	array.push_back(selected)
+	array.push_front(selected)
 
 func _is_in_array_selected(selected: Node2D, array: Array) -> bool:
 	return array.has(selected)
 
 func _remove_selected(selected: Node2D, array: Array):
-	selected_pufs.erase(selected)
+	array.erase(selected)
 
 func _deselect_all():
 	for selected in selected_pufs:
-		_call_to_method(selected.get_child(0), DefinitionsHelper.DESELECT)
+		_call_to_method(selected, DefinitionsHelper.DESELECT)
 
 func _call_to_method(selected: Node3D, method: String):
 	if selected.has_method(method):
@@ -56,8 +60,8 @@ func _on_timer_spawn_timeout():
 	var new_puf = puf.instantiate()
 	new_puf.position = get_random_position()
 	parent.add_child(new_puf)
-	print(new_puf.get_json_serialize())
 	_save_selected(new_puf, spawn_initial_pufs)
+	emit_signal("spawn_puf", puf)
 
 func get_random_position():
 	var vpr_width = randf_range(min_width, max_width)

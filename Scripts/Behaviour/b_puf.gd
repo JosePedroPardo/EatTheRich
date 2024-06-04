@@ -28,9 +28,19 @@ var speed = 50
 func _ready():
 	animation_player.play("idle")
 	myself = Puf.new(social_class, is_baby)
+	social_class = myself.social_class
 	wait_timer.wait_time = wait_time
 	set_selected(selected)
 	add_to_group("pufs", true)
+	_change_sprite_according_social_class()
+
+func _change_sprite_according_social_class():
+	var path_texture: String
+	if social_class == DefinitionsHelper.RICH_SOCIAL_CLASS:
+		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_rich_pufs)
+	elif social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
+		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_poor_pufs)
+	sprite_puf.texture = load(path_texture)
 
 func _physics_process(_delta):
 	if folow_cursor:
@@ -64,8 +74,10 @@ func get_social_class():
 func _on_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			selected_circle.visible = !selected_circle.visible
-			emit_signal("puf_selected", self)
+			if social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
+				selected_circle.visible = !selected_circle.visible
+				emit_signal("puf_selected", self)
 
 func get_json_serialize():
 	return myself.jsonSerialize()
+

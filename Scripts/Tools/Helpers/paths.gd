@@ -11,3 +11,12 @@ const PATH_JOBS: String = "res://SaveData/GenerateDates/ESP/jobs.json"
 ''' SCENE PATHS '''
 const PATH_PUF: String = "res://Scenes/Pufs/puf.tscn"
 const PATH_SCENARIO: String = "res://Scenes/scenario.tscn"
+
+''' TEXTURE PATHS '''
+const SPRITE_RICH_001: String = "res://Resources/Tileset/pufs/rich.png"
+const SPRITE_RICH_002: String = "res://Resources/Tileset/pufs/richv2.png"
+const SPRITE_POOR_001: String = "res://Resources/Tileset/pufs/poor.png"
+const SPRITE_POOR_002: String = "res://Resources/Tileset/pufs/poorv2.png"
+const SPRITE_POOR_003: String = "res://Resources/Tileset/pufs/poorv3.png"
+const SPRITE_BABY_POOR: String = "res://Resources/Tileset/pufs/babypuf.png"
+const SPRITE_BABY_RICH: String = "res://Resources/Tileset/pufs/babypuf.png"

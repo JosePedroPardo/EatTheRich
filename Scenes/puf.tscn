@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="1_2o3lj"]
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_a7dnk"]
 [ext_resource type="Texture2D" uid="uid://cjkyqlgkn2ami" path="res://Resources/Tileset/pufs/poor.png" id="1_w53pc"]
-[ext_resource type="Texture2D" uid="uid://hb72505fu6u3" path="res://Resources/UI/Selected.png" id="3_elfo1"]
+[ext_resource type="Texture2D" uid="uid://c24urroiy8uq3" path="res://Resources/UI/Selectedv2.png" id="3_ocwp8"]
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="4_ha86j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ug8ye"]
@@ -51,7 +51,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.6),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [9, 11]
+"values": [3, 4]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -110,19 +110,19 @@ scale = Vector2(1.12006, 1.0139)
 texture = ExtResource("1_2o3lj")
 
 [node name="SelectedCircle" type="Sprite2D" parent="."]
-visible = false
 texture_filter = 1
 position = Vector2(0, 4)
 scale = Vector2(0.3, 0.3)
-texture = ExtResource("3_elfo1")
+texture = ExtResource("3_ocwp8")
 
 [node name="SpritePuf" type="Sprite2D" parent="."]
 light_mask = 14
 visibility_layer = 2
 texture_filter = 1
+position = Vector2(0, 3)
 texture = ExtResource("1_w53pc")
-hframes = 8
-vframes = 6
+hframes = 4
+vframes = 3
 
 [node name="InteractionComponents" type="Node2D" parent="."]
 visible = false

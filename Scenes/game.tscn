@@ -11,12 +11,12 @@
 [node name="UI" parent="." instance=ExtResource("1_ct4x2")]
 
 [node name="ManagerPufs" parent="." instance=ExtResource("1_hblf1")]
-spawn_time = 2
+spawn_time = 1
+spawn_initial_pufs = [null]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(4, 4)
 script = ExtResource("1_iwbwh")
-ZOOM_SPEED = 0.5
 
 [node name="Scenario" parent="." instance=ExtResource("1_1ss2t")]
 position = Vector2(-593, -315)
