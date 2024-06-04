@@ -1,0 +1,15 @@
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://cs71takpytr85"]
+
+[ext_resource type="Texture2D" uid="uid://dq8as8vsjxq1l" path="res://Resources/Materials/GBNoods/Skybox/_0008_AllSkyFree_Screen_02.jpg" id="1_5l1j2"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_lbi4s"]
+panorama = ExtResource("1_5l1j2")
+
+[sub_resource type="Sky" id="Sky_3gwqp"]
+sky_material = SubResource("PanoramaSkyMaterial_lbi4s")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_3gwqp")
+tonemap_white = 9.45
+ssao_intensity = 0.0
