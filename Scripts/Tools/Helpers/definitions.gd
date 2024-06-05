@@ -31,7 +31,14 @@ const texture_poor_pufs = [
 	PathsHelper.SPRITE_POOR_003, 
 ]
 
-
 ''' Selected methods '''
-const SELECT: String = "select"
-const DESELECT: String = "deselect"
+const METHOD_SELECT: String = "select"
+const METHOD_DESELECT: String = "deselect"
+
+''' Animations '''
+const ANIMATION_SELECTED_PUF: String = "selected"
+const ANIMATION_WALK_PUF: String = "Pufs/walk"
+const ANIMATION_RUN_PUF: String = "Pufs/run"
+const ANIMATION_RESET_PUF: String = "Pufs/RESET"
+const ANIMATION_DIE_PUF: String = "Pufs/die"
+const ANIMATION_IDLE_PUF: String = "Pufs/idle"

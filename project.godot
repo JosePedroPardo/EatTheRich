@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Eat the rich"
-config/description="Stop Pollution es un videojuego que muestra el declive del planeta tierra en función de la cantidad de personas que lo habiten. Haciendo especial hincapié en los efectos que produce el cambio climático, volviendo inhabitable el entorno. Y la desigualdad en las luchas sociales donde el 1% del planeta que poseen mayores recursos contaminan lo mismo que el 66% más pobre. "
+config/description="Eat The Rich ¡Fuck Capitalism! es un videojuego que muestra el declive del planeta tierra en función de la cantidad de personas que lo habiten. Haciendo especial hincapié en el hambre que pasan las poblaciones más vulnerables debido a la desigualdad en las clases sociales donde el 1% del planeta que poseen más recursos que el 66% más pobre. "
 config/version="BETA 0.3"
 run/main_scene="res://Scenes/game.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
@@ -89,12 +89,12 @@ multiple_select={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":true,"meta_pressed":false,"button_mask":1,"position":Vector2(163, 12),"global_position":Vector2(167, 53),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
-smash={
+smash_puf={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"script":null)
 ]
 }
-assemble={
+assemble_puf={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":81,"key_label":0,"unicode":113,"echo":false,"script":null)
 ]
@@ -107,6 +107,11 @@ left_click={
 right_click={
 "deadzone": 0.5,
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":2,"position":Vector2(122, 18),"global_position":Vector2(126, 59),"factor":1.0,"button_index":2,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+follow_puf={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":70,"key_label":0,"unicode":102,"echo":false,"script":null)
 ]
 }
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c24urroiy8uq3"
-path="res://.godot/imported/Selectedv2.png-1a297b02c8df0d7afec818e4bdf1a4b9.ctex"
+uid="uid://chtgenowhobdn"
+path="res://.godot/imported/multiple_select_box.png-1399ebb47d89c1c1769aeadbd8812204.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Resources/UI/Selectedv2.png"
-dest_files=["res://.godot/imported/Selectedv2.png-1a297b02c8df0d7afec818e4bdf1a4b9.ctex"]
+source_file="res://Resources/Tileset/multiple_select_box.png"
+dest_files=["res://.godot/imported/multiple_select_box.png-1399ebb47d89c1c1769aeadbd8812204.ctex"]
 
 [params]
 

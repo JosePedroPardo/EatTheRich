@@ -22,13 +22,14 @@ signal spawn_puf
 @onready var timer_spawn: Timer = $Timer_spawn
 @onready var mouse_position: Vector2
 
+
 func _ready():
 	timer_spawn.wait_time = spawn_time
 	timer_spawn.start()
 	for spawn_limit in limit_spawn_puf:
 		_create_initial_pufs()
 	spawn_initial_pufs.pop_front()
-	print(spawn_initial_pufs)
+
 func _process(delta):
 	if spawn_initial_pufs.size() == 0:
 		timer_spawn.stop()
@@ -48,7 +49,7 @@ func _remove_puf_in_array(puf: Node2D, array: Array):
 
 func _deselect_all():
 	for selected in selected_pufs:
-		_call_to_method(selected, DefinitionsHelper.DESELECT)
+		_call_to_method(selected, DefinitionsHelper.METHOD_DESELECT)
 
 func _call_to_method(selected: Node2D, method: String):
 	if selected.has_method(method):
@@ -64,7 +65,6 @@ func _on_timer_spawn_timeout():
 		puf.connect("puf_selected", Callable(self, "_on_puf_selected"))
 		puf.connect("puf_deselected", Callable(self, "_on_puf_deselected"))
 		parent.add_child(puf)
-		puf.animation_player.play("idle")
 
 func _create_initial_pufs():
 	var new_puf = puf.instantiate()

@@ -1,0 +1,16 @@
+class_name InputsHelper
+
+const CAMERA_FORWARD: String = "camera_forward"
+const CAMERA_BACKWARD: String = "camera_backward"
+const CAMERA_RIGHT: String = "camera_right"
+const CAMERA_LEFT: String = "camera_left"
+const CAMERA_ZOOM_IN: String = "camera_zoom_in"
+const CAMERA_ZOOM_OUT: String = "camera_zoom_out"
+const EXIT_GAME: String = "exit_game"
+const INTERACT: String = "interact"
+const MULTIPLE_SELECT: String = "multiple_select"
+const SMASH_PUF: String = "smash_puf"
+const ASSEMBLE_PUF: String = "assemble_puf"
+const LEFT_CLICK: String = "left_click"
+const RIGHT_CLICK: String = "right_click"
+const FOLLOW_PUF: String = "follow_puf"

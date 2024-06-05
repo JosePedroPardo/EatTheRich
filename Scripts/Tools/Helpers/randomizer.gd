@@ -1,13 +1,11 @@
 class_name RandomHelper
 
 static func get_random_string_in_array(options: Array) -> String:
-	var random = RandomNumberGenerator.new()
-	return options[random.randi_range(0, options.size())]
+	return options[randi() % options.size()]
 
 static func get_random_enum(options: Dictionary) -> int:
-	var random = RandomNumberGenerator.new()
 	var keys = options.keys()
-	var random_index = random.randi_range(0, keys.size())
+	var random_index = randi() % keys.size()
 	return options[keys[random_index]]
 
 static func get_random_int_in_range(min: int, max: int):
