@@ -3,8 +3,9 @@ extends Node2D
 
 signal spawn_puf
 
-@export var limit_spawn_puf: int = 15
+@export var limit_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20)
 @export var spawn_time: int = 15
+@export var area_to_spawn: int = 15 ## El área que comprobará antes de spawnear 
 @export var spawn_initial_pufs: Array = []
 
 # Variables para el spawn
@@ -24,23 +25,26 @@ signal spawn_puf
 func _ready():
 	timer_spawn.wait_time = spawn_time
 	timer_spawn.start()
-
+	for spawn_limit in limit_spawn_puf:
+		_create_initial_pufs()
+	spawn_initial_pufs.pop_front()
+	print(spawn_initial_pufs)
 func _process(delta):
-	if spawn_initial_pufs.size() == limit_spawn_puf:
+	if spawn_initial_pufs.size() == 0:
 		timer_spawn.stop()
 
 func _input(event):
 	if event is InputEventMouseMotion:
 		mouse_position = get_viewport().get_mouse_position()
 
-func _save_selected(selected: Node2D, array: Array):
-	array.push_front(selected)
+func _save_puf_in_array(puf: Node2D, array: Array):
+	array.push_back(puf)
 
-func _is_in_array_selected(selected: Node2D, array: Array) -> bool:
-	return array.has(selected)
+func _is_in_array(puf: Node2D, array: Array) -> bool:
+	return array.has(puf)
 
-func _remove_selected(selected: Node2D, array: Array):
-	array.erase(selected)
+func _remove_puf_in_array(puf: Node2D, array: Array):
+	array.erase(puf)
 
 func _deselect_all():
 	for selected in selected_pufs:
@@ -55,24 +59,39 @@ func _clean_selecteds():
 	selected_pufs.clear()
 
 func _on_timer_spawn_timeout():
+	var puf = spawn_initial_pufs.pop_back()
+	if puf != null:
+		puf.connect("puf_selected", Callable(self, "_on_puf_selected"))
+		puf.connect("puf_deselected", Callable(self, "_on_puf_deselected"))
+		parent.add_child(puf)
+		puf.animation_player.play("idle")
+
+func _create_initial_pufs():
 	var new_puf = puf.instantiate()
-	var random_position: Vector2
+	var random_position: Vector2 = Vector2.ZERO
 	while true:
-		random_position = get_random_position()
+		random_position = _get_random_position()
 		if not _is_position_occupied(random_position):
 			break
 	new_puf.position = random_position
-	parent.add_child(new_puf)
-	_save_selected(new_puf, spawn_initial_pufs)
-	emit_signal("spawn_puf", new_puf)
+	_save_puf_in_array(new_puf, spawn_initial_pufs)
 
-func get_random_position() -> Vector2:
+func _get_random_position() -> Vector2:
 	var x_spawn = randf_range(spawn_position.x - max_width / 2, spawn_position.x + max_width / 2)
 	var y_spawn = randf_range(spawn_position.y - max_height / 2, spawn_position.y + max_height / 2)
 	return Vector2(x_spawn, y_spawn)
 
 func _is_position_occupied(random_position: Vector2) -> bool:
 	for puf in spawn_initial_pufs:
-		if puf != null and puf.position == random_position:
-			return true
+		if puf != null:
+			for i in range(-area_to_spawn, area_to_spawn + 1):
+				for j in range(-area_to_spawn, area_to_spawn + 1):
+					if puf.position == Vector2(random_position.x + i, random_position.y + j):
+						return true
 	return false
+
+func _on_puf_selected(selected_puf):
+	_save_puf_in_array(selected_puf, selected_pufs)
+
+func _on_puf_deselected(selected_puf):
+	_remove_puf_in_array(selected_puf, selected_pufs)

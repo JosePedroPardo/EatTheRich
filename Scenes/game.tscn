@@ -21,9 +21,20 @@ position = Vector2(-593, -315)
 
 [node name="Puf" parent="." instance=ExtResource("3_ec2n0")]
 position = Vector2(-246, -101)
+wait_time = 15
+can_assemble = false
+selected = false
 
 [node name="Puf2" parent="." instance=ExtResource("3_ec2n0")]
 position = Vector2(-217, -112)
+wait_time = 15
+can_assemble = false
+selected = false
 
 [node name="Puf3" parent="." instance=ExtResource("3_ec2n0")]
 position = Vector2(-163, -92)
+wait_time = 15
+can_assemble = false
+selected = false
+
+[connection signal="puf_selected" from="Puf" to="ManagerPufs" method="_on_puf_puf_selected"]

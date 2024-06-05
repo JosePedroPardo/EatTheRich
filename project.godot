@@ -10,9 +10,9 @@ config_version=5
 
 [application]
 
-config/name="Stop Pollution2D"
+config/name="Eat the rich"
 config/description="Stop Pollution es un videojuego que muestra el declive del planeta tierra en función de la cantidad de personas que lo habiten. Haciendo especial hincapié en los efectos que produce el cambio climático, volviendo inhabitable el entorno. Y la desigualdad en las luchas sociales donde el 1% del planeta que poseen mayores recursos contaminan lo mismo que el 66% más pobre. "
-config/version="BETA 0.2"
+config/version="BETA 0.3"
 run/main_scene="res://Scenes/game.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
