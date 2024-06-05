@@ -26,13 +26,13 @@ var speed = 50
 @onready var target = self.position
 
 func _ready():
-	animation_player.play("idle")
 	myself = Puf.new(social_class, is_baby)
 	social_class = myself.social_class
 	wait_timer.wait_time = wait_time
 	set_selected(selected)
 	add_to_group("pufs", true)
 	_change_sprite_according_social_class()
+	animation_player.play("idle")
 
 func _change_sprite_according_social_class():
 	var path_texture: String

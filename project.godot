@@ -26,8 +26,9 @@ Interaction2dManager="res://Scripts/Components/InteractionArea2D/Interaction2DMa
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
-window/size/resizable=false
-window/stretch/mode="viewport"
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
 mouse_cursor/custom_image="res://Resources/Tileset/cursor/cursor/cursor_select.png"
 
 [input]
@@ -129,3 +130,7 @@ right_click={
 2d_navigation/layer_5="GUI"
 2d_physics/layer_6="Limits_map"
 2d_navigation/layer_6="Limits_map"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

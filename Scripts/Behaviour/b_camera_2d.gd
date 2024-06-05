@@ -4,9 +4,9 @@ signal area_selected
 signal atart_move_selection
 
 @export var speed: float = 50.0
-@export var zoom_speed: float = 20.0
+@export var zoom_speed: float = 10.0
 @export var zoom_margin: float = 0.1
-@export var zoom_min: float = 0.5
+@export var zoom_min: float = 1.0
 @export var zoom_max: float = 3.0
 
 @export var cood_limit_top: int = 282
@@ -26,10 +26,13 @@ var start_v: Vector2 = Vector2()
 var end: Vector2 = Vector2()
 var end_v: Vector2 = Vector2()
 var is_dragging: bool = false
+var is_mouse_move: bool = false
 
-@onready var box: Panel = get_node("../UI/Panel")
+@onready var box: Panel = get_node(PathsHelper.UI_PANEL_TO_SELECTED_AREA)
+@onready var checkButton: CheckButton = get_node(PathsHelper.UI_TOOGLE_BUTTON_MOUSE_CAMERA)
 
 func _ready():
+	checkButton.connect("pressed", Callable(self, "_on_toogle_button_changes_mouse_move"))
 	connect("area_selected", Callable(get_parent(), "_on_area_selected"))
 
 func _process(delta):
@@ -37,38 +40,46 @@ func _process(delta):
 	move_camera(delta)
 	process_select_area()
 
-func zoom_camera(delta: float) -> void:
-	zoom.x = lerp(zoom.x, zoom.x * zoom_factor, zoom_speed * delta)
-	zoom.y = lerp(zoom.y, zoom.y * zoom_factor, zoom_speed * delta)
+func _on_toogle_button_changes_mouse_move():
+	is_mouse_move = !is_mouse_move
 
-	zoom.x = clamp(zoom.x, zoom_min, zoom_max)
-	zoom.y = clamp(zoom.y, zoom_min, zoom_max)
-	if not zooming:
-		zoom_factor = 1.0
+func _mouse_move(direction: Vector2) -> Vector2:
+	if is_mouse_move:
+		if mouse_pos.x < edge_margin:
+			direction.x = -1
+		elif mouse_pos.x > get_viewport_rect().size.x - edge_margin:
+			direction.x = 1
 
-func move_camera(delta: float) -> void:
-	var direction = Vector2()
+		if mouse_pos.y < edge_margin:
+			direction.y = -1
+		elif mouse_pos.y > get_viewport_rect().size.y - edge_margin:
+			direction.y = 1
+	
+	return direction
 
-	# Movimiento por bordes de pantalla
-	if mouse_pos.x < edge_margin:
-		direction.x = -1
-	elif mouse_pos.x > get_viewport_rect().size.x - edge_margin:
-		direction.x = 1
-
-	if mouse_pos.y < edge_margin:
-		direction.y = -1
-	elif mouse_pos.y > get_viewport_rect().size.y - edge_margin:
-		direction.y = 1
-
-	# Movimiento por teclas
+func _awsd_move(direction: Vector2) -> Vector2:
 	var inputX: int = get_input_x()
 	var inputY: int = get_input_y()
 
 	direction.x += inputX
 	direction.y += inputY
+	
+	return direction
 
-	if direction != Vector2():
-		position += direction.normalized() * speed * delta
+func _input(event: InputEvent) -> void:
+	input_for_zoom(event)
+
+	if event is InputEventMouse:
+		mouse_pos = event.position
+		mouse_pos_global = get_global_mouse_position()
+
+func _zoom_out():
+	zoom_factor -= 0.01 * zoom_speed
+	zoom_pos = get_global_mouse_position()
+
+func _zoom_in():
+	zoom_factor += 0.01 * zoom_speed
+	zoom_pos = get_global_mouse_position()
 
 func get_input_x() -> int:
 	return int(Input.is_action_pressed("camera_right")) - int(Input.is_action_pressed("camera_left"))
@@ -99,30 +110,40 @@ func process_select_area() -> void:
 			is_dragging = false
 			draw_area(false)
 
-func _input(event: InputEvent) -> void:
-	input_for_zoom(event)
+func zoom_camera(delta: float) -> void:
+	zoom.x = lerp(zoom.x, zoom.x * zoom_factor, zoom_speed * delta)
+	zoom.y = lerp(zoom.y, zoom.y * zoom_factor, zoom_speed * delta)
 
-	if event is InputEventMouse:
-		mouse_pos = event.position
-		mouse_pos_global = get_global_mouse_position()
+	zoom.x = clamp(zoom.x, zoom_min, zoom_max)
+	zoom.y = clamp(zoom.y, zoom_min, zoom_max)
+	if not zooming:
+		zoom_factor = 1.0
+
+func move_camera(delta: float) -> void:
+	var direction = Vector2()
+
+	# Movimiento por bordes de pantalla
+	direction = _mouse_move(direction)
+	
+	# Movimiento por teclas
+	direction = _awsd_move(direction)
+
+	if direction != Vector2():
+		position += direction.normalized() * speed * delta
 
 func input_for_zoom(event: InputEvent) -> void:
 	if abs(zoom_pos.x - get_global_mouse_position().x) > zoom_margin:
 		zoom_factor = 1.0
 	if abs(zoom_pos.y - get_global_mouse_position().y) > zoom_margin:
 		zoom_factor = 1.0
-
-	if event is InputEventMouseButton:
-		if event.is_pressed():
-			zooming = true
-			if event.is_action("camera_zoom_out"):
-				zoom_factor -= 0.01 * zoom_speed
-				zoom_pos = get_global_mouse_position()
-			if event.is_action("camera_zoom_out"):
-				zoom_factor += 0.01 * zoom_speed
-				zoom_pos = get_global_mouse_position()
-		else:
-			zooming = true
+	if event.is_pressed():
+		zooming = true
+		if event.is_action("camera_zoom_out") or event.is_action_pressed("camera_zoom_out"):
+			_zoom_out()
+		if event.is_action("camera_zoom_in") or event.is_action_pressed("camera_zoom_in"):
+			_zoom_in()
+	else:
+		zooming = true
 
 func draw_area(s: bool = true) -> void:
 	box.size = Vector2(abs(start_v.x - end_v.x), abs(start_v.y - end_v.y))

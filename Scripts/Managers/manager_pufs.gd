@@ -32,8 +32,6 @@ func _process(delta):
 func _input(event):
 	if event is InputEventMouseMotion:
 		mouse_position = get_viewport().get_mouse_position()
-	if event.is_action_pressed("left_click"):
-		print(mouse_position)
 
 func _save_selected(selected: Node2D, array: Array):
 	array.push_front(selected)

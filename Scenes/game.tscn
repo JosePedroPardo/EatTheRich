@@ -3,8 +3,8 @@
 [ext_resource type="PackedScene" uid="uid://ls1sa1vyqjkn" path="res://Scenes/scenario2D.tscn" id="1_1ss2t"]
 [ext_resource type="PackedScene" uid="uid://bg2ohhatacu6c" path="res://Scenes/ui.tscn" id="1_ct4x2"]
 [ext_resource type="PackedScene" uid="uid://cl76bcgy7g0e8" path="res://Scenes/manager_pufs.tscn" id="1_hblf1"]
-[ext_resource type="Script" path="res://Scripts/Behaviour/b_camera_2d.gd" id="1_iwbwh"]
 [ext_resource type="PackedScene" uid="uid://b4xp0w52hwj68" path="res://Scenes/puf.tscn" id="3_ec2n0"]
+[ext_resource type="PackedScene" uid="uid://c30hichtn61t1" path="res://Scenes/camera_2d.tscn" id="3_ornbr"]
 
 [node name="Game" type="Node2D"]
 
@@ -14,9 +14,7 @@
 spawn_time = 1
 spawn_initial_pufs = [null]
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(4, 4)
-script = ExtResource("1_iwbwh")
+[node name="Camera2D" parent="." instance=ExtResource("3_ornbr")]
 
 [node name="Scenario" parent="." instance=ExtResource("1_1ss2t")]
 position = Vector2(-593, -315)

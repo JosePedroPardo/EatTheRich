@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bg2ohhatacu6c"]
+[gd_scene load_steps=3 format=3 uid="uid://bg2ohhatacu6c"]
+
+[ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="1_0nux4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pjiyy"]
 bg_color = Color(0.156863, 0.156863, 0.156863, 0.490196)
@@ -16,3 +18,20 @@ corner_radius_bottom_left = 2
 
 [node name="Panel" type="Panel" parent="."]
 theme_override_styles/panel = SubResource("StyleBoxFlat_pjiyy")
+
+[node name="MouseMove" type="Label" parent="."]
+offset_left = 15.0
+offset_top = 16.0
+offset_right = 146.0
+offset_bottom = 40.0
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Camera Move Mouse"
+
+[node name="Button" type="CheckButton" parent="MouseMove"]
+light_mask = 16
+visibility_layer = 16
+offset_left = 128.0
+offset_top = -1.0
+offset_right = 172.0
+offset_bottom = 23.0
+tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
