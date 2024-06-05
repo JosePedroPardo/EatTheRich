@@ -74,6 +74,8 @@ func _create_initial_pufs():
 		if not _is_position_occupied(random_position):
 			break
 	new_puf.position = random_position
+	var flip: int = RandomHelper.get_random_int_in_range(0, 1)
+	new_puf.get_node("SpritePuf").flip_h = flip # Cambia la dirección hacia la que mira el puf al instanciarse
 	_save_puf_in_array(new_puf, spawn_initial_pufs)
 
 func _get_random_position() -> Vector2:

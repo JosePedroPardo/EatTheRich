@@ -30,7 +30,7 @@ var astar_grid: AStarGrid2D
 @onready var selected_puf: AnimatedSprite2D = $SelectedPuf
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var wait_timer: Timer = $WaitTime
-@onready var target = self.position
+@onready var target: Vector2 = self.position
 
 func _ready():
 	astar_grid = AStarGrid2D.new()
@@ -47,6 +47,9 @@ func _ready():
 	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _process(delta):
+	if social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
+		_look_at_sprite_to_target(sprite_puf, target, [true, false])
+	
 	if !is_can_move:
 		self.velocity = Vector2.ZERO
 	
@@ -58,7 +61,6 @@ func _process(delta):
 func _physics_process(_delta):
 	if social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
 		target = get_global_mouse_position()
-		sprite_puf.look_at(target)
 		if is_follow_cursor:
 			_move_to_target(target)
 		elif is_can_move:
@@ -75,15 +77,21 @@ func _input(event):
 		is_can_move = !is_can_move
 		target = get_local_mouse_position()
 
-func _move_to_target(target: Vector2):
+func _move_to_target(_target: Vector2):
 	if is_selected:
-		self.velocity = position.direction_to(target) * speed
+		self.velocity = position.direction_to(_target) * speed
 		
-		if position.distance_squared_to(target) > distance_follow_mouse:
+		if position.distance_squared_to(_target) > distance_follow_mouse:
 			self.move_and_slide()
-		
-		
-		
+
+func _look_at_sprite_to_target(_sprite: Sprite2D, _target: Vector2, block_cood_xy: Array[bool]):
+	if !block_cood_xy.is_empty():
+		if block_cood_xy[0]:
+			_sprite.flip_h = _target.x < 0
+		if block_cood_xy[1]: 
+			_sprite.flip_v = _target.y < 0
+	else:
+		_sprite.look_at(_target)
 
 func _change_sprite_according_social_class():
 	var path_texture: String
