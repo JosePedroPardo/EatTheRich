@@ -1,30 +1,81 @@
-[gd_scene load_steps=3 format=3 uid="uid://bg2ohhatacu6c"]
+[gd_scene load_steps=6 format=3 uid="uid://bg2ohhatacu6c"]
 
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="1_0nux4"]
 [ext_resource type="StyleBox" uid="uid://bvrmbi7cgm6yg" path="res://Resources/UI/Paneles/panel_multiple_select.tres" id="1_7mjoj"]
+[ext_resource type="Script" path="res://Scripts/tools/ui.gd" id="1_a8sun"]
+[ext_resource type="LabelSettings" uid="uid://bvd1eag1a4sun" path="res://Scenes/tres/debug_labels.tres" id="4_hep84"]
+[ext_resource type="LabelSettings" uid="uid://dscjv5p181cqc" path="res://Scenes/tres/debug_labels_result.tres" id="5_das5g"]
 
 [node name="UI" type="CanvasLayer"]
+script = ExtResource("1_a8sun")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="PanelDraw" type="Panel" parent="."]
 light_mask = 15
 visibility_layer = 15
 texture_filter = 1
 theme_override_styles/panel = ExtResource("1_7mjoj")
 
-[node name="MouseMove" type="Label" parent="."]
-offset_left = 15.0
-offset_top = 16.0
-offset_right = 146.0
-offset_bottom = 40.0
+[node name="PanelContainer" type="PanelContainer" parent="."]
+texture_filter = 1
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 199.0
+offset_bottom = 86.0
+
+[node name="DebugContainer" type="VBoxContainer" parent="PanelContainer"]
+texture_filter = 1
+layout_mode = 2
+theme_override_constants/separation = -2
+
+[node name="DebugLabels" type="Label" parent="PanelContainer/DebugContainer"]
+texture_filter = 1
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Debug_statistics:"
+label_settings = ExtResource("4_hep84")
+
+[node name="FPSContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="FPS" type="Label" parent="PanelContainer/DebugContainer/FPSContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "FPS:"
+label_settings = ExtResource("4_hep84")
+
+[node name="F_result" type="Label" parent="PanelContainer/DebugContainer/FPSContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "1920"
+label_settings = ExtResource("5_das5g")
+
+[node name="ResolutionContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="Resolution" type="Label" parent="PanelContainer/DebugContainer/ResolutionContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Resolution:"
+label_settings = ExtResource("4_hep84")
+
+[node name="R_result" type="Label" parent="PanelContainer/DebugContainer/ResolutionContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "1920"
+label_settings = ExtResource("5_das5g")
+
+[node name="MouseContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="MouseMove" type="Label" parent="PanelContainer/DebugContainer/MouseContainer"]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "Camera Move Mouse"
+label_settings = ExtResource("4_hep84")
 
-[node name="Button" type="CheckButton" parent="MouseMove"]
+[node name="Button" type="CheckButton" parent="PanelContainer/DebugContainer/MouseContainer"]
 light_mask = 16
 visibility_layer = 16
-layout_mode = 0
-offset_left = 128.0
-offset_top = -1.0
-offset_right = 172.0
-offset_bottom = 23.0
+layout_mode = 2
 tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
+icon_alignment = 1

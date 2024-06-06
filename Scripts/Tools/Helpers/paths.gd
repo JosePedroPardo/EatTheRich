@@ -22,8 +22,8 @@ const SPRITE_BABY_POOR: String = "res://Resources/Tileset/pufs/babypuf.png"
 const SPRITE_BABY_RICH: String = "res://Resources/Tileset/pufs/babypuf.png"
 
 ''' PATHS OF ELEMENTS OF UI IN RELATION TO THE MAIN SCENE '''
-const UI_PANEL_TO_SELECTED_AREA: String = ("../UI/Panel")
-const UI_TOOGLE_BUTTON_MOUSE_CAMERA: String = ("../UI/MouseMove/Button")
+const UI_PANEL_TO_SELECTED_AREA: String = ("../UI/PanelDraw")
+const UI_TOOGLE_BUTTON_MOUSE_CAMERA: String = ("../UI/PanelContainer/DebugContainer/MouseContainer/Button")
 
 ''' PATHS OF ELEMENTS IN RELATION TO THE MAIN SCENE '''
 const TILEMAP_PATH: String = ("../TileMap")
