@@ -4,6 +4,9 @@ extends CharacterBody2D
 signal puf_selected
 signal puf_deselected
 
+signal cell_ocuppied(cood_cell)
+signal cell_unocuppied(cood_cell)
+
 @export var wait_time_move: float = 0.5 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
 @export var move_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
@@ -16,84 +19,155 @@ var is_baby: bool = false:
 	get: return is_baby
 	set(_is_baby):
 		is_baby = _is_baby
+var is_selected: bool = false:
+	get:
+		return is_selected
+	set(new_bool):
+		is_selected = new_bool
+
 var social_class: int = DefinitionsHelper.RANDOM_SOCIAL_CLASS
-var is_selected: bool = false
+var is_can_move: bool = false
+var is_dragging: bool = false
 var current_path: Array[Vector2i]
 var look_at_position: Vector2i
+var initial_grid_cell: Vector2i
+var current_grid_cell: Vector2i
+var next_grid_cell: Vector2i
+var ocuppied_cells: Array[Vector2i]
 
 @onready var sprite_puf: Sprite2D = $SpritePuf
 @onready var selected_puf: AnimatedSprite2D = $SelectedPuf
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var wait_timer: Timer = $WaitTime
-@onready var assemble_area: CollisionShape2D = $InteractionComponents/InteractArea/AssembleArea
-@onready var repulsion_area: CollisionShape2D = $InteractionComponents/InteractArea/RepulsionArea
+@onready var assemble_area: CollisionShape2D = $InteractionComponents/AssembleArea/AssembleShape
+@onready var repulsion_area: CollisionShape2D = $InteractionComponents/RepulsionArea/RepulsionShape
 @onready var shape_puf: CollisionShape2D = $ShapePuf
+@onready var manager_puf: Node2D = get_node(PathsHelper.MANAGER_PUF_PATH)
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
 @onready var clic_position: Vector2i = self.position
 
-func _ready():
+func _init():
 	myself = Puf.new(social_class, is_baby)
+
+func _ready():
 	social_class = myself.social_class
 	_change_sprite_according_social_class()
 	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
+	initial_grid_cell = tilemap.local_to_map(self.position)
+	manager_puf.connect("ocuppied_cells_array", Callable(self, "_on_ocuppied_cells"))
+	emit_signal("cell_ocuppied", initial_grid_cell)
 
 func _process(delta):
 	if is_selected:
-		if !current_path.is_empty():
-			sprite_puf.flip_h = look_at_position.x < 0
-			var target_position = tilemap.map_to_local(current_path.front())
-			self.global_position = self.global_position.move_toward(target_position, move_speed)
-			animation_player.play(DefinitionsHelper.ANIMATION_RUN_PUF)
-			await get_tree().create_timer(wait_time_move).timeout
-			if self.global_position == target_position:
-				current_path.pop_front()
-		else:  animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
+		current_grid_cell = tilemap.local_to_map(self.position)
+		
+		if next_grid_cell == current_grid_cell:
+			emit_signal("cell_ocuppied", current_grid_cell)
+		else: 
+			print("señal ocupada con celda: " + str(current_grid_cell))
+			emit_signal("cell_unocuppied", current_grid_cell)
+		
+		if is_can_move:
+			if not current_path.is_empty():
+				sprite_puf.flip_h = look_at_position.x < 0
+				var target_position = tilemap.map_to_local(current_path.front())
+				self.global_position = self.global_position.move_toward(target_position, move_speed)
+				animation_player.play(DefinitionsHelper.ANIMATION_RUN_PUF)
+				await get_tree().create_timer(wait_time_move).timeout
+				if self.global_position == target_position:
+					current_path.pop_front()
+			else:
+				is_can_move = false
+		else: animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _input(event):
 	if Input.is_action_just_pressed(InputsHelper.ASSEMBLE_PUF) and can_assemble:
 		print("se juntan")
 
-	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
+	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
 		look_at_position = get_local_mouse_position()
 		clic_position = get_global_mouse_position()
-		print(tilemap.is_point_walkable(clic_position))
-		if tilemap.is_point_walkable(clic_position):
+		var clic_position_localmap = tilemap.local_to_map(clic_position)
+		if not ocuppied_cells.has(clic_position_localmap):
+			next_grid_cell = clic_position_localmap
+		else: next_grid_cell = Vector2i.ZERO
+		if tilemap.is_point_walkable_map_local_position(next_grid_cell):
 			current_path = tilemap.astar_grid.get_id_path(
 				tilemap.local_to_map(self.global_position),
-				tilemap.local_to_map(clic_position)
+				next_grid_cell
 			).slice(1)
-	else: clic_position = Vector2i.ZERO
+			if ocuppied_cells.has(current_path.back()): 
+				current_path.pop_back()
+			is_can_move = true
+	else: 
+		clic_position = Vector2i.ZERO
+		next_grid_cell = Vector2i.ZERO
+	
+	## Sistema para que el drag and drop
+	if event is InputEventMouseMotion:
+		if is_self_rich(): 
+			if is_dragging and !is_selected:
+				self.global_position = get_global_mouse_position()
 
 func _on_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			if social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
-				var signal_selected: String = ""
-				if selected_puf.visible == false: 
-					signal_selected = "puf_selected"
-					selected_puf.play(DefinitionsHelper.ANIMATION_SELECTED_PUF)
-				else: 
-					signal_selected = "puf_deselected"
-					selected_puf.stop()
-				is_selected = !is_selected
-				selected_puf.visible = !selected_puf.visible
-				emit_signal(signal_selected, self)
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				mouse_button_pressed()
+			else:
+				mouse_button_released()
+
+func mouse_button_pressed():
+	if social_class == DefinitionsHelper.INDEX_POOR_SOCIAL_CLASS:
+		var signal_selected: String = ""
+		if selected_puf.visible == false: 
+			signal_selected = "puf_selected"
+			selected_puf.play(DefinitionsHelper.ANIMATION_SELECTED_PUF)
+		else: 
+			signal_selected = "puf_deselected"
+			selected_puf.stop()
+		is_selected = !is_selected
+		selected_puf.visible = !selected_puf.visible
+		emit_signal(signal_selected, self)
+	else: is_dragging = true
+
+func mouse_button_released():
+	is_dragging = false
 
 func _change_sprite_according_social_class():
 	var path_texture: String
-	if social_class == DefinitionsHelper.RICH_SOCIAL_CLASS:
+	if social_class == DefinitionsHelper.INDEX_RICH_SOCIAL_CLASS:
 		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_rich_pufs)
-	elif social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
+	elif social_class == DefinitionsHelper.INDEX_POOR_SOCIAL_CLASS:
 		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_poor_pufs)
 	sprite_puf.texture = load(path_texture)
 
+''' Métodos de señales '''
+func _on_ocuppied_cells(_ocuppied_cells):
+	ocuppied_cells.clear()
+	ocuppied_cells.append_array(_ocuppied_cells)
+
+func _on_mouse_entered():
+	if get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS:
+		self.position.y += -2
+		animation_player.play(DefinitionsHelper.ANIMATION_DRAG_PUF)
+
+func _on_mouse_exited():
+	if get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS:
+		self.position.y += +2
+		animation_player.play(DefinitionsHelper.ANIMATION_DROP_PUF)
+		animation_player.queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
+
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():
-	match(myself.social_class):	
-		0: return DefinitionsHelper.POOR
-		1: return DefinitionsHelper.RICH
+	match(myself.social_class):
+		0: return DefinitionsHelper.POOR_SOCIAL_CLASS
+		1: return DefinitionsHelper.RICH_SOCIAL_CLASS
 		_: return "null"
+
+func is_self_rich():
+	return get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS
 
 func get_background() -> String:
 	return _get_variable_by_name("background")
@@ -206,3 +280,4 @@ func _get_variable_by_name(name: String):
 			return myself.jsonSerialize()		
 		_:
 			return null
+

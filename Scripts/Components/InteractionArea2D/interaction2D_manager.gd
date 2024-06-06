@@ -1,6 +1,5 @@
 extends Node2D
 
-
 const BASE_TEXT: String = "none"
 
 ## Distancia entre el label y el objeto a interactuar en y
@@ -33,7 +32,6 @@ func _process(delta):
 ## Este método devuelve el area más cercana al ratón
 func _sort_by_distance_to_player(area1, area2) -> int:
 	mouse_pos = get_global_mouse_position()
-	print("porsicion mouse: " + str(mouse_pos))
 	var area1_to_mouse = mouse_pos.global_position.distadistance_squared_to	(area1.global.position)
 	var area2_to_mouse = mouse_pos.global_position.distance_squared_to(area2.global.position)
 	return area1_to_mouse < area2_to_mouse

@@ -18,7 +18,7 @@ func _ready():
 	astar_grid.offset = tile_size * 0.5
 	astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
 	astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ALWAYS
 	astar_grid.update()
 	
 	# Recorremos cada capa en busca de celdas que no sean transitables y luego las seteamos como tal
@@ -44,12 +44,16 @@ func _ready():
 		# self.set_cell(0,coor_wall,30) # Muestra los espacios intransitables
 	emit_signal("coordinates_spawn", cell_spawn)
 
-func is_point_walkable(local_position) -> bool:
-	var map_position = local_to_map(local_position)
+func is_point_walkable_map_local_position(map_position) -> bool:
 	if map_rect.has_point(map_position):
 		return not astar_grid.is_point_solid(map_position)
 	return false
 
+func is_point_walkable_global_position(local_position) -> bool:
+	var map_position = local_to_map(local_position)
+	if map_rect.has_point(map_position):
+		return not astar_grid.is_point_solid(map_position)
+	return false
 func get_cells_between(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
 	var coordinates: Array[Vector2i] = []
 	var x1 = min(start.x, end.x)

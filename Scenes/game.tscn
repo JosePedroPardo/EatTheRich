@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://o0if5egfwut4"]
+[gd_scene load_steps=6 format=3 uid="uid://o0if5egfwut4"]
 
 [ext_resource type="PackedScene" uid="uid://ls1sa1vyqjkn" path="res://Scenes/tilemap.tscn" id="1_1ss2t"]
+[ext_resource type="PackedScene" uid="uid://b4xp0w52hwj68" path="res://Scenes/puf.tscn" id="1_6eb2v"]
 [ext_resource type="PackedScene" uid="uid://bg2ohhatacu6c" path="res://Scenes/ui.tscn" id="1_ct4x2"]
 [ext_resource type="PackedScene" uid="uid://cl76bcgy7g0e8" path="res://Scenes/manager_pufs.tscn" id="1_hblf1"]
 [ext_resource type="PackedScene" uid="uid://c30hichtn61t1" path="res://Scenes/camera_2d.tscn" id="3_ornbr"]
@@ -10,12 +11,29 @@
 [node name="UI" parent="." instance=ExtResource("1_ct4x2")]
 
 [node name="Camera2D" parent="." instance=ExtResource("3_ornbr")]
-position = Vector2(712, 544)
+position = Vector2(656, 352)
 multiplier_speed = 5.0
 
 [node name="ManagerPufs" parent="." instance=ExtResource("1_hblf1")]
+position = Vector2(104, 96)
 spawn_time = 0.2
 
 [node name="TileMap" parent="." instance=ExtResource("1_1ss2t")]
 
+[node name="CharacterBody2D" parent="." instance=ExtResource("1_6eb2v")]
+position = Vector2(312, 200)
+can_assemble = false
+move_speed = 1.0
+
+[node name="CharacterBody2D2" parent="." instance=ExtResource("1_6eb2v")]
+position = Vector2(544, 288)
+can_assemble = false
+move_speed = 1.0
+
+[node name="CharacterBody2D3" parent="." instance=ExtResource("1_6eb2v")]
+position = Vector2(688, 312)
+can_assemble = false
+move_speed = 1.0
+
+[connection signal="selected_pufs" from="Camera2D" to="ManagerPufs" method="_on_camera_2d_selected_pufs"]
 [connection signal="coordinates_spawn" from="TileMap" to="ManagerPufs" method="_on_tile_map_coordinates_spawn"]

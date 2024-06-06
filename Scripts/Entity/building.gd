@@ -7,7 +7,6 @@ enum Quality {
 	MEDIOCRE,
 	DECREPIT
 }
-
 const MIN_YEARS: int = 18
 const MIN_GAUGING: int = 4
 const MAX_GAUGING: int = 20

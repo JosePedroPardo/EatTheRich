@@ -3,6 +3,9 @@
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_camera_2d.gd" id="1_ymm1o"]
 
 [node name="Camera2D" type="Camera2D"]
+texture_filter = 1
 zoom = Vector2(2, 2)
+position_smoothing_enabled = true
 position_smoothing_speed = 2.0
+rotation_smoothing_enabled = true
 script = ExtResource("1_ymm1o")

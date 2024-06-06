@@ -12,7 +12,7 @@ const PATH_JOBS: String = "res://SaveData/GenerateDates/ESP/jobs.json"
 const PATH_PUF: String = "res://Scenes/Pufs/puf.tscn"
 const PATH_SCENARIO: String = "res://Scenes/scenario.tscn"
 
-''' TEXTURE PATHS '''
+''' TEXTURE PUFS PATHS'''
 const SPRITE_RICH_001: String = "res://Resources/Tileset/pufs/rich.png"
 const SPRITE_RICH_002: String = "res://Resources/Tileset/pufs/richv2.png"
 const SPRITE_POOR_001: String = "res://Resources/Tileset/pufs/poor.png"
@@ -27,4 +27,5 @@ const UI_TOOGLE_BUTTON_MOUSE_CAMERA: String = ("../UI/MouseMove/Button")
 
 ''' PATHS OF ELEMENTS IN RELATION TO THE MAIN SCENE '''
 const TILEMAP_PATH: String = ("../TileMap")
+const MANAGER_PUF_PATH: String = ("../ManagerPufs")
 

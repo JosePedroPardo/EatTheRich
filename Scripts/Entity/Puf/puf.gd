@@ -198,7 +198,7 @@ func _is_a_baby():
 	return true if self.years < MIN_YEARS else false
 
 func _is_a_rich():
-	return str(self.social_class) == DefinitionsHelper.RICH
+	return str(self.social_class) == DefinitionsHelper.RICH_SOCIAL_CLASS
 
 func jsonSerialize() -> String:
 	var data = {
@@ -249,7 +249,7 @@ func _get_random_place_of_birth(path: String) -> String:
 	return street + " " +  article + " " + place_
 
 func _get_hunger_according_to_social_class(social_class_: Social_class) -> float:
-	return randf_range(MIN_HUNGER, MAX_HUNGER) if str(social_class_) == DefinitionsHelper.POOR else MAX_HUNGER
+	return randf_range(MIN_HUNGER, MAX_HUNGER) if str(social_class_) == DefinitionsHelper.POOR_SOCIAL_CLASS else MAX_HUNGER
 
 func _get_thirst_according_to_social_class(social_class_: Social_class) -> float:
-	return randf_range(MIN_THIRST, MAX_THIRST) if str(social_class_) == DefinitionsHelper.POOR else MAX_THIRST
+	return randf_range(MIN_THIRST, MAX_THIRST) if str(social_class_) == DefinitionsHelper.POOR_SOCIAL_CLASS else MAX_THIRST

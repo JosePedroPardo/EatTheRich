@@ -39,7 +39,7 @@ func _ready():
 func _process(delta):
 	zoom_camera(delta)
 	move_camera(delta)
-	process_select_area()
+	#process_select_area()
 
 func _on_toogle_button_changes_mouse_move():
 	is_mouse_move = !is_mouse_move
@@ -73,6 +73,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		mouse_pos = event.position
 		mouse_pos_global = get_global_mouse_position()
+		print(mouse_pos)
 
 func _zoom_out():
 	zoom_factor -= 0.01 * zoom_speed
@@ -161,7 +162,6 @@ func get_objects_in_area(start: Vector2, end: Vector2) -> Array:
 	var area_rect = Rect2(start, end - start)
 	var selected_objects = []
 	
-	# Iterar sobre todos los objetos en la escena y verificar si están dentro del área
 	for object in get_tree().get_nodes_in_group("selectable"):
 		if area_rect.has_point(object.global_position):
 			selected_objects.append(object)

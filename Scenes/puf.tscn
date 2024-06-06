@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="1_2o3lj"]
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_a7dnk"]
+[ext_resource type="Texture2D" uid="uid://di573c1n2ua1r" path="res://Resources/Tileset/pufs/richv2.png" id="3_iureo"]
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="4_ha86j"]
-[ext_resource type="Texture2D" uid="uid://ba5dmlhh28fot" path="res://Resources/Tileset/pufs/poorv3.png" id="4_ibg2n"]
 [ext_resource type="AnimationLibrary" uid="uid://c10xbuskq6eb3" path="res://Animations/Pufs/Pufs_animations.res" id="5_50ihj"]
 [ext_resource type="Texture2D" uid="uid://b66mb70cikal5" path="res://Resources/Tileset/pufs/Selected_puf/Selected_e.png" id="7_jgdqv"]
 [ext_resource type="Texture2D" uid="uid://c6pua88wjwxqw" path="res://Resources/Tileset/pufs/Selected_puf/Selected_i.png" id="8_2ot62"]
@@ -36,7 +36,7 @@ tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
+"update": 0,
 "values": [1]
 }
 tracks/1/type = "value"
@@ -54,10 +54,22 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Shadow:position")
+tracks/2/path = NodePath("SpritePuf:flip_h")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Shadow:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -71,8 +83,8 @@ _data = {
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bn6ww"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_bimhb"]
-radius = 4.66667
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xvxct"]
+size = Vector2(8, 8)
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 light_mask = 10
@@ -101,7 +113,7 @@ light_mask = 14
 visibility_layer = 2
 texture_filter = 1
 position = Vector2(0, 3)
-texture = ExtResource("4_ibg2n")
+texture = ExtResource("3_iureo")
 hframes = 4
 vframes = 3
 frame = 1
@@ -126,26 +138,46 @@ z_index = 1
 position = Vector2(0, 4)
 scale = Vector2(3, 3)
 
-[node name="InteractArea" type="Area2D" parent="InteractionComponents"]
+[node name="InteractLabel" type="Label" parent="InteractionComponents"]
+visible = false
+light_mask = 16
+visibility_layer = 16
+z_index = 20
+texture_filter = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -14.6667
+offset_top = -10.3333
+offset_right = 92.3333
+offset_bottom = 5.66667
+grow_horizontal = 2
+scale = Vector2(0.3, 0.3)
+theme_override_fonts/font = ExtResource("4_ha86j")
+text = "Placeholder Text"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AssembleArea" type="Area2D" parent="InteractionComponents"]
 collision_layer = 2
 collision_mask = 2
 input_pickable = false
 
-[node name="AssembleArea" type="CollisionShape2D" parent="InteractionComponents/InteractArea"]
+[node name="AssembleShape" type="CollisionShape2D" parent="InteractionComponents/AssembleArea"]
 shape = SubResource("RectangleShape2D_bn6ww")
 debug_color = Color(0.164706, 0.643137, 0, 0.113725)
 
-[node name="RepulsionArea" type="CollisionShape2D" parent="InteractionComponents/InteractArea"]
-shape = SubResource("CircleShape2D_bimhb")
-debug_color = Color(0.956863, 0, 0.537255, 0.0745098)
+[node name="RepulsionArea" type="Area2D" parent="InteractionComponents"]
+collision_layer = 2
+collision_mask = 2
+input_pickable = false
 
-[node name="InteractLabel" type="Label" parent="InteractionComponents"]
-offset_right = 40.0
-offset_bottom = 23.0
-theme_override_fonts/font = ExtResource("4_ha86j")
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="RepulsionShape" type="CollisionShape2D" parent="InteractionComponents/RepulsionArea"]
+shape = SubResource("RectangleShape2D_xvxct")
+debug_color = Color(0.956863, 0, 0.537255, 0.0745098)
 
 [node name="WaitTime" type="Timer" parent="."]
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
