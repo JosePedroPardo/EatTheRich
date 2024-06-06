@@ -18,7 +18,7 @@ func _ready():
 	astar_grid.offset = tile_size * 0.5
 	astar_grid.default_compute_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
 	astar_grid.default_estimate_heuristic = AStarGrid2D.HEURISTIC_MANHATTAN
-	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ALWAYS
+	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar_grid.update()
 	
 	# Recorremos cada capa en busca de celdas que no sean transitables y luego las seteamos como tal

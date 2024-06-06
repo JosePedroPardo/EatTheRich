@@ -31,7 +31,6 @@ var is_mouse_move: bool = false
 
 @onready var box: Panel = get_node(PathsHelper.UI_PANEL_TO_SELECTED_AREA)
 @onready var checkButton: CheckButton = get_node(PathsHelper.UI_TOOGLE_BUTTON_MOUSE_CAMERA)
-
 func _ready():
 	checkButton.connect("pressed", Callable(self, "_on_toogle_button_changes_mouse_move"))
 	connect("area_selected", Callable(get_parent(), "_on_area_selected"))

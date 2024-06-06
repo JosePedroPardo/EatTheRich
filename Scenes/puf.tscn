@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://c6pua88wjwxqw" path="res://Resources/Tileset/pufs/Selected_puf/Selected_i.png" id="8_2ot62"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ug8ye"]
-size = Vector2(14, 17)
+size = Vector2(17, 22)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_4qvs0"]
 animations = [{
@@ -83,14 +83,14 @@ _data = {
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bn6ww"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xvxct"]
-size = Vector2(8, 8)
+[sub_resource type="CircleShape2D" id="CircleShape2D_13fw2"]
+radius = 5.66667
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 light_mask = 10
 visibility_layer = 2
-collision_layer = 3
-collision_mask = 3
+collision_layer = 2
+collision_mask = 2
 input_pickable = true
 script = ExtResource("1_a7dnk")
 wait_time_move = 0.2
@@ -98,7 +98,7 @@ wait_time_move = 0.2
 [node name="ShapePuf" type="CollisionShape2D" parent="."]
 light_mask = 2
 visibility_layer = 2
-position = Vector2(0, 3.5)
+position = Vector2(-0.5, 3)
 shape = SubResource("RectangleShape2D_ug8ye")
 
 [node name="Shadow" type="Sprite2D" parent="."]
@@ -173,7 +173,7 @@ collision_mask = 2
 input_pickable = false
 
 [node name="RepulsionShape" type="CollisionShape2D" parent="InteractionComponents/RepulsionArea"]
-shape = SubResource("RectangleShape2D_xvxct")
+shape = SubResource("CircleShape2D_13fw2")
 debug_color = Color(0.956863, 0, 0.537255, 0.0745098)
 
 [node name="WaitTime" type="Timer" parent="."]
