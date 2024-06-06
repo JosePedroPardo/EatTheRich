@@ -4,7 +4,7 @@ extends CharacterBody2D
 signal puf_selected
 signal puf_deselected
 
-@export var wait_time: int = 15
+@export var wait_time_move: float = 0.5 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
 @export var move_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
 
@@ -19,46 +19,48 @@ var is_baby: bool = false:
 var social_class: int = DefinitionsHelper.RANDOM_SOCIAL_CLASS
 var is_selected: bool = false
 var current_path: Array[Vector2i]
+var look_at_position: Vector2i
 
 @onready var sprite_puf: Sprite2D = $SpritePuf
 @onready var selected_puf: AnimatedSprite2D = $SelectedPuf
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var wait_timer: Timer = $WaitTime
-@onready var clic_position: Vector2 = self.position
+@onready var assemble_area: CollisionShape2D = $InteractionComponents/InteractArea/AssembleArea
+@onready var repulsion_area: CollisionShape2D = $InteractionComponents/InteractArea/RepulsionArea
+@onready var shape_puf: CollisionShape2D = $ShapePuf
 @onready var tilemap: TileMap = get_node(PathsHelper.SCENARIO_TILEMAP_PATH)
+@onready var clic_position: Vector2 = self.position
 
 func _ready():
 	myself = Puf.new(social_class, is_baby)
 	social_class = myself.social_class
-	wait_timer.wait_time = wait_time
 	_change_sprite_according_social_class()
 	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _process(delta):
 	if is_selected:
-		sprite_puf.flip_h = clic_position.x < 0
 		if !current_path.is_empty():
+			sprite_puf.flip_h = look_at_position.x < 0
 			var target_position = tilemap.map_to_local(current_path.front())
 			self.global_position = self.global_position.move_toward(target_position, move_speed)
+			animation_player.play(DefinitionsHelper.ANIMATION_RUN_PUF)
+			await get_tree().create_timer(wait_time_move).timeout
 			if self.global_position == target_position:
 				current_path.pop_front()
-
-	if self.velocity != Vector2.ZERO: #Si se está moviendo, cambia la animación
-		animation_player.play(DefinitionsHelper.ANIMATION_RUN_PUF)
-	else:
-		animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
+		else:  animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _input(event):
 	if Input.is_action_just_pressed(InputsHelper.ASSEMBLE_PUF) and can_assemble:
 		print("se juntan")
+
 	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
+		look_at_position = get_local_mouse_position()
 		clic_position = get_global_mouse_position()
 		if tilemap.is_point_walkable(clic_position):
 			current_path = tilemap.astar_grid.get_id_path(
 				tilemap.local_to_map(self.global_position),
 				tilemap.local_to_map(clic_position)
 			).slice(1)
-			print(current_path)
 
 func _look_at_sprite_to_target(_sprite: Sprite2D, _target: Vector2, block_cood_xy: Array[bool]):
 	if !block_cood_xy.is_empty():
@@ -88,9 +90,9 @@ func _on_input_event(viewport, event, shape_idx):
 				else: 
 					signal_selected = "puf_deselected"
 					selected_puf.stop()
-				emit_signal(signal_selected, self)
 				is_selected = !is_selected
 				selected_puf.visible = !selected_puf.visible
+				emit_signal(signal_selected, self)
 
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():

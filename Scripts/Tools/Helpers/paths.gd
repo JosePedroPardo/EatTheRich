@@ -21,9 +21,10 @@ const SPRITE_POOR_003: String = "res://Resources/Tileset/pufs/poorv3.png"
 const SPRITE_BABY_POOR: String = "res://Resources/Tileset/pufs/babypuf.png"
 const SPRITE_BABY_RICH: String = "res://Resources/Tileset/pufs/babypuf.png"
 
-''' PATH OF ELEMENTS OF UI IN RELATION TO THE MAIN SCENE '''
+''' PATHS OF ELEMENTS OF UI IN RELATION TO THE MAIN SCENE '''
 const UI_PANEL_TO_SELECTED_AREA: String = ("../UI/Panel")
 const UI_TOOGLE_BUTTON_MOUSE_CAMERA: String = ("../UI/MouseMove/Button")
 
-''' PATH OF ELEMENTS IN RELATION TO THE MAIN SCENE '''
+''' PATHS OF ELEMENTS IN RELATION TO THE MAIN SCENE '''
 const SCENARIO_TILEMAP_PATH: String = ("../TileMap")
+

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b4xp0w52hwj68"]
+[gd_scene load_steps=14 format=3 uid="uid://b4xp0w52hwj68"]
 
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="1_2o3lj"]
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_a7dnk"]
@@ -69,7 +69,10 @@ _data = {
 "RESET": SubResource("Animation_dgeb0")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bn6ww"]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_bimhb"]
+radius = 4.66667
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 light_mask = 10
@@ -79,7 +82,7 @@ collision_mask = 2
 input_pickable = true
 script = ExtResource("1_a7dnk")
 
-[node name="CollisionShape" type="CollisionShape2D" parent="."]
+[node name="ShapePuf" type="CollisionShape2D" parent="."]
 light_mask = 2
 visibility_layer = 2
 position = Vector2(0, 3.5)
@@ -118,7 +121,6 @@ libraries = {
 }
 
 [node name="InteractionComponents" type="Node2D" parent="."]
-visible = false
 z_index = 1
 position = Vector2(0, 4)
 scale = Vector2(3, 3)
@@ -127,8 +129,13 @@ scale = Vector2(3, 3)
 collision_layer = 2
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionComponents/InteractArea"]
+[node name="AssembleArea" type="CollisionShape2D" parent="InteractionComponents/InteractArea"]
+shape = SubResource("RectangleShape2D_bn6ww")
+debug_color = Color(0.164706, 0.643137, 0, 0.113725)
+
+[node name="RepulsionArea" type="CollisionShape2D" parent="InteractionComponents/InteractArea"]
 shape = SubResource("CircleShape2D_bimhb")
+debug_color = Color(0.956863, 0, 0.537255, 0.0745098)
 
 [node name="InteractLabel" type="Label" parent="InteractionComponents"]
 offset_right = 40.0

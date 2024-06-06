@@ -53,3 +53,6 @@ const LAYER_GUI_2D: int = 4
 ''' LAYERS IN TILEMAP '''
 const TILEMAP_LAYER_TYPE_WALL = "wall"
 
+''' PATHS OF TILEMAP LAYERS'''
+const TM_LAYER_GROUND: int = 0
+const TM_LAYER_PATHS: int = 1
