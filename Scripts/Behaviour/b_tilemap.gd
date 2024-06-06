@@ -17,16 +17,22 @@ func _ready():
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
 	astar_grid.update()
 	
+	# Recorremos cada capa en busca de celdas que no sean transitables y luego las seteamos como tal
+	var cell_wall: Array[Vector2i] = []
 	for i in tilemap_size.x:
 		for j in tilemap_size.y:
 			var coordinates = Vector2i(i, j)
-			var tile_data = get_cell_tile_data(0, coordinates)
-			if tile_data:
-				if self.get_cell_source_id(0, coordinates):
-					var tile_type = self.get_cell_tile_data(0, coordinates).get_custom_data('wall')
-					astar_grid.set_point_solid(coordinates, tile_type)
-			print("Coordenadas:" + str(coordinates) + ", transitable: " + str(!astar_grid.is_point_solid(coordinates)) + ", TileData: " + str(tile_data))
-					
+			for h in self.get_layers_count(): # Recorre cada capa
+				var tile_data = get_cell_tile_data(h, coordinates)
+				if tile_data:
+					if self.get_cell_source_id(h, coordinates) >= 0:
+						if (self.get_cell_tile_data(h, coordinates).get_custom_data('wall') == true):
+							cell_wall.append(coordinates)
+	for coor_wall in cell_wall:
+		print(coor_wall)
+		astar_grid.set_point_solid(coor_wall)
+		# self.set_cell(0,coor_wall,30) Muestra los espacios intransitables
+
 func is_point_walkable(local_position):
 	var map_position = local_to_map(local_position)
 	if map_rect.has_point(map_position):
