@@ -6,8 +6,7 @@ signal puf_deselected
 
 @export var wait_time: int = 15
 @export var can_assemble: bool = false
-@export var distance_follow_mouse: int = 25 ## Distancia a la que se para el puf antes de llegar al ratón
-@export var speed: float = 50 ## Velocidad a la que se desplaza el puf
+@export var move_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
 
 var myself: Puf: 
 	get: return myself
@@ -18,71 +17,48 @@ var is_baby: bool = false:
 	set(_is_baby):
 		is_baby = _is_baby
 var social_class: int = DefinitionsHelper.RANDOM_SOCIAL_CLASS
-var is_follow_cursor: bool = false
-var is_can_move: bool = false
 var is_selected: bool = false
-
-# Sistema de movimiento por grid
-var astar_grid: AStarGrid2D
-@onready var tile_map: TileMap = get_node(PathsHelper.SCENARIO_TILEMAP_PATH)
+var current_path: Array[Vector2i]
 
 @onready var sprite_puf: Sprite2D = $SpritePuf
 @onready var selected_puf: AnimatedSprite2D = $SelectedPuf
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var wait_timer: Timer = $WaitTime
-@onready var target: Vector2 = self.position
+@onready var clic_position: Vector2 = self.position
+@onready var tilemap: TileMap = get_node(PathsHelper.SCENARIO_TILEMAP_PATH)
 
 func _ready():
-	astar_grid = AStarGrid2D.new()
-	astar_grid.region = tile_map.get_used_rect()
-	astar_grid.cell_size = tile_map.tile_set.tile_size
-	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
-	astar_grid.update()
-	
 	myself = Puf.new(social_class, is_baby)
 	social_class = myself.social_class
 	wait_timer.wait_time = wait_time
-	add_to_group("pufs", true)
 	_change_sprite_according_social_class()
 	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _process(delta):
-	if social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
-		_look_at_sprite_to_target(sprite_puf, target, [true, false])
-	
-	if !is_can_move:
-		self.velocity = Vector2.ZERO
-	
+	if is_selected:
+		sprite_puf.flip_h = clic_position.x < 0
+		if !current_path.is_empty():
+			var target_position = tilemap.map_to_local(current_path.front())
+			self.global_position = self.global_position.move_toward(target_position, move_speed)
+			if self.global_position == target_position:
+				current_path.pop_front()
+
 	if self.velocity != Vector2.ZERO: #Si se está moviendo, cambia la animación
 		animation_player.play(DefinitionsHelper.ANIMATION_RUN_PUF)
 	else:
 		animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
-func _physics_process(_delta):
-	if social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
-		target = get_global_mouse_position()
-		if is_follow_cursor:
-			_move_to_target(target)
-		elif is_can_move:
-			_move_to_target(target)
-
 func _input(event):
-	if event.is_action_pressed(InputsHelper.ASSEMBLE_PUF) and can_assemble:
+	if Input.is_action_just_pressed(InputsHelper.ASSEMBLE_PUF) and can_assemble:
 		print("se juntan")
-	
-	if Input.is_action_just_pressed(InputsHelper.FOLLOW_PUF):
-		is_follow_cursor = !is_follow_cursor
-	
 	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
-		is_can_move = !is_can_move
-		target = get_local_mouse_position()
-
-func _move_to_target(_target: Vector2):
-	if is_selected:
-		self.velocity = position.direction_to(_target) * speed
-		
-		if position.distance_squared_to(_target) > distance_follow_mouse:
-			self.move_and_slide()
+		clic_position = get_global_mouse_position()
+		if tilemap.is_point_walkable(clic_position):
+			current_path = tilemap.astar_grid.get_id_path(
+				tilemap.local_to_map(self.global_position),
+				tilemap.local_to_map(clic_position)
+			).slice(1)
+			print(current_path)
 
 func _look_at_sprite_to_target(_sprite: Sprite2D, _target: Vector2, block_cood_xy: Array[bool]):
 	if !block_cood_xy.is_empty():

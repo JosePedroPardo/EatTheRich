@@ -122,7 +122,6 @@ follow_puf={
 2d_render/layer_3="Items"
 2d_render/layer_4="Enviroment"
 2d_render/layer_5="GUI"
-2d_render/layer_6="Limits_map"
 2d_physics/layer_1="Ground"
 2d_navigation/layer_1="Ground"
 2d_physics/layer_2="Entities"
@@ -133,8 +132,6 @@ follow_puf={
 2d_navigation/layer_4="Enviroment"
 2d_physics/layer_5="GUI"
 2d_navigation/layer_5="GUI"
-2d_physics/layer_6="Limits_map"
-2d_navigation/layer_6="Limits_map"
 
 [rendering]
 

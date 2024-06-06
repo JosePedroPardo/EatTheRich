@@ -26,5 +26,4 @@ const UI_PANEL_TO_SELECTED_AREA: String = ("../UI/Panel")
 const UI_TOOGLE_BUTTON_MOUSE_CAMERA: String = ("../UI/MouseMove/Button")
 
 ''' PATH OF ELEMENTS IN RELATION TO THE MAIN SCENE '''
-const SCENARIO_PATH: String = ("../Scenario")
-const SCENARIO_TILEMAP_PATH: String = ("../Scenario/TileMap")
+const SCENARIO_TILEMAP_PATH: String = ("../TileMap")

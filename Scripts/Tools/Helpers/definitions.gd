@@ -42,3 +42,14 @@ const ANIMATION_RUN_PUF: String = "Pufs/run"
 const ANIMATION_RESET_PUF: String = "Pufs/RESET"
 const ANIMATION_DIE_PUF: String = "Pufs/die"
 const ANIMATION_IDLE_PUF: String = "Pufs/idle"
+
+''' ALL LAYERS 2D '''
+const LAYER_GROUND_2D: int = 0
+const LAYER_ENTITIES_2D: int = 1
+const LAYER_ITEMS_2D: int = 2
+const LAYER_ENVIROMENT_2D: int = 3
+const LAYER_GUI_2D: int = 4
+
+''' LAYERS IN TILEMAP '''
+const TILEMAP_LAYER_TYPE_WALL = "wall"
+
