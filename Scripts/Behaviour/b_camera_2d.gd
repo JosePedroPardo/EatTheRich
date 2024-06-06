@@ -1,9 +1,9 @@
 extends Camera2D
 
 signal area_selected
-signal atart_move_selection
+signal selected_pufs(selected_pufs_array)
 
-@export var speed: float = 50.0
+@export var multiplier_speed: float = 4
 @export var zoom_speed: float = 10.0
 @export var zoom_margin: float = 0.1
 @export var zoom_min: float = 1.0
@@ -15,6 +15,7 @@ signal atart_move_selection
 @export var cood_limit_right: int = 425
 @export var edge_margin: int = 100  ## Distancia desde los bordes para empezar a mover la cámara
 
+var speed: float = 50.0
 var zoom_factor: float = 1.0
 var zoom_pos: Vector2 = Vector2()
 var zooming: bool = false
@@ -92,19 +93,22 @@ func process_select_area() -> void:
 		start = mouse_pos_global
 		start_v = mouse_pos
 		is_dragging = true
-
+	
 	if is_dragging:
 		end = mouse_pos_global
 		end_v = mouse_pos
 		draw_area()
-
+	
 	if Input.is_action_just_released("left_click"):
 		if start_v.distance_to(mouse_pos) > 20:
 			end = mouse_pos_global
 			end_v = mouse_pos
 			is_dragging = false
 			draw_area(false)
-			emit_signal("area_selected", self)
+			
+			var selected_pufs = get_objects_in_area(start, end)
+			
+			emit_signal("selected_pufs", selected_pufs)
 		else:
 			end = start
 			is_dragging = false
@@ -129,7 +133,7 @@ func move_camera(delta: float) -> void:
 	direction = _awsd_move(direction)
 
 	if direction != Vector2():
-		position += direction.normalized() * speed * delta
+		position += direction.normalized() * (speed * multiplier_speed) * delta
 
 func input_for_zoom(event: InputEvent) -> void:
 	if abs(zoom_pos.x - get_global_mouse_position().x) > zoom_margin:
@@ -152,3 +156,14 @@ func draw_area(s: bool = true) -> void:
 	pos.y = min(start_v.y, end_v.y)
 	box.position = pos
 	box.size *= int(s)
+
+func get_objects_in_area(start: Vector2, end: Vector2) -> Array:
+	var area_rect = Rect2(start, end - start)
+	var selected_objects = []
+	
+	# Iterar sobre todos los objetos en la escena y verificar si están dentro del área
+	for object in get_tree().get_nodes_in_group("selectable"):
+		if area_rect.has_point(object.global_position):
+			selected_objects.append(object)
+	
+	return selected_objects

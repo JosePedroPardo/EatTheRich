@@ -77,10 +77,11 @@ radius = 4.66667
 [node name="CharacterBody2D" type="CharacterBody2D"]
 light_mask = 10
 visibility_layer = 2
-collision_layer = 2
-collision_mask = 2
+collision_layer = 3
+collision_mask = 3
 input_pickable = true
 script = ExtResource("1_a7dnk")
+wait_time_move = 0.2
 
 [node name="ShapePuf" type="CollisionShape2D" parent="."]
 light_mask = 2
@@ -128,6 +129,7 @@ scale = Vector2(3, 3)
 [node name="InteractArea" type="Area2D" parent="InteractionComponents"]
 collision_layer = 2
 collision_mask = 2
+input_pickable = false
 
 [node name="AssembleArea" type="CollisionShape2D" parent="InteractionComponents/InteractArea"]
 shape = SubResource("RectangleShape2D_bn6ww")

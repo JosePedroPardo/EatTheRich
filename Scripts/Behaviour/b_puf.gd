@@ -28,8 +28,9 @@ var look_at_position: Vector2i
 @onready var assemble_area: CollisionShape2D = $InteractionComponents/InteractArea/AssembleArea
 @onready var repulsion_area: CollisionShape2D = $InteractionComponents/InteractArea/RepulsionArea
 @onready var shape_puf: CollisionShape2D = $ShapePuf
-@onready var tilemap: TileMap = get_node(PathsHelper.SCENARIO_TILEMAP_PATH)
-@onready var clic_position: Vector2 = self.position
+@onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
+@onready var astar_grid: AStarGrid2D = tilemap.astar_grid
+@onready var clic_position: Vector2i = self.position
 
 func _ready():
 	myself = Puf.new(social_class, is_baby)
@@ -56,28 +57,13 @@ func _input(event):
 	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
 		look_at_position = get_local_mouse_position()
 		clic_position = get_global_mouse_position()
+		print(tilemap.is_point_walkable(clic_position))
 		if tilemap.is_point_walkable(clic_position):
 			current_path = tilemap.astar_grid.get_id_path(
 				tilemap.local_to_map(self.global_position),
 				tilemap.local_to_map(clic_position)
 			).slice(1)
-
-func _look_at_sprite_to_target(_sprite: Sprite2D, _target: Vector2, block_cood_xy: Array[bool]):
-	if !block_cood_xy.is_empty():
-		if block_cood_xy[0]:
-			_sprite.flip_h = _target.x < 0
-		if block_cood_xy[1]: 
-			_sprite.flip_v = _target.y < 0
-	else:
-		_sprite.look_at(_target)
-
-func _change_sprite_according_social_class():
-	var path_texture: String
-	if social_class == DefinitionsHelper.RICH_SOCIAL_CLASS:
-		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_rich_pufs)
-	elif social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
-		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_poor_pufs)
-	sprite_puf.texture = load(path_texture)
+	else: clic_position = Vector2i.ZERO
 
 func _on_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
@@ -93,6 +79,14 @@ func _on_input_event(viewport, event, shape_idx):
 				is_selected = !is_selected
 				selected_puf.visible = !selected_puf.visible
 				emit_signal(signal_selected, self)
+
+func _change_sprite_according_social_class():
+	var path_texture: String
+	if social_class == DefinitionsHelper.RICH_SOCIAL_CLASS:
+		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_rich_pufs)
+	elif social_class == DefinitionsHelper.POOR_SOCIAL_CLASS:
+		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_poor_pufs)
+	sprite_puf.texture = load(path_texture)
 
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():

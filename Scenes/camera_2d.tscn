@@ -6,4 +6,3 @@
 zoom = Vector2(2, 2)
 position_smoothing_speed = 2.0
 script = ExtResource("1_ymm1o")
-speed = 70.0

@@ -11,17 +11,11 @@
 
 [node name="Camera2D" parent="." instance=ExtResource("3_ornbr")]
 position = Vector2(712, 544)
-speed = 90.0
-zoom_speed = 20.0
+multiplier_speed = 5.0
 
 [node name="ManagerPufs" parent="." instance=ExtResource("1_hblf1")]
-limit_spawn_puf = 15
 spawn_time = 0.2
-spawn_position = Vector2(700, 500)
-min_width = 10.0
-max_width = 300.0
-min_height = 10.0
-max_height = 300.0
 
 [node name="TileMap" parent="." instance=ExtResource("1_1ss2t")]
-position = Vector2(80, 128)
+
+[connection signal="coordinates_spawn" from="TileMap" to="ManagerPufs" method="_on_tile_map_coordinates_spawn"]
