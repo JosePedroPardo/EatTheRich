@@ -4,9 +4,10 @@ extends Node2D
 signal spawn_puf
 signal mouse_released
 signal ocuppied_cells_array(ocuppied_cells)
+signal born_puf(_self)
 
 @export_range(0, 100) var limit_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20) ## 0 es equivalente a un número aleatorio entre 15 y 20
-@export var spawn_time: float = 15
+@export var spawn_time: float = 5
 @export var spawn_time_to_rich: float = 30
 
 var spawn_initial_pufs: Array
@@ -15,6 +16,7 @@ var ocuppied_cells: Array[Vector2i]
 
 var is_picked_up: bool = false
 var is_time_to_rich: bool = false
+var first_puf: bool = true
 
 # Variables para el sistema de selección de pufs
 @onready var parent: Node2D = get_node("../")
@@ -48,7 +50,7 @@ func _remove_puf_in_array(puf: Node2D, array: Array):
 
 func _create_initial_pufs():
 	var new_puf = puf.instantiate()
-	var random_position = spawn_cood[RandomHelper.get_random_int_in_range(0, spawn_cood.size() - 1)]
+	var random_position = spawn_cood[RandomHelper.get_random_int_in_range(0, spawn_cood.size()-1)]
 	var random_global_position = tilemap.astar_grid.get_point_position(Vector2(random_position.x, random_position.y)) # Transforma las coordenadas locales del grid en globales
 	new_puf.position = random_global_position
 	spawn_cood.erase(random_position)
@@ -72,7 +74,6 @@ func _on_timer_spawn_timeout():
 		puf.connect("puf_undragging", Callable(self, "_on_puf_undragging"))
 		puf.connect("cell_ocuppied", Callable(self, "_on_ocupied_cell"))
 		puf.connect("cell_unocuppied", Callable(self, "_on_unocupied_cell"))
-		puf.connect("born_puf", Callable(self, "_on_born_puf"))
 		parent.add_child(puf)
 	if spawn_initial_pufs.is_empty(): 
 		is_time_to_rich = true
@@ -120,3 +121,4 @@ func _on_puf_undragging(puf):
 
 func _on_born_puff(puf):
 	_save_puf_in_array(puf, all_pufs)
+	emit_signal("born_puf", puf)

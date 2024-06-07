@@ -1,13 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://cl76bcgy7g0e8"]
+[gd_scene load_steps=2 format=3 uid="uid://cl76bcgy7g0e8"]
 
 [ext_resource type="Script" path="res://Scripts/Managers/manager_pufs.gd" id="1_k17n5"]
-[ext_resource type="Script" path="res://Scripts/statistics_manager.gd" id="2_p3g36"]
 
 [node name="ManagerPufs" type="Node2D"]
 script = ExtResource("1_k17n5")
-
-[node name="StatisticsManager" type="Node2D" parent="."]
-script = ExtResource("2_p3g36")
 
 [node name="TimerSpawn" type="Timer" parent="."]
 

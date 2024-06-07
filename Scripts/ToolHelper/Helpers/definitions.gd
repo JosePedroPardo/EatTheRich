@@ -58,6 +58,9 @@ const ANIMATION_SICK_PUF: String = "Pufs/sick"
 const ANIMATION_DRAG_PUF: String = "Pufs/drag"
 const ANIMATION_DROP_PUF: String = "Pufs/drop"
 
+const ANIMATION_PLUS_UI: String = "MinumPlus/plus"
+const ANIMATION_MINUM_UI: String = "MinumPlus/minum"
+
 ''' ALL LAYERS 2D '''
 const LAYER_GROUND_2D: int = 0
 const LAYER_ENTITIES_2D: int = 1
@@ -71,3 +74,6 @@ const TILEMAP_LAYER_TYPE_WALL = "wall"
 ''' PATHS OF TILEMAP LAYERS'''
 const TM_LAYER_GROUND: int = 0
 const TM_LAYER_PATHS: int = 1
+
+''' Names of groups'''
+const GROUP_PUFS: String = "pufs"

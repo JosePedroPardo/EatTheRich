@@ -2,10 +2,10 @@
 
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="1_2o3lj"]
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_a7dnk"]
-[ext_resource type="AnimationLibrary" uid="uid://ig4s8klxx25" path="res://Animations/Pufs/Pufs.res" id="2_3fsdd"]
+[ext_resource type="AnimationLibrary" uid="uid://ig4s8klxx25" path="res://Resources/Animations/Pufs/Pufs.res" id="2_2xooe"]
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="4_ha86j"]
-[ext_resource type="SpriteFrames" uid="uid://dv17b3qnnp0i0" path="res://Animations/pufs_sprite_frames.tres" id="4_jlwt3"]
 [ext_resource type="Texture2D" uid="uid://cjkyqlgkn2ami" path="res://Resources/Tileset/pufs/poor.png" id="4_mgop1"]
+[ext_resource type="SpriteFrames" uid="uid://dv17b3qnnp0i0" path="res://Resources/Animations/pufs_sprite_frames.tres" id="4_uop1p"]
 [ext_resource type="Texture2D" uid="uid://b66mb70cikal5" path="res://Resources/Tileset/pufs/Selected_puf/Selected_e.png" id="7_jgdqv"]
 [ext_resource type="Texture2D" uid="uid://c6pua88wjwxqw" path="res://Resources/Tileset/pufs/Selected_puf/Selected_i.png" id="8_2ot62"]
 
@@ -30,7 +30,7 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ug8ye"]
-size = Vector2(17, 22)
+size = Vector2(14, 18)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_4qvs0"]
 animations = [{
@@ -47,15 +47,17 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bn6ww"]
+size = Vector2(12, 12)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_13fw2"]
-radius = 5.66667
+radius = 4.0
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="CharacterBody2D" type="CharacterBody2D" groups=["pufs"]]
 light_mask = 10
 visibility_layer = 2
-collision_layer = 3
-collision_mask = 3
+scale = Vector2(0.7, 0.7)
+collision_layer = 2
+collision_mask = 2
 input_pickable = true
 script = ExtResource("1_a7dnk")
 wait_time_move = 0.2
@@ -63,13 +65,13 @@ wait_time_move = 0.2
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_ngbqv"),
-"Pufs": ExtResource("2_3fsdd")
+"Pufs": ExtResource("2_2xooe")
 }
 
 [node name="ShapePuf" type="CollisionShape2D" parent="."]
 light_mask = 2
 visibility_layer = 2
-position = Vector2(-0.5, 3)
+position = Vector2(0, 3)
 shape = SubResource("RectangleShape2D_ug8ye")
 
 [node name="Shadow" type="Sprite2D" parent="."]
@@ -82,7 +84,7 @@ texture = ExtResource("1_2o3lj")
 [node name="SpriteAnimationPuf" type="AnimatedSprite2D" parent="."]
 visible = false
 position = Vector2(0, 3)
-sprite_frames = ExtResource("4_jlwt3")
+sprite_frames = ExtResource("4_uop1p")
 animation = &"puf_01_walk"
 frame = 1
 frame_progress = 0.748349
@@ -137,7 +139,8 @@ collision_layer = 2
 collision_mask = 2
 input_pickable = false
 
-[node name="AssembleShape" type="CollisionShape2D" parent="InteractionComponents/AssembleArea"]
+[node name="AssembleShape" type="CollisionShape2D" parent="InteractionComponents/AssembleArea" groups=["pufs"]]
+position = Vector2(0, -0.333)
 shape = SubResource("RectangleShape2D_bn6ww")
 debug_color = Color(0.164706, 0.643137, 0, 0.113725)
 
@@ -149,6 +152,7 @@ collision_mask = 2
 input_pickable = false
 
 [node name="RepulsionShape" type="CollisionShape2D" parent="InteractionComponents/RepulsionArea"]
+position = Vector2(0, -0.333333)
 shape = SubResource("CircleShape2D_13fw2")
 debug_color = Color(0.956863, 0, 0.537255, 0.0745098)
 

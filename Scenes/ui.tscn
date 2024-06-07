@@ -2,7 +2,7 @@
 
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="1_0nux4"]
 [ext_resource type="StyleBox" uid="uid://bvrmbi7cgm6yg" path="res://Resources/UI/Paneles/panel_multiple_select.tres" id="1_7mjoj"]
-[ext_resource type="Script" path="res://Scripts/tools/ui.gd" id="1_a8sun"]
+[ext_resource type="Script" path="res://Scripts/ui.gd" id="1_a8sun"]
 [ext_resource type="LabelSettings" uid="uid://bvd1eag1a4sun" path="res://Scenes/tres/debug_labels.tres" id="4_hep84"]
 [ext_resource type="LabelSettings" uid="uid://dscjv5p181cqc" path="res://Scenes/tres/debug_labels_result.tres" id="5_hwmkk"]
 [ext_resource type="LabelSettings" uid="uid://u6qs3exbx532" path="res://Scenes/tres/text_ui_labels.tres" id="5_vmpy2"]
@@ -20,10 +20,14 @@ theme_override_styles/panel = ExtResource("1_7mjoj")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 texture_filter = 1
-offset_left = 60.0
-offset_top = 300.0
-offset_right = 370.0
-offset_bottom = 410.0
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 108.0
+offset_right = 330.0
+offset_bottom = -502.0
+grow_vertical = 2
+scale = Vector2(0.7, 0.7)
 
 [node name="DebugContainer" type="VBoxContainer" parent="PanelContainer"]
 texture_filter = 1
@@ -104,7 +108,7 @@ alignment = 1
 [node name="YResult" type="Label" parent="SuperiorContainer/YearContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "1920"
+text = "0"
 label_settings = ExtResource("7_ggdfu")
 horizontal_alignment = 1
 vertical_alignment = 2
@@ -125,7 +129,8 @@ alignment = 1
 [node name="PResut" type="Label" parent="SuperiorContainer/PollutionContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "1920"
+text = "0
+"
 label_settings = ExtResource("6_rsfbn")
 horizontal_alignment = 1
 vertical_alignment = 2
@@ -146,7 +151,7 @@ alignment = 1
 [node name="PoResult" type="Label" parent="SuperiorContainer/PoblationContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "1920"
+text = "0"
 label_settings = ExtResource("7_ggdfu")
 horizontal_alignment = 1
 vertical_alignment = 2

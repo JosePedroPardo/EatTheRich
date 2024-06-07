@@ -6,7 +6,6 @@ signal puf_dragging(_self)
 signal puf_undragging(_self)
 signal cell_ocuppied(cood_cell)
 signal cell_unocuppied(cood_cell)
-signal born_puf(_self)
 
 @export var wait_time_move: float = 0.5 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
@@ -58,7 +57,6 @@ func _ready():
 	initial_grid_cell = tilemap.local_to_map(self.position)
 	manager_puf.connect("ocuppied_cells_array", Callable(self, "_on_ocuppied_cells"))
 	emit_signal("cell_ocuppied", initial_grid_cell)
-	emit_signal("born_puf", self)
 
 func _process(delta):
 	if is_selected:
@@ -127,17 +125,9 @@ func _on_input_event(viewport, event, shape_idx):
 				emit_signal(name_signal, self)
 
 func mouse_button_pressed():
-	var name_signal: String = ""
 	if !is_myself_rich():
-		if selected_puf.visible == false: 
-			name_signal = "puf_selected"
-			selected_puf.play(DefinitionsHelper.ANIMATION_SELECTED_PUF)
-		else: 
-			name_signal = "puf_deselected"
-			selected_puf.stop()
-		is_selected = !is_selected
-		selected_puf.visible = !selected_puf.visible
-		emit_signal(name_signal, self)
+		_selectAndDeselect()
+
 	elif is_myself_rich(): 
 		is_dragging = true
 
@@ -152,6 +142,13 @@ func _change_sprite_according_social_class():
 	elif social_class == DefinitionsHelper.INDEX_POOR_SOCIAL_CLASS:
 		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_poor_pufs)
 	sprite_puf.texture = load(path_texture)
+
+func _selectAndDeselect(): 
+	is_selected = !is_selected
+	selected_puf.visible = is_selected
+	var name_signal: String = "puf_selected" if is_selected else "puf_deselected"
+	selected_puf.play(DefinitionsHelper.ANIMATION_SELECTED_PUF) if is_selected else selected_puf.stop()
+	emit_signal(name_signal, self)
 
 ''' Métodos de señales '''
 func _on_ocuppied_cells(_ocuppied_cells):

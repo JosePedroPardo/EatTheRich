@@ -1,13 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://o0if5egfwut4"]
+[gd_scene load_steps=6 format=3 uid="uid://o0if5egfwut4"]
 
 [ext_resource type="PackedScene" uid="uid://ls1sa1vyqjkn" path="res://Scenes/tilemap.tscn" id="1_1ss2t"]
 [ext_resource type="PackedScene" uid="uid://bg2ohhatacu6c" path="res://Scenes/ui.tscn" id="1_ct4x2"]
 [ext_resource type="PackedScene" uid="uid://cl76bcgy7g0e8" path="res://Scenes/manager_pufs.tscn" id="1_hblf1"]
+[ext_resource type="PackedScene" uid="uid://byu1d4ei6j6su" path="res://Scenes/statistics_manager.tscn" id="2_hbglm"]
 [ext_resource type="PackedScene" uid="uid://c30hichtn61t1" path="res://Scenes/camera_2d.tscn" id="3_ornbr"]
 
 [node name="Game" type="Node2D"]
 
 [node name="UI" parent="." instance=ExtResource("1_ct4x2")]
+
+[node name="StatisticsManager" parent="." instance=ExtResource("2_hbglm")]
 
 [node name="Camera2D" parent="." instance=ExtResource("3_ornbr")]
 position = Vector2(656, 352)
@@ -15,7 +18,6 @@ multiplier_speed = 5.0
 
 [node name="ManagerPufs" parent="." instance=ExtResource("1_hblf1")]
 position = Vector2(104, 96)
-spawn_time = 0.5
 
 [node name="TileMap" parent="." instance=ExtResource("1_1ss2t")]
 
