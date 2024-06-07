@@ -30,9 +30,10 @@ var is_dragging: bool = false
 var is_mouse_move: bool = false
 
 @onready var box: Panel = get_node(PathsHelper.UI_PANEL_TO_SELECTED_AREA)
-@onready var checkButton: CheckButton = get_node(PathsHelper.UI_TOOGLE_BUTTON_MOUSE_CAMERA)
+@onready var mouse_camera_button: Button = get_node(PathsHelper.UI_TOOGLE_BUTTON_MOUSE_CAMERA)
+
 func _ready():
-	checkButton.connect("pressed", Callable(self, "_on_toogle_button_changes_mouse_move"))
+	mouse_camera_button.connect("pressed", Callable(self, "_on_toogle_button_changes_mouse_move"))
 	connect("area_selected", Callable(get_parent(), "_on_area_selected"))
 
 func _process(delta):
@@ -72,7 +73,6 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		mouse_pos = event.position
 		mouse_pos_global = get_global_mouse_position()
-		print(mouse_pos)
 
 func _zoom_out():
 	zoom_factor -= 0.01 * zoom_speed

@@ -1,8 +1,10 @@
 class_name BehaviourPuf
 extends CharacterBody2D
 
-signal puf_selected
-signal puf_deselected
+signal puf_selected(_self)
+signal puf_deselected(_self)
+signal puf_dragging(_self)
+signal puf_undragging(_self)
 
 signal cell_ocuppied(cood_cell)
 signal cell_unocuppied(cood_cell)
@@ -37,7 +39,7 @@ var ocuppied_cells: Array[Vector2i]
 
 @onready var sprite_puf: Sprite2D = $SpritePuf
 @onready var selected_puf: AnimatedSprite2D = $SelectedPuf
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var animation_player: AnimationManager = AnimationManager.new()
 @onready var wait_timer: Timer = $WaitTime
 @onready var assemble_area: CollisionShape2D = $InteractionComponents/AssembleArea/AssembleShape
 @onready var repulsion_area: CollisionShape2D = $InteractionComponents/RepulsionArea/RepulsionShape
@@ -53,10 +55,10 @@ func _init():
 func _ready():
 	social_class = myself.social_class
 	_change_sprite_according_social_class()
-	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 	initial_grid_cell = tilemap.local_to_map(self.position)
 	manager_puf.connect("ocuppied_cells_array", Callable(self, "_on_ocuppied_cells"))
 	emit_signal("cell_ocuppied", initial_grid_cell)
+	animation_player.play_animation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _process(delta):
 	if is_selected:
@@ -65,7 +67,6 @@ func _process(delta):
 		if next_grid_cell == current_grid_cell:
 			emit_signal("cell_ocuppied", current_grid_cell)
 		else: 
-			print("señal ocupada con celda: " + str(current_grid_cell))
 			emit_signal("cell_unocuppied", current_grid_cell)
 		
 		if is_can_move:
@@ -79,6 +80,7 @@ func _process(delta):
 					current_path.pop_front()
 			else:
 				is_can_move = false
+				animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 		else: animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _input(event):
@@ -89,16 +91,19 @@ func _input(event):
 		look_at_position = get_local_mouse_position()
 		clic_position = get_global_mouse_position()
 		var clic_position_localmap = tilemap.local_to_map(clic_position)
+		
 		if not ocuppied_cells.has(clic_position_localmap):
 			next_grid_cell = clic_position_localmap
 		else: next_grid_cell = Vector2i.ZERO
+		
 		if tilemap.is_point_walkable_map_local_position(next_grid_cell):
 			current_path = tilemap.astar_grid.get_id_path(
 				tilemap.local_to_map(self.global_position),
 				next_grid_cell
 			).slice(1)
-			if ocuppied_cells.has(current_path.back()): 
-				current_path.pop_back()
+			if !ocuppied_cells.is_empty():
+				if ocuppied_cells.has(current_path.back()): 
+					current_path.pop_back()
 			is_can_move = true
 	else: 
 		clic_position = Vector2i.ZERO
@@ -106,7 +111,7 @@ func _input(event):
 	
 	## Sistema para que el drag and drop
 	if event is InputEventMouseMotion:
-		if is_self_rich(): 
+		if is_myself_rich(): 
 			if is_dragging and !is_selected:
 				self.global_position = get_global_mouse_position()
 
@@ -117,23 +122,28 @@ func _on_input_event(viewport, event, shape_idx):
 				mouse_button_pressed()
 			else:
 				mouse_button_released()
+			if is_myself_rich():
+				var name_signal: String = "puf_dragging" if is_dragging else "puf_undragging"
+				emit_signal(name_signal, self)
 
 func mouse_button_pressed():
-	if social_class == DefinitionsHelper.INDEX_POOR_SOCIAL_CLASS:
-		var signal_selected: String = ""
+	var name_signal: String = ""
+	if !is_myself_rich():
 		if selected_puf.visible == false: 
-			signal_selected = "puf_selected"
+			name_signal = "puf_selected"
 			selected_puf.play(DefinitionsHelper.ANIMATION_SELECTED_PUF)
 		else: 
-			signal_selected = "puf_deselected"
+			name_signal = "puf_deselected"
 			selected_puf.stop()
 		is_selected = !is_selected
 		selected_puf.visible = !selected_puf.visible
-		emit_signal(signal_selected, self)
-	else: is_dragging = true
+		emit_signal(name_signal, self)
+	elif is_myself_rich(): 
+		is_dragging = true
 
 func mouse_button_released():
-	is_dragging = false
+	if is_myself_rich(): 
+		is_dragging = false
 
 func _change_sprite_according_social_class():
 	var path_texture: String
@@ -149,12 +159,12 @@ func _on_ocuppied_cells(_ocuppied_cells):
 	ocuppied_cells.append_array(_ocuppied_cells)
 
 func _on_mouse_entered():
-	if get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS:
+	if is_myself_rich():
 		self.position.y += -2
 		animation_player.play(DefinitionsHelper.ANIMATION_DRAG_PUF)
 
 func _on_mouse_exited():
-	if get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS:
+	if is_myself_rich():
 		self.position.y += +2
 		animation_player.play(DefinitionsHelper.ANIMATION_DROP_PUF)
 		animation_player.queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
@@ -166,7 +176,7 @@ func get_social_class():
 		1: return DefinitionsHelper.RICH_SOCIAL_CLASS
 		_: return "null"
 
-func is_self_rich():
+func is_myself_rich():
 	return get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS
 
 func get_background() -> String:

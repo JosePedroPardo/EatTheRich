@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://b40x6gyiws4y2"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviour/b_buildings.gd" id="1_31110"]
+[ext_resource type="Texture2D" uid="uid://bxontb3mmd6bd" path="res://Resources/Tileset/buildings/buildings.png" id="1_trho6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6hl1c"]
+size = Vector2(16, 16)
+
+[node name="StaticBody2D" type="StaticBody2D"]
+script = ExtResource("1_31110")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_6hl1c")
+
+[node name="SpriteBuilding" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_trho6")
+hframes = 8
+vframes = 2
+region_rect = Rect2(16, 16, 0, 0)

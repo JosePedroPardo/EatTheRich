@@ -18,9 +18,9 @@ theme_override_styles/panel = ExtResource("1_7mjoj")
 [node name="PanelContainer" type="PanelContainer" parent="."]
 texture_filter = 1
 offset_left = 20.0
-offset_top = 20.0
+offset_top = 60.0
 offset_right = 199.0
-offset_bottom = 86.0
+offset_bottom = 126.0
 
 [node name="DebugContainer" type="VBoxContainer" parent="PanelContainer"]
 texture_filter = 1
@@ -79,3 +79,59 @@ visibility_layer = 16
 layout_mode = 2
 tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
 icon_alignment = 1
+
+[node name="SuperiorContainer" type="HBoxContainer" parent="."]
+texture_filter = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 66.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="YearContainer" type="VBoxContainer" parent="SuperiorContainer"]
+layout_mode = 2
+
+[node name="Y_result" type="Label" parent="SuperiorContainer/YearContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "1920"
+label_settings = ExtResource("5_das5g")
+
+[node name="Years" type="Label" parent="SuperiorContainer/YearContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Year"
+label_settings = ExtResource("4_hep84")
+
+[node name="FPSContainer" type="VBoxContainer" parent="SuperiorContainer"]
+layout_mode = 2
+
+[node name="P_result" type="Label" parent="SuperiorContainer/FPSContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "1920"
+label_settings = ExtResource("5_das5g")
+
+[node name="Polution" type="Label" parent="SuperiorContainer/FPSContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Polution"
+label_settings = ExtResource("4_hep84")
+
+[node name="ResolutionContainer" type="VBoxContainer" parent="SuperiorContainer"]
+layout_mode = 2
+
+[node name="Po_result" type="Label" parent="SuperiorContainer/ResolutionContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "1920"
+label_settings = ExtResource("5_das5g")
+
+[node name="Poblation" type="Label" parent="SuperiorContainer/ResolutionContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Poblation"
+label_settings = ExtResource("4_hep84")

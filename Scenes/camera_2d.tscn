@@ -5,18 +5,14 @@
 [node name="Camera2D" type="Camera2D"]
 texture_filter = 1
 zoom = Vector2(2, 2)
-limit_left = 0
-limit_top = 0
-limit_right = 1280
-limit_bottom = 720
+limit_left = -100
+limit_top = -100
+limit_right = 1380
+limit_bottom = 810
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 2.0
 rotation_smoothing_enabled = true
-drag_left_margin = 1.0
-drag_top_margin = 1.0
-drag_right_margin = 1.0
-drag_bottom_margin = 1.0
 editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource("1_ymm1o")

@@ -9,7 +9,7 @@ var map_rect = Rect2i()
 var tile_size: Vector2i = get_tileset().tile_size
 var tilemap_size: Vector2i = get_used_rect().end - get_used_rect().position
 
-@onready var path: TileMap = $path
+@onready var path: TileMap = $Path
 
 func _ready():
 	map_rect = Rect2i(Vector2i(), tilemap_size)

@@ -49,14 +49,14 @@ const METHOD_DESELECT: String = "deselect"
 
 ''' Animations '''
 const ANIMATION_SELECTED_PUF: String = "selected"
-const ANIMATION_WALK_PUF: String = "Pufs/walk"
-const ANIMATION_RUN_PUF: String = "Pufs/run"
-const ANIMATION_RESET_PUF: String = "Pufs/RESET"
-const ANIMATION_DIE_PUF: String = "Pufs/die"
-const ANIMATION_IDLE_PUF: String = "Pufs/idle"
-const ANIMATION_SICK_PUF: String = "Pufs/sick"
-const ANIMATION_DRAG_PUF: String = "Pufs/drag"
-const ANIMATION_DROP_PUF: String = "Pufs/drop"
+const ANIMATION_WALK_PUF: String = "Pufs_animations/walk"
+const ANIMATION_RUN_PUF: String = "Pufs_animations/run"
+const ANIMATION_RESET_PUF: String = "Pufs_animations/RESET"
+const ANIMATION_DIE_PUF: String = "Pufs_animations/die"
+const ANIMATION_IDLE_PUF: String = "Pufs_animations/idle"
+const ANIMATION_SICK_PUF: String = "Pufs_animations/sick"
+const ANIMATION_DRAG_PUF: String = "Pufs_animations/drag"
+const ANIMATION_DROP_PUF: String = "Pufs_animations/drop"
 
 ''' ALL LAYERS 2D '''
 const LAYER_GROUND_2D: int = 0

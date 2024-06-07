@@ -61,7 +61,7 @@ func _next_id():
 	id += 1
 
 func _set_quality_of_building():
-	if owner_of_build.years >= MIN_YEARS and str(owner_of_build.social_class) == DefinitionsHelper.RICH:
+	if owner_of_build.years >= MIN_YEARS and str(owner_of_build.social_class) == DefinitionsHelper.RICH_SOCIAL_CLASS:
 		self.quality = self.Quality.EXCELLENT
 	else: 
 		self.quality = RandomHelper.get_random_enum(self.Quality)

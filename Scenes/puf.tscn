@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b4xp0w52hwj68"]
+[gd_scene load_steps=13 format=3 uid="uid://b4xp0w52hwj68"]
 
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="1_2o3lj"]
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_a7dnk"]
@@ -6,6 +6,7 @@
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="4_ha86j"]
 [ext_resource type="AnimationLibrary" uid="uid://c10xbuskq6eb3" path="res://Animations/Pufs/Pufs_animations.res" id="5_50ihj"]
 [ext_resource type="Texture2D" uid="uid://b66mb70cikal5" path="res://Resources/Tileset/pufs/Selected_puf/Selected_e.png" id="7_jgdqv"]
+[ext_resource type="Script" path="res://scripts/b_animation_player.gd" id="7_r67qf"]
 [ext_resource type="Texture2D" uid="uid://c6pua88wjwxqw" path="res://Resources/Tileset/pufs/Selected_puf/Selected_i.png" id="8_2ot62"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ug8ye"]
@@ -25,62 +26,6 @@ animations = [{
 "speed": 3.0
 }]
 
-[sub_resource type="Animation" id="Animation_dgeb0"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("SpritePuf:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [1]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Shadow:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SpritePuf:flip_h")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [false]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Shadow:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 10)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_1m6tk"]
-_data = {
-"RESET": SubResource("Animation_dgeb0")
-}
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bn6ww"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_13fw2"]
@@ -89,8 +34,8 @@ radius = 5.66667
 [node name="CharacterBody2D" type="CharacterBody2D"]
 light_mask = 10
 visibility_layer = 2
-collision_layer = 2
-collision_mask = 2
+collision_layer = 3
+collision_mask = 3
 input_pickable = true
 script = ExtResource("1_a7dnk")
 wait_time_move = 0.2
@@ -109,14 +54,13 @@ position = Vector2(0, 10)
 texture = ExtResource("1_2o3lj")
 
 [node name="SpritePuf" type="Sprite2D" parent="."]
-light_mask = 14
+light_mask = 2
 visibility_layer = 2
 texture_filter = 1
 position = Vector2(0, 3)
 texture = ExtResource("3_iureo")
 hframes = 4
 vframes = 3
-frame = 1
 
 [node name="SelectedPuf" type="AnimatedSprite2D" parent="."]
 visible = false
@@ -129,9 +73,9 @@ animation = &"selected"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_1m6tk"),
-"Pufs": ExtResource("5_50ihj")
+"Pufs_animations": ExtResource("5_50ihj")
 }
+script = ExtResource("7_r67qf")
 
 [node name="InteractionComponents" type="Node2D" parent="."]
 z_index = 1
@@ -159,6 +103,8 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="AssembleArea" type="Area2D" parent="InteractionComponents"]
+light_mask = 2
+visibility_layer = 2
 collision_layer = 2
 collision_mask = 2
 input_pickable = false
@@ -168,6 +114,8 @@ shape = SubResource("RectangleShape2D_bn6ww")
 debug_color = Color(0.164706, 0.643137, 0, 0.113725)
 
 [node name="RepulsionArea" type="Area2D" parent="InteractionComponents"]
+light_mask = 2
+visibility_layer = 2
 collision_layer = 2
 collision_mask = 2
 input_pickable = false
