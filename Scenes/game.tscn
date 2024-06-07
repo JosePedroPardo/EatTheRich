@@ -11,6 +11,7 @@
 [node name="UI" parent="." instance=ExtResource("1_ct4x2")]
 
 [node name="StatisticsManager" parent="." instance=ExtResource("2_hbglm")]
+wait_year = 3.0
 
 [node name="Camera2D" parent="." instance=ExtResource("3_ornbr")]
 position = Vector2(656, 352)
@@ -18,8 +19,11 @@ multiplier_speed = 5.0
 
 [node name="ManagerPufs" parent="." instance=ExtResource("1_hblf1")]
 position = Vector2(104, 96)
+spawn_time = 3.0
 
 [node name="TileMap" parent="." instance=ExtResource("1_1ss2t")]
 
 [connection signal="selected_pufs" from="Camera2D" to="ManagerPufs" method="_on_camera_2d_selected_pufs"]
+[connection signal="born_a_poor" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_born_a_poor"]
+[connection signal="born_a_rich" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_born_a_rich"]
 [connection signal="coordinates_spawn" from="TileMap" to="ManagerPufs" method="_on_tile_map_coordinates_spawn"]

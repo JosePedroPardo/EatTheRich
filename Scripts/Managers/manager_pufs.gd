@@ -5,6 +5,8 @@ signal spawn_puf
 signal mouse_released
 signal ocuppied_cells_array(ocuppied_cells)
 signal born_puf(_self)
+signal born_a_rich
+signal born_a_poor
 
 @export_range(0, 100) var limit_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20) ## 0 es equivalente a un número aleatorio entre 15 y 20
 @export var spawn_time: float = 5
@@ -13,6 +15,12 @@ signal born_puf(_self)
 var spawn_initial_pufs: Array
 var spawn_cood: Array[Vector2i] 
 var ocuppied_cells: Array[Vector2i] 
+var selected_pufs: Array:
+	get: 
+		return selected_pufs
+var rich_pufs: Array 
+var poor_pufs: Array 
+var all_pufs: Array
 
 var is_picked_up: bool = false
 var is_time_to_rich: bool = false
@@ -20,10 +28,6 @@ var first_puf: bool = true
 
 # Variables para el sistema de selección de pufs
 @onready var parent: Node2D = get_node("../")
-@onready var selected_pufs: Array
-@onready var rich_pufs: Array 
-@onready var poor_pufs: Array 
-@onready var all_pufs: Array
 @onready var dragging_puf: Node2D
 @onready var puf: PackedScene = preload("res://Scenes/puf.tscn")
 @onready var timer_spawn: Timer = $TimerSpawn
@@ -57,8 +61,12 @@ func _create_initial_pufs():
 	var flip: int = RandomHelper.get_random_int_in_range(0, 1)
 	new_puf.get_node("SpritePuf").flip_h = flip # Cambia la dirección hacia la que mira el puf al instanciarse
 	_save_puf_in_array(new_puf, spawn_initial_pufs)
-	if new_puf.get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS: _save_puf_in_array(new_puf, rich_pufs)
-	else: _save_puf_in_array(new_puf, poor_pufs)
+	if new_puf.get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS: 
+		emit_signal("born_a_rich")
+		_save_puf_in_array(new_puf, rich_pufs)
+	else: 
+		emit_signal("born_a_poor")
+		_save_puf_in_array(new_puf, poor_pufs)
 
 func _deselect_all_pufs():
 	if !selected_pufs.is_empty():

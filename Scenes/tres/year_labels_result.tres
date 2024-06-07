@@ -4,7 +4,7 @@
 
 [resource]
 font = ExtResource("1_kwwbn")
-font_size = 48
+font_size = 32
 font_color = Color(0.94902, 0.941176, 0.898039, 1)
 outline_size = 10
 outline_color = Color(0.207843, 0.207843, 0.25098, 1)

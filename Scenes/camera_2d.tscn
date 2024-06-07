@@ -16,3 +16,4 @@ rotation_smoothing_enabled = true
 editor_draw_limits = true
 editor_draw_drag_margin = true
 script = ExtResource("1_ymm1o")
+multiplier_speed = 3.5

@@ -7,12 +7,7 @@ signal selected_pufs(selected_pufs_array)
 @export var zoom_speed: float = 10.0
 @export var zoom_margin: float = 0.1
 @export var zoom_min: float = 1.0
-@export var zoom_max: float = 3.0
-
-@export var cood_limit_top: int = 282
-@export var cood_limit_bottom: int = 282
-@export var cood_limit_left: int = 114
-@export var cood_limit_right: int = 425
+@export var zoom_max: float = 5.0
 @export var edge_margin: int = 100  ## Distancia desde los bordes para empezar a mover la cámara
 
 var speed: float = 50.0

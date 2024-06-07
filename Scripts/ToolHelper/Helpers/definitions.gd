@@ -60,6 +60,8 @@ const ANIMATION_DROP_PUF: String = "Pufs/drop"
 
 const ANIMATION_PLUS_UI: String = "MinumPlus/plus"
 const ANIMATION_MINUM_UI: String = "MinumPlus/minum"
+const ANIMATION_UP_UI: String = "Pollution/up"
+const ANIMATION_DOWN_UI: String = "Pollution/down"
 
 ''' ALL LAYERS 2D '''
 const LAYER_GROUND_2D: int = 0

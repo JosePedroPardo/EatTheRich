@@ -110,7 +110,7 @@ func _input(event):
 	## Sistema para que el drag and drop
 	if event is InputEventMouseMotion:
 		if is_myself_rich(): 
-			if is_dragging and !is_selected:
+			if is_dragging and manager_puf.selected_pufs.is_empty():
 				self.global_position = get_global_mouse_position()
 
 func _on_input_event(viewport, event, shape_idx):
