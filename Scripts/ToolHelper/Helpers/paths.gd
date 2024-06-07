@@ -32,3 +32,9 @@ const UI_LABEL_POBLATION_RESULT: String = ("../UI/SuperiorContainer/PoblationCon
 const TILEMAP_PATH: String = ("../TileMap")
 const MANAGER_PUF_PATH: String = ("../ManagerPufs")
 
+
+static func get_node_by_name(nodes: Array, name: String) -> Node:
+	for node in nodes:
+		if node.name == name:
+			return node
+	return null

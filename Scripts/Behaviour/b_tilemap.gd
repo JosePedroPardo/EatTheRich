@@ -1,6 +1,7 @@
 extends TileMap
 
-signal coordinates_spawn(coordinates_spawn)
+signal spawn_coordinates(spawn_coordinates)
+signal ocuppied_coordinates(ocuppied_coordinates)
 
 var astar_grid = AStarGrid2D.new():
 	get: 
@@ -8,6 +9,7 @@ var astar_grid = AStarGrid2D.new():
 var map_rect = Rect2i()
 var tile_size: Vector2i = get_tileset().tile_size
 var tilemap_size: Vector2i = get_used_rect().end - get_used_rect().position
+var ocuppied_cells : Array[Vector2i]
 
 @onready var path: TileMap = $Path
 
@@ -42,7 +44,10 @@ func _ready():
 		if cell_spawn.has(coor_wall):
 			cell_spawn.erase(coor_wall)
 		# self.set_cell(0,coor_wall,30) # Muestra los espacios intransitables
-	emit_signal("coordinates_spawn", cell_spawn)
+	emit_signal("spawn_coordinates", cell_spawn)
+
+func _process(delta):
+	pass
 
 func is_point_walkable_map_local_position(map_position) -> bool:
 	if map_rect.has_point(map_position):
@@ -54,6 +59,7 @@ func is_point_walkable_global_position(local_position) -> bool:
 	if map_rect.has_point(map_position):
 		return not astar_grid.is_point_solid(map_position)
 	return false
+
 func get_cells_between(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
 	var coordinates: Array[Vector2i] = []
 	var x1 = min(start.x, end.x)
@@ -84,3 +90,17 @@ func find_path(start: Vector2i, goal: Vector2i) -> void:
 	var id_path = astar_grid.get_id_path(start_cell, end_cell)
 	for id in id_path:
 		path.set_cell(0, id, 1, Vector2(0, 0))
+
+func _on_manager_pufs_born_puf(puf):
+	puf.connect("cell_ocuppied", Callable(self, "_on_cell_ocuppied"))
+	puf.connect("cell_ocuppied", Callable(self, "_on_cell_unocuppied"))
+
+func _on_cell_ocuppied(cell: Vector2i):
+	ocuppied_cells.append(cell)
+	emit_signal("ocuppied_coordinates", ocuppied_coordinates)
+
+func _on_cell_unocuppied(cell: Vector2i):
+	if ocuppied_cells:
+		if ocuppied_cells.has(cell):
+			ocuppied_cells.erase(cell)
+			emit_signal("ocuppied_coordinates", ocuppied_coordinates)

@@ -25,7 +25,9 @@ var is_selected: bool = false:
 	set(new_bool):
 		is_selected = new_bool
 
-var social_class: int = DefinitionsHelper.RANDOM_SOCIAL_CLASS
+var social_class: int = DefinitionsHelper.RANDOM_SOCIAL_CLASS:
+	set(_social_class):
+		social_class = _social_class
 var is_can_move: bool = false
 var is_dragging: bool = false
 var current_path: Array[Vector2i]

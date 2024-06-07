@@ -79,3 +79,4 @@ const TM_LAYER_PATHS: int = 1
 
 ''' Names of groups'''
 const GROUP_PUFS: String = "pufs"
+const GROUP_UI_LABELS_RESULT: String = "ui_labels_result"

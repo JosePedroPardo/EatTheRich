@@ -111,7 +111,7 @@ size_flags_horizontal = 6
 theme_override_constants/separation = -7
 alignment = 1
 
-[node name="YResult" type="Label" parent="SuperiorContainer/YearContainer"]
+[node name="YResult" type="Label" parent="SuperiorContainer/YearContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -144,7 +144,7 @@ visibility_layer = 16
 layout_mode = 2
 alignment = 1
 
-[node name="PResut" type="Label" parent="SuperiorContainer/PollutionContainer/HBoxContainer"]
+[node name="PResult" type="Label" parent="SuperiorContainer/PollutionContainer/HBoxContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -183,7 +183,7 @@ size_flags_horizontal = 6
 theme_override_constants/separation = -7
 alignment = 1
 
-[node name="PoResult" type="Label" parent="SuperiorContainer/PoblationContainer"]
+[node name="PoResult" type="Label" parent="SuperiorContainer/PoblationContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
