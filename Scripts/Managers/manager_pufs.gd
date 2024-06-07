@@ -19,11 +19,12 @@ var is_time_to_rich: bool = false
 # Variables para el sistema de selección de pufs
 @onready var parent: Node2D = get_node("../")
 @onready var selected_pufs: Array
-@onready var dragging_puf: Node2D
 @onready var rich_pufs: Array 
 @onready var poor_pufs: Array 
+@onready var all_pufs: Array
+@onready var dragging_puf: Node2D
 @onready var puf: PackedScene = preload("res://Scenes/puf.tscn")
-@onready var timer_spawn: Timer = $Timer_spawn
+@onready var timer_spawn: Timer = $TimerSpawn
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 
 func _ready():
@@ -71,6 +72,7 @@ func _on_timer_spawn_timeout():
 		puf.connect("puf_undragging", Callable(self, "_on_puf_undragging"))
 		puf.connect("cell_ocuppied", Callable(self, "_on_ocupied_cell"))
 		puf.connect("cell_unocuppied", Callable(self, "_on_unocupied_cell"))
+		puf.connect("born_puf", Callable(self, "_on_born_puf"))
 		parent.add_child(puf)
 	if spawn_initial_pufs.is_empty(): 
 		is_time_to_rich = true
@@ -112,8 +114,9 @@ func _on_unocupied_cell(cood_cell):
 
 func _on_puf_dragging(puf):
 	dragging_puf = puf
-	print("este puf: " + str(puf) + " está siendo arrastrado")
 
 func _on_puf_undragging(puf):
 	dragging_puf = puf
-	print("este puf: " + str(puf) + " ya no está siendo arrastrado")
+
+func _on_born_puff(puf):
+	_save_puf_in_array(puf, all_pufs)

@@ -1,7 +1,7 @@
 class_name BehaviourBuildings
 extends StaticBody2D
 
-var owners_puf: Array[BehaviourPuf]:
+var owners_puf: Array:
 	get: 
 		return owners_puf
 	set(_owners_puf):
@@ -18,7 +18,7 @@ var myself: Building:
 
 @onready var sprite_building: Sprite2D = $SpriteBuilding
 
-func _init(_owners_puf: Array[BehaviourPuf]):
+func _init(_owners_puf: Array):
 	owners_puf = _owners_puf
 
 func _ready():

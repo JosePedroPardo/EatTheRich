@@ -1,13 +1,12 @@
-class_name BehaviourPuf
 extends CharacterBody2D
 
 signal puf_selected(_self)
 signal puf_deselected(_self)
 signal puf_dragging(_self)
 signal puf_undragging(_self)
-
 signal cell_ocuppied(cood_cell)
 signal cell_unocuppied(cood_cell)
+signal born_puf(_self)
 
 @export var wait_time_move: float = 0.5 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
@@ -39,7 +38,7 @@ var ocuppied_cells: Array[Vector2i]
 
 @onready var sprite_puf: Sprite2D = $SpritePuf
 @onready var selected_puf: AnimatedSprite2D = $SelectedPuf
-@onready var animation_player: AnimationManager = AnimationManager.new()
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var wait_timer: Timer = $WaitTime
 @onready var assemble_area: CollisionShape2D = $InteractionComponents/AssembleArea/AssembleShape
 @onready var repulsion_area: CollisionShape2D = $InteractionComponents/RepulsionArea/RepulsionShape
@@ -55,10 +54,11 @@ func _init():
 func _ready():
 	social_class = myself.social_class
 	_change_sprite_according_social_class()
+	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 	initial_grid_cell = tilemap.local_to_map(self.position)
 	manager_puf.connect("ocuppied_cells_array", Callable(self, "_on_ocuppied_cells"))
 	emit_signal("cell_ocuppied", initial_grid_cell)
-	animation_player.play_animation(DefinitionsHelper.ANIMATION_IDLE_PUF)
+	emit_signal("born_puf", self)
 
 func _process(delta):
 	if is_selected:
@@ -101,7 +101,7 @@ func _input(event):
 				tilemap.local_to_map(self.global_position),
 				next_grid_cell
 			).slice(1)
-			if !ocuppied_cells.is_empty():
+			if !ocuppied_cells.is_empty() and !current_path.is_empty():
 				if ocuppied_cells.has(current_path.back()): 
 					current_path.pop_back()
 			is_can_move = true

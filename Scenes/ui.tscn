@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://bg2ohhatacu6c"]
+[gd_scene load_steps=9 format=3 uid="uid://bg2ohhatacu6c"]
 
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="1_0nux4"]
 [ext_resource type="StyleBox" uid="uid://bvrmbi7cgm6yg" path="res://Resources/UI/Paneles/panel_multiple_select.tres" id="1_7mjoj"]
 [ext_resource type="Script" path="res://Scripts/tools/ui.gd" id="1_a8sun"]
 [ext_resource type="LabelSettings" uid="uid://bvd1eag1a4sun" path="res://Scenes/tres/debug_labels.tres" id="4_hep84"]
-[ext_resource type="LabelSettings" uid="uid://dscjv5p181cqc" path="res://Scenes/tres/debug_labels_result.tres" id="5_das5g"]
+[ext_resource type="LabelSettings" uid="uid://dscjv5p181cqc" path="res://Scenes/tres/debug_labels_result.tres" id="5_hwmkk"]
+[ext_resource type="LabelSettings" uid="uid://u6qs3exbx532" path="res://Scenes/tres/text_ui_labels.tres" id="5_vmpy2"]
+[ext_resource type="LabelSettings" uid="uid://c6lssx3ofufsc" path="res://Scenes/tres/polution_labels_result.tres" id="6_rsfbn"]
+[ext_resource type="LabelSettings" uid="uid://ch3y84cgejldc" path="res://Scenes/tres/year_labels_result.tres" id="7_ggdfu"]
 
 [node name="UI" type="CanvasLayer"]
 script = ExtResource("1_a8sun")
@@ -17,15 +20,15 @@ theme_override_styles/panel = ExtResource("1_7mjoj")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 texture_filter = 1
-offset_left = 20.0
-offset_top = 60.0
-offset_right = 199.0
-offset_bottom = 126.0
+offset_left = 60.0
+offset_top = 300.0
+offset_right = 370.0
+offset_bottom = 410.0
 
 [node name="DebugContainer" type="VBoxContainer" parent="PanelContainer"]
 texture_filter = 1
 layout_mode = 2
-theme_override_constants/separation = -2
+theme_override_constants/separation = -6
 
 [node name="DebugLabels" type="Label" parent="PanelContainer/DebugContainer"]
 texture_filter = 1
@@ -47,7 +50,7 @@ label_settings = ExtResource("4_hep84")
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "1920"
-label_settings = ExtResource("5_das5g")
+label_settings = ExtResource("5_hwmkk")
 
 [node name="ResolutionContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
 layout_mode = 2
@@ -62,7 +65,7 @@ label_settings = ExtResource("4_hep84")
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "1920"
-label_settings = ExtResource("5_das5g")
+label_settings = ExtResource("5_hwmkk")
 
 [node name="MouseContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
 layout_mode = 2
@@ -84,54 +87,73 @@ icon_alignment = 1
 texture_filter = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 66.0
+offset_top = 20.0
+offset_bottom = 104.0
 grow_horizontal = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
+size_flags_vertical = 3
 theme_override_constants/separation = -2
 alignment = 1
 
 [node name="YearContainer" type="VBoxContainer" parent="SuperiorContainer"]
 layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/separation = -7
+alignment = 1
 
-[node name="Y_result" type="Label" parent="SuperiorContainer/YearContainer"]
+[node name="YResult" type="Label" parent="SuperiorContainer/YearContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "1920"
-label_settings = ExtResource("5_das5g")
+label_settings = ExtResource("7_ggdfu")
+horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="Years" type="Label" parent="SuperiorContainer/YearContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "Year"
-label_settings = ExtResource("4_hep84")
+label_settings = ExtResource("5_vmpy2")
+horizontal_alignment = 1
 
-[node name="FPSContainer" type="VBoxContainer" parent="SuperiorContainer"]
+[node name="PollutionContainer" type="VBoxContainer" parent="SuperiorContainer"]
 layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/separation = -7
+alignment = 1
 
-[node name="P_result" type="Label" parent="SuperiorContainer/FPSContainer"]
+[node name="PResut" type="Label" parent="SuperiorContainer/PollutionContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "1920"
-label_settings = ExtResource("5_das5g")
+label_settings = ExtResource("6_rsfbn")
+horizontal_alignment = 1
+vertical_alignment = 2
 
-[node name="Polution" type="Label" parent="SuperiorContainer/FPSContainer"]
+[node name="Pollution" type="Label" parent="SuperiorContainer/PollutionContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "Polution"
-label_settings = ExtResource("4_hep84")
+label_settings = ExtResource("5_vmpy2")
+horizontal_alignment = 1
 
-[node name="ResolutionContainer" type="VBoxContainer" parent="SuperiorContainer"]
+[node name="PoblationContainer" type="VBoxContainer" parent="SuperiorContainer"]
 layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/separation = -7
+alignment = 1
 
-[node name="Po_result" type="Label" parent="SuperiorContainer/ResolutionContainer"]
+[node name="PoResult" type="Label" parent="SuperiorContainer/PoblationContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "1920"
-label_settings = ExtResource("5_das5g")
+label_settings = ExtResource("7_ggdfu")
+horizontal_alignment = 1
+vertical_alignment = 2
 
-[node name="Poblation" type="Label" parent="SuperiorContainer/ResolutionContainer"]
+[node name="Poblation" type="Label" parent="SuperiorContainer/PoblationContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "Poblation"
-label_settings = ExtResource("4_hep84")
+label_settings = ExtResource("5_vmpy2")
+horizontal_alignment = 1

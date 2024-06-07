@@ -1,7 +1,7 @@
 extends CanvasLayer
 
-@onready var debug_resolution_label: Label = $PanelContainer/DebugContainer/FPSContainer/F_result
-@onready var debug_fps_label: Label = $PanelContainer/DebugContainer/ResolutionContainer/R_result
+@onready var debug_fps_label: Label = $PanelContainer/DebugContainer/FPSContainer/F_result
+@onready var debug_resolution_label: Label = $PanelContainer/DebugContainer/ResolutionContainer/R_result
 var window_size = DisplayServer.window_get_size()
 var screen_size = DisplayServer.screen_get_size()
 
