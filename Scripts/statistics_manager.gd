@@ -7,6 +7,7 @@ extends CanvasLayer
 @export var total_rich_buildings: int = 0
 @export var total_poor_buildings: int = 0
 @export var year: int = 0
+@export var wait_year: float = 30 ## La duración de un año
 @export var pollution: float = 0
 
 @onready var ui_years_label = get_node(PathsHelper.UI_LABEL_YEAR_RESULT)
@@ -39,11 +40,15 @@ func _update_poblation():
 		elif global_puf < total_pufs.size():
 			animation_to_play = DefinitionsHelper.ANIMATION_MINUM_UI
 		total_pufs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_PUFS)
-		_reproduce_animation(poblation_animation_player, DefinitionsHelper.ANIMATION_PLUS_UI)
+		_reproduce_animation(poblation_sprite, poblation_animation_player, DefinitionsHelper.ANIMATION_PLUS_UI)
 
-func _reproduce_animation(animation_player: AnimationPlayer, animation: String):
-	animation_player.queue(animation)
+func _reproduce_animation(animation_sprite: Sprite2D, animation_player: AnimationPlayer, animation: String):
+	animation_sprite.visible = true
+	if animation_player.is_playing():
+		animation_player.queue(animation)
+	elif animation_player.get_queue().is_empty(): 
+		animation_player.play(animation)
 
 func _on_years_timer_timeout():
 	year += 1
-	_reproduce_animation(year_animation_player, DefinitionsHelper.ANIMATION_PLUS_UI)
+	_reproduce_animation(year_sprite, year_animation_player, DefinitionsHelper.ANIMATION_PLUS_UI)
