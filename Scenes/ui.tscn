@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bg2ohhatacu6c"]
+[gd_scene load_steps=14 format=3 uid="uid://bg2ohhatacu6c"]
 
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="1_0nux4"]
 [ext_resource type="StyleBox" uid="uid://bvrmbi7cgm6yg" path="res://Resources/UI/Paneles/panel_multiple_select.tres" id="1_7mjoj"]
@@ -8,6 +8,42 @@
 [ext_resource type="LabelSettings" uid="uid://u6qs3exbx532" path="res://Scenes/tres/text_ui_labels.tres" id="5_vmpy2"]
 [ext_resource type="LabelSettings" uid="uid://c6lssx3ofufsc" path="res://Scenes/tres/polution_labels_result.tres" id="6_rsfbn"]
 [ext_resource type="LabelSettings" uid="uid://ch3y84cgejldc" path="res://Scenes/tres/year_labels_result.tres" id="7_ggdfu"]
+[ext_resource type="PackedScene" uid="uid://dgfxikjwkkie8" path="res://Scenes/minumplus_anim.tscn" id="9_dpc7w"]
+[ext_resource type="Texture2D" uid="uid://btq5og5qmqd56" path="res://Resources/UI/arrows.png" id="10_o8mrm"]
+[ext_resource type="AnimationLibrary" uid="uid://ge5l8b021ce" path="res://Resources/Animations/Pollution.res" id="11_g2ukp"]
+
+[sub_resource type="Animation" id="Animation_y36gn"]
+resource_name = "RESET"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(280, 60)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8bhhg"]
+_data = {
+"RESET": SubResource("Animation_y36gn")
+}
 
 [node name="UI" type="CanvasLayer"]
 script = ExtResource("1_a8sun")
@@ -203,3 +239,62 @@ theme_override_fonts/font = ExtResource("1_0nux4")
 text = "Poblation"
 label_settings = ExtResource("5_vmpy2")
 horizontal_alignment = 1
+
+[node name="AnimationContainer" type="HBoxContainer" parent="."]
+texture_filter = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 16.0
+offset_bottom = 100.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="YearContainer" type="VBoxContainer" parent="AnimationContainer"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+theme_override_constants/separation = -7
+alignment = 1
+
+[node name="YearSprite" parent="AnimationContainer/YearContainer" groups=["ui_statistics_animations"] instance=ExtResource("9_dpc7w")]
+visible = false
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+position = Vector2(260, 50)
+
+[node name="PollutionContainer" type="VBoxContainer" parent="AnimationContainer"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+theme_override_constants/separation = -7
+alignment = 1
+
+[node name="PollutionSprite" type="Sprite2D" parent="AnimationContainer/PollutionContainer" groups=["ui_statistics_animations"]]
+visible = false
+position = Vector2(280, 60)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("10_o8mrm")
+hframes = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimationContainer/PollutionContainer/PollutionSprite"]
+libraries = {
+"": SubResource("AnimationLibrary_8bhhg"),
+"Pollution": ExtResource("11_g2ukp")
+}
+
+[node name="PoblationContainer" type="VBoxContainer" parent="AnimationContainer"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+theme_override_constants/separation = -7
+alignment = 1
+
+[node name="PoblationSprite" parent="AnimationContainer/PoblationContainer" groups=["ui_statistics_animations"] instance=ExtResource("9_dpc7w")]
+visible = false
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+position = Vector2(285, 50)

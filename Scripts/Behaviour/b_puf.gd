@@ -10,6 +10,9 @@ signal cell_unocuppied(cood_cell)
 @export var wait_time_move: float = 0.5 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
 @export var move_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
+@export var drag_speed: float = 200
+@export var global_mouse_position: Vector2
+@export var local_mouse_position: Vector2
 
 var myself: Puf: 
 	get: return myself
@@ -31,7 +34,7 @@ var social_class: int = DefinitionsHelper.RANDOM_SOCIAL_CLASS:
 var is_can_move: bool = false
 var is_dragging: bool = false
 var current_path: Array[Vector2i]
-var look_at_position: Vector2i
+var look_at_position: Vector2
 var initial_grid_cell: Vector2i
 var current_grid_cell: Vector2i
 var next_grid_cell: Vector2i
@@ -47,7 +50,7 @@ var ocuppied_cells: Array[Vector2i]
 @onready var manager_puf: Node2D = get_node(PathsHelper.MANAGER_PUF_PATH)
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
-@onready var clic_position: Vector2i = self.position
+@onready var clic_position: Vector2 = self.position
 
 func _init():
 	myself = Puf.new(social_class, is_baby)
@@ -61,6 +64,9 @@ func _ready():
 	emit_signal("cell_ocuppied", initial_grid_cell)
 
 func _process(delta):
+	global_mouse_position = get_global_mouse_position()
+	local_mouse_position = get_local_mouse_position()
+	
 	if is_selected:
 		current_grid_cell = tilemap.local_to_map(self.position)
 		
@@ -88,13 +94,13 @@ func _input(event):
 		print("se juntan")
 
 	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
-		look_at_position = get_local_mouse_position()
-		clic_position = get_global_mouse_position()
+		look_at_position = local_mouse_position
+		clic_position = global_mouse_position
 		var clic_position_localmap = tilemap.local_to_map(clic_position)
 		
 		if not ocuppied_cells.has(clic_position_localmap):
 			next_grid_cell = clic_position_localmap
-		else: next_grid_cell = Vector2i.ZERO
+		else: next_grid_cell = Vector2.ZERO
 		
 		if tilemap.is_point_walkable_map_local_position(next_grid_cell):
 			current_path = tilemap.astar_grid.get_id_path(
@@ -106,14 +112,18 @@ func _input(event):
 					current_path.pop_back()
 			is_can_move = true
 	else: 
-		clic_position = Vector2i.ZERO
+		clic_position = Vector2.ZERO
 		next_grid_cell = Vector2i.ZERO
 	
 	## Sistema para que el drag and drop
 	if event is InputEventMouseMotion:
 		if is_myself_rich(): 
 			if is_dragging and manager_puf.selected_pufs.is_empty():
-				self.global_position = get_global_mouse_position()
+				var direction = (global_mouse_position - self.position).normalized()
+				var speed: Vector2 = Vector2(0, 0)
+				speed = (direction * drag_speed)
+				move_and_slide()
+				#self.global_position = get_global_mouse_position()
 
 func _on_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:

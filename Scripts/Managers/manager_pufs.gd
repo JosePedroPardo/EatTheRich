@@ -3,9 +3,9 @@ extends Node2D
 
 signal mouse_released
 signal ocuppied_cells_array(ocuppied_cells)
-signal born_puf(puf)
-signal born_a_rich(puf)
-signal born_a_poor(puf)
+signal born_puf()
+signal born_a_rich()
+signal born_a_poor()
 
 @export_range(0, 100) var limit_initial_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20) ## 0 es equivalente a un número aleatorio entre 15 y 20
 @export var spawn_time: float = 5
@@ -55,6 +55,9 @@ func _born_a_puf():
 		new_puf.social_class = DefinitionsHelper.RICH_SOCIAL_CLASS
 	new_puf.position = random_global_position
 	new_puf.get_node("SpritePuf").flip_h = flip # Cambia la dirección hacia la que mira el puf al instanciarse
+	_emit_signal_according_born_social_class_puf(new_puf)
+	_save_puf_in_array(new_puf, all_pufs)
+	
 	new_puf.connect("puf_selected", Callable(self, "_on_puf_selected"))
 	new_puf.connect("puf_deselected", Callable(self, "_on_puf_deselected"))
 	new_puf.connect("puf_dragging", Callable(self, "_on_puf_dragging"))
@@ -62,16 +65,15 @@ func _born_a_puf():
 	new_puf.connect("cell_ocuppied", Callable(self, "_on_ocupied_cell"))
 	new_puf.connect("cell_unocuppied", Callable(self, "_on_unocupied_cell"))
 	parent.add_child(new_puf)
-	_save_puf_in_array(new_puf, all_pufs)
-	_emit_signal_according_born_social_class_puf(new_puf)
 
 func _emit_signal_according_born_social_class_puf(new_puf):
 	if new_puf.get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS: 
-		emit_signal("born_a_rich", new_puf)
+		born_a_rich.emit()
 		_save_puf_in_array(new_puf, rich_pufs)
 	else: 
-		emit_signal("born_a_poor", new_puf)
+		born_a_poor.emit()
 		_save_puf_in_array(new_puf, poor_pufs)
+	
 
 func _finished_spawn_initial_pufs():
 	timer_spawn.wait_time = spawn_time_to_rich
