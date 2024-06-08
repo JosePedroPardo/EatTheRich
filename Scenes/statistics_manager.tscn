@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/statistics_manager.gd" id="1_lqohq"]
 
-[node name="StatisticsManager" type="CanvasLayer"]
+[node name="StatisticsManager" type="Node"]
 script = ExtResource("1_lqohq")
 
 [node name="YearsTimer" type="Timer" parent="."]

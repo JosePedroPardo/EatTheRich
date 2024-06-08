@@ -46,9 +46,6 @@ func _ready():
 		# self.set_cell(0,coor_wall,30) # Muestra los espacios intransitables
 	emit_signal("spawn_coordinates", cell_spawn)
 
-func _process(delta):
-	pass
-
 func is_point_walkable_map_local_position(map_position) -> bool:
 	if map_rect.has_point(map_position):
 		return not astar_grid.is_point_solid(map_position)
@@ -59,6 +56,9 @@ func is_point_walkable_global_position(local_position) -> bool:
 	if map_rect.has_point(map_position):
 		return not astar_grid.is_point_solid(map_position)
 	return false
+
+func get_current_path(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+	return astar_grid.get_id_path(from, to)
 
 func get_cells_between(start: Vector2i, end: Vector2i) -> Array[Vector2i]:
 	var coordinates: Array[Vector2i] = []

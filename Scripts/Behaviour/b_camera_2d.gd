@@ -78,13 +78,13 @@ func _zoom_in():
 	zoom_pos = get_global_mouse_position()
 
 func get_input_x() -> int:
-	return int(Input.is_action_pressed("camera_right")) - int(Input.is_action_pressed("camera_left"))
+	return int(Input.is_action_pressed(InputsHelper.CAMERA_RIGHT)) - int(Input.is_action_pressed(InputsHelper.CAMERA_LEFT))
 
 func get_input_y() -> int:
-	return int(Input.is_action_pressed("camera_backward")) - int(Input.is_action_pressed("camera_forward"))
+	return int(Input.is_action_pressed(InputsHelper.CAMERA_BACKWARD)) - int(Input.is_action_pressed(InputsHelper.CAMERA_FORWARD))
 
 func process_select_area() -> void:
-	if Input.is_action_just_pressed("left_click"):
+	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
 		start = mouse_pos_global
 		start_v = mouse_pos
 		is_dragging = true
@@ -94,7 +94,7 @@ func process_select_area() -> void:
 		end_v = mouse_pos
 		draw_area()
 	
-	if Input.is_action_just_released("left_click"):
+	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
 		if start_v.distance_to(mouse_pos) > 20:
 			end = mouse_pos_global
 			end_v = mouse_pos
@@ -137,9 +137,9 @@ func input_for_zoom(event: InputEvent) -> void:
 		zoom_factor = 1.0
 	if event.is_pressed():
 		zooming = true
-		if event.is_action("camera_zoom_out") or event.is_action_pressed("camera_zoom_out"):
+		if event.is_action(InputsHelper.CAMERA_ZOOM_OUT) or event.is_action_pressed(InputsHelper.CAMERA_ZOOM_OUT):
 			_zoom_out()
-		if event.is_action("camera_zoom_in") or event.is_action_pressed("camera_zoom_in"):
+		if event.is_action(InputsHelper.CAMERA_ZOOM_IN) or event.is_action_pressed(InputsHelper.CAMERA_ZOOM_IN):
 			_zoom_in()
 	else:
 		zooming = true

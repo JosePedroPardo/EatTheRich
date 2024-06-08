@@ -1,5 +1,5 @@
 class_name StatisticsManager
-extends CanvasLayer
+extends Node
 
 @export var wait_year: float = 30 ## La duración de un año
 @export var max_pollution: float = 100

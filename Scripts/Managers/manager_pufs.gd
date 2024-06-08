@@ -47,9 +47,9 @@ func _born_a_puf():
 	var new_puf: Node2D
 	var random_position = spawn_cells[RandomHelper.get_random_int_in_range(0, spawn_cells.size()-1)]
 	var flip: int = RandomHelper.get_random_int_in_range(0, 1)
-	print("Posición random:" + str(random_position))
+	#print("Posición random:" + str(random_position))
 	var random_global_position = tilemap.astar_grid.get_point_position(Vector2(random_position.x, random_position.y)) # Transforma las coordenadas locales del grid en globales
-	print("Posición random global: " + str(random_global_position))
+	#print("Posición random global: " + str(random_global_position))
 	new_puf = puf.instantiate()
 	if !spawn_initial_pufs:
 		new_puf.social_class = DefinitionsHelper.RICH_SOCIAL_CLASS
@@ -101,7 +101,6 @@ func _on_puf_deselected(selected_puf):
 	_remove_puf_in_array(selected_puf, selected_pufs)
 
 func _on_camera_2d_selected_pufs(selected_pufs_array):
-	print(selected_pufs_array)
 	for puf in selected_pufs:
 		puf.is_selected = false
 	selected_pufs.clear()

@@ -17,7 +17,7 @@ const RICH_SOCIAL_CLASS: String = "RICH"
 const POOR_SOCIAL_CLASS: String = "POOR"
 const NAMES: String = "names"
 const MEDIOCRES: String = "Mediocres"
-const RANDOM_SOCIAL_CLASS: int = -1
+const INDEX_RANDOM_SOCIAL_CLASS: int = -1
 const INDEX_RICH_SOCIAL_CLASS: int = 1
 const INDEX_POOR_SOCIAL_CLASS: int = 0
 

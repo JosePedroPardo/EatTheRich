@@ -60,6 +60,11 @@ collision_mask = 2
 input_pickable = true
 script = ExtResource("1_a7dnk")
 wait_time_move = 0.2
+can_assemble = null
+move_speed = null
+drag_speed = null
+global_mouse_position = null
+local_mouse_position = null
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -152,5 +157,3 @@ debug_color = Color(0.956863, 0, 0.537255, 0.0745098)
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
-[connection signal="puf_dragging" from="." to="." method="_on_puf_dragging"]
-[connection signal="puf_undragging" from="." to="." method="_on_puf_undragging"]
