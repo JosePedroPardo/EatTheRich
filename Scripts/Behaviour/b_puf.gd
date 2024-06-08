@@ -64,8 +64,7 @@ func _ready():
 
 func _process(delta):
 	if look_mouse_if_is_dragging: _look_to_mouse(get_local_mouse_position())
-	if is_your_moving: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
-	else: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
+	
 	if is_selected: 
 		_look_to_mouse(get_local_mouse_position())
 		if is_can_grid_move: 
@@ -75,10 +74,15 @@ func _process(delta):
 		print("se juntan")
 
 func _physics_process(delta):
+	if is_your_moving: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
+	else: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
+	
 	if is_dragging:
 		current_clic_position = get_global_mouse_position()
 		_move_to_clic_position_according_to_speed(current_clic_position, move_drag_speed)
-		
+		if self.velocity != Vector2.ZERO:
+			_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_DRAG_PUF)
+	
 	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
 		current_clic_position = get_global_mouse_position()
 		if is_selected:
@@ -141,7 +145,8 @@ func _reproduce_animation_according_to_situation(situation: String):
 		DefinitionsHelper.ANIMATION_DRAG_PUF: animation = DefinitionsHelper.ANIMATION_DRAG_PUF
 		DefinitionsHelper.ANIMATION_DROP_PUF: animation = DefinitionsHelper.ANIMATION_DROP_PUF
 		_: animation = DefinitionsHelper.ANIMATION_IDLE_PUF
-	animation_player.play(animation)
+	if not animation_player.get_queue().has(animation):
+		animation_player.play(animation)
 
 func _add_animation_to_queue(animation: String):
 	if animation_player.has_animation(animation):
@@ -188,7 +193,6 @@ func _on_ocuppied_cells(_ocuppied_cells):
 func _on_mouse_entered():
 	if is_myself_rich():
 		self.position.y += -2
-		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_DRAG_PUF)
 
 func _on_mouse_exited():
 	if is_myself_rich():
