@@ -31,6 +31,7 @@ var social_class: int = DefinitionsHelper.INDEX_RANDOM_SOCIAL_CLASS:
 		social_class = _social_class
 var is_dragging: bool = false
 var is_can_grid_move: bool = false
+var is_your_moving: bool = false
 var look_mouse_if_is_dragging: bool = false
 var initial_grid_cell: Vector2i
 var ocuppied_cells: Array[Vector2i]
@@ -63,13 +64,12 @@ func _ready():
 
 func _process(delta):
 	if look_mouse_if_is_dragging: _look_to_mouse(get_local_mouse_position())
-	
+	if is_your_moving: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
+	else: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 	if is_selected: 
 		_look_to_mouse(get_local_mouse_position())
 		if is_can_grid_move: 
 			_move_to_grid_position_through_current_paths()
-			_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
-		else: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 	if Input.is_action_just_pressed(InputsHelper.ASSEMBLE_PUF) and can_assemble:
 		print("se juntan")
@@ -117,13 +117,15 @@ func _calculate_current_paths_through_clic_position(clic_position: Vector2):
 
 func _move_to_grid_position_through_current_paths():
 	if current_paths.is_empty():
+		is_your_moving = false
 		return
 	_emit_signal_with_ocuppied_grid_position(tilemap.local_to_map(self.global_position), true)
 	var target_position = tilemap.map_to_local(current_paths.front())
 	self.global_position = self.global_position.move_toward(target_position, move_grid_speed)
 	await get_tree().create_timer(wait_time_move).timeout
 	if self.global_position == target_position:
-		current_paths.erase(target_position)
+		is_your_moving = true
+		current_paths.pop_front()
 		_emit_signal_with_ocuppied_grid_position(target_position, true)
 
 func _reproduce_animation_according_to_situation(situation: String):
