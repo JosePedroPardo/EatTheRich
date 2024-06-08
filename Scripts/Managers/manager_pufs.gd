@@ -65,7 +65,7 @@ func _born_a_puf():
 	_save_puf_in_array(new_puf, all_pufs)
 	_emit_signal_according_born_social_class_puf(new_puf)
 
-func _emit_signal_according_born_social_class_puf(new_puf: Node2D):
+func _emit_signal_according_born_social_class_puf(new_puf):
 	if new_puf.get_social_class() == DefinitionsHelper.RICH_SOCIAL_CLASS: 
 		emit_signal("born_a_rich", new_puf)
 		_save_puf_in_array(new_puf, rich_pufs)

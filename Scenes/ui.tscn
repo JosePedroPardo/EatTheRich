@@ -24,10 +24,10 @@ visibility_layer = 16
 texture_filter = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 108.0
-offset_right = 330.0
-offset_bottom = -502.0
+offset_left = 21.0
+offset_top = 109.0
+offset_right = 331.0
+offset_bottom = -429.0
 grow_vertical = 2
 scale = Vector2(0.7, 0.7)
 
@@ -87,6 +87,7 @@ light_mask = 16
 visibility_layer = 16
 layout_mode = 2
 tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
+button_pressed = true
 icon_alignment = 1
 
 [node name="SuperiorContainer" type="HBoxContainer" parent="."]
@@ -142,6 +143,7 @@ alignment = 1
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
+size_flags_horizontal = 4
 alignment = 1
 
 [node name="PResult" type="Label" parent="SuperiorContainer/PollutionContainer/HBoxContainer" groups=["ui_labels_result"]]
@@ -149,17 +151,17 @@ light_mask = 16
 visibility_layer = 16
 layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "0
-"
+text = "12.25"
 label_settings = ExtResource("6_rsfbn")
 horizontal_alignment = 1
-vertical_alignment = 2
+vertical_alignment = 1
 
 [node name="PercentResult" type="Label" parent="SuperiorContainer/PollutionContainer/HBoxContainer"]
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
 layout_mode = 2
+size_flags_vertical = 8
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "%"
 label_settings = ExtResource("7_ggdfu")

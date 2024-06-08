@@ -43,6 +43,8 @@ _data = {
 
 [node name="StatisticsManager" type="CanvasLayer"]
 script = ExtResource("1_lqohq")
+wait_year = null
+max_pollution = null
 
 [node name="Ref" type="HBoxContainer" parent="."]
 visible = false
@@ -140,7 +142,7 @@ visible = false
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
-position = Vector2(258, 59)
+position = Vector2(256, 56)
 
 [node name="PollutionContainer" type="VBoxContainer" parent="SuperiorContainer"]
 layout_mode = 2
@@ -151,7 +153,6 @@ alignment = 1
 [node name="Sprite" type="Sprite2D" parent="SuperiorContainer/PollutionContainer"]
 visible = false
 position = Vector2(276, 64)
-scale = Vector2(1.3, 1.3)
 texture = ExtResource("7_jqjkx")
 hframes = 2
 
@@ -172,7 +173,7 @@ visible = false
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
-position = Vector2(289, 59)
+position = Vector2(280, 56)
 
 [node name="YearsTimer" type="Timer" parent="."]
 wait_time = 30.0

@@ -22,7 +22,7 @@ var start_v: Vector2 = Vector2()
 var end: Vector2 = Vector2()
 var end_v: Vector2 = Vector2()
 var is_dragging: bool = false
-var is_mouse_move: bool = false
+var is_mouse_move: bool = true
 
 @onready var box: Panel = get_node(PathsHelper.UI_PANEL_TO_SELECTED_AREA)
 @onready var mouse_camera_button: Button = get_node(PathsHelper.UI_TOOGLE_BUTTON_MOUSE_CAMERA)
