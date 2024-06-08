@@ -1,12 +1,68 @@
-[gd_scene load_steps=6 format=3 uid="uid://o0if5egfwut4"]
+[gd_scene load_steps=14 format=3 uid="uid://o0if5egfwut4"]
 
 [ext_resource type="PackedScene" uid="uid://ls1sa1vyqjkn" path="res://Scenes/tilemap.tscn" id="1_1ss2t"]
 [ext_resource type="PackedScene" uid="uid://bg2ohhatacu6c" path="res://Scenes/ui.tscn" id="1_ct4x2"]
 [ext_resource type="PackedScene" uid="uid://cl76bcgy7g0e8" path="res://Scenes/manager_pufs.tscn" id="1_hblf1"]
+[ext_resource type="Script" path="res://Scripts/game_manager.gd" id="1_ywxud"]
+[ext_resource type="Texture2D" uid="uid://e10xsuwxnl27" path="res://Resources/UI/grid_position.png" id="2_efxsd"]
 [ext_resource type="PackedScene" uid="uid://byu1d4ei6j6su" path="res://Scenes/statistics_manager.tscn" id="2_hbglm"]
 [ext_resource type="PackedScene" uid="uid://c30hichtn61t1" path="res://Scenes/camera_2d.tscn" id="3_ornbr"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_6rlvw"]
+atlas = ExtResource("2_efxsd")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tnrtt"]
+atlas = ExtResource("2_efxsd")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8lbdv"]
+atlas = ExtResource("2_efxsd")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_78jxu"]
+atlas = ExtResource("2_efxsd")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ow476"]
+atlas = ExtResource("2_efxsd")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x0jt3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6rlvw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tnrtt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8lbdv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_78jxu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ow476")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
 [node name="Game" type="Node2D"]
+script = ExtResource("1_ywxud")
+
+[node name="GridSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+light_mask = 16
+visibility_layer = 16
+z_index = 1
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_x0jt3")
+frame = 1
+frame_progress = 0.851805
 
 [node name="UI" parent="." instance=ExtResource("1_ct4x2")]
 

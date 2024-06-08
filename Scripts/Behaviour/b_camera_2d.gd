@@ -119,6 +119,8 @@ func zoom_camera(delta: float) -> void:
 		zoom_factor = 1.0
 
 func move_camera(delta: float) -> void:
+	if zoom.x == zoom_max and zoom.y == zoom_max:
+		center_camera()
 	var direction = Vector2()
 
 	# Movimiento por bordes de pantalla
@@ -161,3 +163,7 @@ func get_objects_in_area(start: Vector2, end: Vector2) -> Array:
 			selected_objects.append(object)
 	
 	return selected_objects
+
+func center_camera():
+	var viewport_size = get_viewport_rect().size
+	position = viewport_size / 2

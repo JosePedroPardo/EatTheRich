@@ -26,19 +26,27 @@ func _ready():
 	# Recorremos cada capa en busca de celdas que no sean transitables y luego las seteamos como tal
 	var cell_wall: Array[Vector2i] = []
 	var cell_spawn: Array[Vector2i] = []
-	for i in tilemap_size.x:
-		for j in tilemap_size.y:
+	for i in range(astar_grid.size.x):
+		for j in range(astar_grid.size.y):
 			var coordinates: Vector2i = Vector2i(i, j)
 			for h in self.get_layers_count(): # Recorre cada capa
 				var tile_data = self.get_cell_tile_data(h, coordinates)
 				if tile_data:
+					var cell_point_solid: bool = false
 					if self.get_cell_source_id(h, coordinates) >= 0:
-						if (tile_data.get_custom_data('wall') == true):
-							astar_grid.set_point_solid(coordinates)
+						if h == 2:
+							print(tile_data.get_custom_data("ground")) 
+							self.set_cell(2, coordinates, 0)
+						if (tile_data.get_custom_data(DefinitionsHelper.TILEMAP_LAYER_TYPE_WALL) == true):
+							cell_point_solid = true
 							cell_wall.append(coordinates)
-						if (tile_data.get_custom_data('spawn') == true):
+						if (tile_data.get_custom_data(DefinitionsHelper.TILEMAP_LAYER_TYPE_SPAWN) == true):
+							cell_point_solid = false
 							cell_spawn.append(coordinates)
-							astar_grid.set_point_solid(coordinates, false)
+						if (tile_data.get_custom_data(DefinitionsHelper.TILEMAP_LAYER_TYPE_OUTLINE) == true):
+							cell_point_solid = false
+							
+						astar_grid.set_point_solid(coordinates, cell_point_solid)
 	cell_spawn = get_cells_between(cell_spawn[0], cell_spawn[1]) 
 	for coor_wall in cell_wall:
 		if cell_spawn.has(coor_wall):

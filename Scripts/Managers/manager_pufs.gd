@@ -118,11 +118,11 @@ func _on_unocupied_cell(cood_cell):
 			ocuppied_cells.erase(cood_cell)
 			emit_signal("ocuppied_cells_array", ocuppied_cells)
 
-func _on_puf_dragging(_puf):
-	dragging_puf = _puf
+func _on_puf_dragging():
+	pass #TODO: HACER QUE SE DESELECCIONEN TODOS LOS PUFS
 
-func _on_puf_undragging(_puf):
-	dragging_puf = _puf
+func _on_puf_undragging():
+	pass
 
 func _on_tile_map_ocuppied_coordinates(ocuppied_coordinates):
 	ocuppied_cells = ocuppied_coordinates

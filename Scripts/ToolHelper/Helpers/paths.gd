@@ -21,6 +21,14 @@ const SPRITE_POOR_003: String = "res://Resources/Tileset/pufs/poorv3.png"
 const SPRITE_BABY_POOR: String = "res://Resources/Tileset/pufs/babypuf.png"
 const SPRITE_BABY_RICH: String = "res://Resources/Tileset/pufs/babypuf.png"
 
+''' TEXTURE CURSORS PATHS '''
+
+const CURSOR_POINT_OUT: String = "res://Resources/UI/Hands/cursor_normal.png"
+const CURSOR_CLICK : String =  "res://Resources/UI/Hands/cursor_normal_click.png"
+const CURSOR_GRAB: String =  "res://Resources/UI/Hands/cursor_normal_close.png"
+const CURSOR_SMASH: String =  "res://Resources/UI/Hands/cursor_normal_open.png"
+const CURSOR_DEATH: String =  "res://Resources/UI/Hands/cursor_normal_death.png"
+
 ''' PATHS OF ELEMENTS OF UI IN RELATION TO THE MAIN SCENE '''
 const UI_PANEL_TO_SELECTED_AREA: String = ("../UI/PanelDraw")
 const UI_TOOGLE_BUTTON_MOUSE_CAMERA: String = ("../UI/PanelContainer/DebugContainer/MouseContainer/Button")
@@ -31,7 +39,6 @@ const UI_LABEL_POBLATION_RESULT: String = ("../UI/SuperiorContainer/PoblationCon
 ''' PATHS OF ELEMENTS IN RELATION TO THE MAIN SCENE '''
 const TILEMAP_PATH: String = ("../TileMap")
 const MANAGER_PUF_PATH: String = ("../ManagerPufs")
-
 
 static func get_node_by_name(nodes: Array, name: String) -> Node:
 	for node in nodes:

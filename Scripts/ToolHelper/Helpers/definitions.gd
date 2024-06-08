@@ -75,6 +75,9 @@ const LAYER_GUI_2D: int = 4
 
 ''' LAYERS IN TILEMAP '''
 const TILEMAP_LAYER_TYPE_WALL = "wall"
+const TILEMAP_LAYER_TYPE_SPAWN = "spawn"
+const TILEMAP_LAYER_TYPE_OUTLINE = "outline"
+
 
 ''' PATHS OF TILEMAP LAYERS'''
 const TM_LAYER_GROUND: int = 0

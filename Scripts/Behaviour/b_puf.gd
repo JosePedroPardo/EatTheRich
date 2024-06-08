@@ -32,7 +32,7 @@ var social_class: int = DefinitionsHelper.INDEX_RANDOM_SOCIAL_CLASS:
 var is_dragging: bool = false
 var is_can_grid_move: bool = false
 var is_your_moving: bool = false
-var look_mouse_if_is_dragging: bool = false
+var is_look_to_target_position: bool = false
 var initial_grid_cell: Vector2i
 var ocuppied_cells: Array[Vector2i]
 var current_paths: Array[Vector2i]
@@ -63,10 +63,9 @@ func _ready():
 	emit_signal("cell_ocuppied", initial_grid_cell)
 
 func _process(delta):
-	if look_mouse_if_is_dragging: _look_to_mouse(get_local_mouse_position())
-	
 	if is_selected: 
-		_look_to_mouse(get_local_mouse_position())
+		if is_your_moving and is_look_to_target_position: _look_to_mouse(look_at_position)
+		else: _look_to_mouse(get_local_mouse_position())
 		if is_can_grid_move: 
 			_move_to_grid_position_through_current_paths()
 
@@ -74,17 +73,14 @@ func _process(delta):
 		print("se juntan")
 
 func _physics_process(delta):
-	if is_your_moving: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
-	else: _reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
-	
 	if is_dragging:
 		current_clic_position = get_global_mouse_position()
 		_move_to_clic_position_according_to_speed(current_clic_position, move_drag_speed)
-		if self.velocity != Vector2.ZERO:
-			_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_DRAG_PUF)
+		_look_to_mouse(current_clic_position)
 	
 	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
 		current_clic_position = get_global_mouse_position()
+		_to_where_i_look() 
 		if is_selected:
 			_calculate_current_paths_through_clic_position(current_clic_position)
 
@@ -98,6 +94,9 @@ func _on_input_event(viewport, event, shape_idx):
 			if is_myself_rich():
 				_emit_signal_with_when_dragging()
 
+func _to_where_i_look():
+	look_at_position = get_local_mouse_position()
+
 func _look_to_mouse(clic_position: Vector2):
 	sprite_puf.flip_h = clic_position.x < 0
 
@@ -106,6 +105,7 @@ func _is_position_free(current_position: Vector2i) -> bool:
 	return not ocuppied_cells.has(current_position)
 
 func _move_to_clic_position_according_to_speed(clic_position: Vector2, speed: float):
+	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_DRAG_PUF)
 	var direction = (clic_position - self.position).normalized()
 	self.velocity = (direction * speed)
 	move_and_slide()
@@ -115,16 +115,19 @@ func _calculate_current_paths_through_clic_position(clic_position: Vector2):
 	var current_clic_local_position = tilemap.local_to_map(clic_position)
 	if tilemap.is_point_walkable_map_local_position(current_clic_local_position):
 		if _is_position_free(current_clic_local_position):
-			_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
 			current_paths = tilemap.get_current_path(myself_local_position, current_clic_local_position).slice(1)
 			is_can_grid_move = false if current_paths.is_empty() else true
 
 func _move_to_grid_position_through_current_paths():
 	if current_paths.is_empty():
 		is_your_moving = false
+		is_look_to_target_position = false
+		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 		return
-	_emit_signal_with_ocuppied_grid_position(tilemap.local_to_map(self.global_position), true)
 	var target_position = tilemap.map_to_local(current_paths.front())
+	is_look_to_target_position = true
+	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
+	_emit_signal_with_ocuppied_grid_position(tilemap.local_to_map(self.global_position), true)
 	self.global_position = self.global_position.move_toward(target_position, move_grid_speed)
 	await get_tree().create_timer(wait_time_move).timeout
 	if self.global_position == target_position:
@@ -144,6 +147,9 @@ func _reproduce_animation_according_to_situation(situation: String):
 		DefinitionsHelper.ANIMATION_SICK_PUF: animation = DefinitionsHelper.ANIMATION_SICK_PUF
 		DefinitionsHelper.ANIMATION_DRAG_PUF: animation = DefinitionsHelper.ANIMATION_DRAG_PUF
 		DefinitionsHelper.ANIMATION_DROP_PUF: animation = DefinitionsHelper.ANIMATION_DROP_PUF
+		DefinitionsHelper.ANIMATION_TERROR_PUF: animation = DefinitionsHelper.ANIMATION_TERROR_PUF
+		DefinitionsHelper.ANIMATION_DEATH_BY_FALL_PUF: animation = DefinitionsHelper.ANIMATION_DEATH_BY_FALL_PUF
+		DefinitionsHelper.ANIMATION_TO_DIE: animation = DefinitionsHelper.ANIMATION_TO_DIE
 		_: animation = DefinitionsHelper.ANIMATION_IDLE_PUF
 	if not animation_player.get_queue().has(animation):
 		animation_player.play(animation)
@@ -180,7 +186,7 @@ func _selectAndDeselect():
 ''' Métodos de señales '''
 func _emit_signal_with_ocuppied_grid_position(current_grid_cell: Vector2, free_or_not: bool):
 	var signal_name = "cell_unocuppied" if free_or_not else "cell_ocuppied"  
-	emit_signal(signal_name, current_grid_cell)
+	emit_signal(signal_name, Vector2i(current_grid_cell))
 
 func _emit_signal_with_when_dragging():
 	var signal_name = "puf_dragging" if is_dragging else "puf_undragging"  
@@ -193,6 +199,7 @@ func _on_ocuppied_cells(_ocuppied_cells):
 func _on_mouse_entered():
 	if is_myself_rich():
 		self.position.y += -2
+		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_TERROR_PUF)
 
 func _on_mouse_exited():
 	if is_myself_rich():
@@ -202,11 +209,9 @@ func _on_mouse_exited():
 
 func _on_puf_dragging():
 	is_can_grid_move = false
-	look_mouse_if_is_dragging = true
 
 func _on_puf_undragging():
 	is_can_grid_move = false
-	look_mouse_if_is_dragging = false
 
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():
