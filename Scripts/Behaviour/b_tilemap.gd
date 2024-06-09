@@ -1,6 +1,8 @@
 extends TileMap
 
 signal spawn_coordinates(spawn_coordinates)
+signal death_coordinates(death_coordinates)
+signal wall_coordinates(wall_coordinates)
 signal ocuppied_coordinates(ocuppied_coordinates)
 
 var astar_grid = AStarGrid2D.new():
@@ -10,6 +12,9 @@ var map_rect = Rect2i()
 var tile_size: Vector2i = get_tileset().tile_size
 var tilemap_size: Vector2i = get_used_rect().end - get_used_rect().position
 var ocuppied_cells : Array[Vector2i]
+var wall_cells: Array[Vector2i] = []
+var spawn_cells: Array[Vector2i] = []
+var death_cells: Array[Vector2i] = []
 
 @onready var path: TileMap = $Path
 
@@ -24,8 +29,7 @@ func _ready():
 	astar_grid.update()
 	
 	# Recorremos cada capa en busca de celdas que no sean transitables y luego las seteamos como tal
-	var cell_wall: Array[Vector2i] = []
-	var cell_spawn: Array[Vector2i] = []
+	
 	for i in range(astar_grid.size.x):
 		for j in range(astar_grid.size.y):
 			var coordinates: Vector2i = Vector2i(i, j)
@@ -35,24 +39,28 @@ func _ready():
 					var cell_point_solid: bool = false
 					if self.get_cell_source_id(h, coordinates) >= 0:
 						if h == 2:
-							print(tile_data.get_custom_data("ground")) 
 							self.set_cell(2, coordinates, 0)
 						if (tile_data.get_custom_data(DefinitionsHelper.TILEMAP_LAYER_TYPE_WALL) == true):
 							cell_point_solid = true
-							cell_wall.append(coordinates)
+							wall_cells.append(coordinates)
 						if (tile_data.get_custom_data(DefinitionsHelper.TILEMAP_LAYER_TYPE_SPAWN) == true):
 							cell_point_solid = false
-							cell_spawn.append(coordinates)
-						if (tile_data.get_custom_data(DefinitionsHelper.TILEMAP_LAYER_TYPE_OUTLINE) == true):
+							spawn_cells.append(coordinates)
+						if (tile_data.get_custom_data(DefinitionsHelper.TILEMAP_LAYER_TYPE_DEATH) == true):
 							cell_point_solid = false
-							
+							death_cells.append(coordinates)
 						astar_grid.set_point_solid(coordinates, cell_point_solid)
-	cell_spawn = get_cells_between(cell_spawn[0], cell_spawn[1]) 
-	for coor_wall in cell_wall:
-		if cell_spawn.has(coor_wall):
-			cell_spawn.erase(coor_wall)
+	spawn_cells = get_cells_between(spawn_cells[0], spawn_cells[1]) 
+	for coor_wall in spawn_cells:
+		if spawn_cells.has(coor_wall):
+			spawn_cells.erase(coor_wall)
 		# self.set_cell(0,coor_wall,30) # Muestra los espacios intransitables
-	emit_signal("spawn_coordinates", cell_spawn)
+	emit_signal("spawn_coordinates", spawn_cells)
+	emit_signal("death_coordinates", death_cells)
+	emit_signal("wall_coordinates", wall_cells)
+
+func is_point_death_cells(map_position) -> bool:
+	return death_cells.has(map_position)
 
 func is_point_walkable_map_local_position(map_position) -> bool:
 	if map_rect.has_point(map_position):

@@ -7,10 +7,10 @@ signal puf_undragging
 signal cell_ocuppied(cood_cell)
 signal cell_unocuppied(cood_cell)
 
-@export var wait_time_move: float = 0.5 ## Tiempo de espera entre un movimiento y el siguiente
+@export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
 @export var move_grid_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
-@export var move_drag_speed: float = 150 ## Velocidad a la que se desplaza el puf al ser arrastrado
+@export var move_drag_speed: float = 75 ## Velocidad a la que se desplaza el puf al ser arrastrado
 
 var myself: Puf: 
 	get: return myself
@@ -104,9 +104,13 @@ func _is_position_free(current_position: Vector2i) -> bool:
 	current_position = tilemap.map_to_local(current_position)
 	return not ocuppied_cells.has(current_position)
 
+func _is_death_position(current_position: Vector2i) -> bool:
+	current_position = tilemap.map_to_local(current_position)
+	return not tilemap.is_point_death_cells(current_position)
+
 func _move_to_clic_position_according_to_speed(clic_position: Vector2, speed: float):
 	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_DRAG_PUF)
-	var direction = (clic_position - self.position).normalized()
+	var direction = (tilemap.map_to_local(tilemap.local_to_map(clic_position)) - self.position).normalized()
 	self.velocity = (direction * speed)
 	move_and_slide()
 
@@ -115,6 +119,7 @@ func _calculate_current_paths_through_clic_position(clic_position: Vector2):
 	var current_clic_local_position = tilemap.local_to_map(clic_position)
 	if tilemap.is_point_walkable_map_local_position(current_clic_local_position):
 		if _is_position_free(current_clic_local_position):
+			#if not _is_death_position(current_clic_local_position):
 			current_paths = tilemap.get_current_path(myself_local_position, current_clic_local_position).slice(1)
 			is_can_grid_move = false if current_paths.is_empty() else true
 

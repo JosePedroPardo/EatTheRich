@@ -133,7 +133,6 @@ collision_layer = 2
 collision_mask = 2
 input_pickable = true
 script = ExtResource("1_a7dnk")
-wait_time_move = 0.2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

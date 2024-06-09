@@ -77,7 +77,7 @@ const LAYER_GUI_2D: int = 4
 const TILEMAP_LAYER_TYPE_WALL = "wall"
 const TILEMAP_LAYER_TYPE_SPAWN = "spawn"
 const TILEMAP_LAYER_TYPE_OUTLINE = "outline"
-
+const TILEMAP_LAYER_TYPE_DEATH = "death"
 
 ''' PATHS OF TILEMAP LAYERS'''
 const TM_LAYER_GROUND: int = 0
@@ -87,3 +87,4 @@ const TM_LAYER_PATHS: int = 1
 const GROUP_PUFS: String = "pufs"
 const GROUP_UI_LABELS_RESULT: String = "ui_labels_result"
 const GROUP_UI_STATISTICS_ANIMATIONS: String = "ui_statistics_animations"
+const GROUP_TILEMAP: String = "tilemap"
