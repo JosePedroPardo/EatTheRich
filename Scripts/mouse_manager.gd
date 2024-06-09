@@ -12,7 +12,7 @@ var cursor_map_position_relative_global: Vector2i
 var cursor_map_position_relative_local: Vector2i
 
 @onready var grid_sprite: AnimatedSprite2D = $GridSprite
-@onready var tilemap: TileMap = $TileMap
+@onready var tilemap: TileMap = get_tree().get_first_node_in_group("tilemap")
 
 func _ready():
 	Input.set_custom_mouse_cursor(point_out)

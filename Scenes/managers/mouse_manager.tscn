@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3 uid="uid://c0u0wjktdxrmo"]
+
+[ext_resource type="Script" path="res://Scripts/mouse_manager.gd" id="1_2lw28"]
+[ext_resource type="Texture2D" uid="uid://e10xsuwxnl27" path="res://Resources/UI/grid_position.png" id="2_wdxga"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6rlvw"]
+atlas = ExtResource("2_wdxga")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tnrtt"]
+atlas = ExtResource("2_wdxga")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8lbdv"]
+atlas = ExtResource("2_wdxga")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_78jxu"]
+atlas = ExtResource("2_wdxga")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ow476"]
+atlas = ExtResource("2_wdxga")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x0jt3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6rlvw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tnrtt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8lbdv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_78jxu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ow476")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[node name="MouseManager" type="Node2D"]
+script = ExtResource("1_2lw28")
+
+[node name="GridSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+light_mask = 16
+visibility_layer = 16
+z_index = 1
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_x0jt3")
+frame = 1
+frame_progress = 0.851805

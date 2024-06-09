@@ -8,7 +8,7 @@
 [ext_resource type="LabelSettings" uid="uid://u6qs3exbx532" path="res://Scenes/tres/text_ui_labels.tres" id="5_vmpy2"]
 [ext_resource type="LabelSettings" uid="uid://c6lssx3ofufsc" path="res://Scenes/tres/polution_labels_result.tres" id="6_rsfbn"]
 [ext_resource type="LabelSettings" uid="uid://ch3y84cgejldc" path="res://Scenes/tres/year_labels_result.tres" id="7_ggdfu"]
-[ext_resource type="PackedScene" uid="uid://dgfxikjwkkie8" path="res://Scenes/minumplus_anim.tscn" id="9_dpc7w"]
+[ext_resource type="PackedScene" uid="uid://dgfxikjwkkie8" path="res://Scenes/UI/minumplus_anim.tscn" id="9_dpc7w"]
 [ext_resource type="Texture2D" uid="uid://btq5og5qmqd56" path="res://Resources/UI/arrows.png" id="10_o8mrm"]
 [ext_resource type="AnimationLibrary" uid="uid://ge5l8b021ce" path="res://Resources/Animations/Pollution.res" id="11_g2ukp"]
 
