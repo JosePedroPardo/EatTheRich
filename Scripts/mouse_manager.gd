@@ -24,7 +24,6 @@ func _process(delta: float) -> void:
 	_move_cursor_grid()
 	_change_sprite_according_cell()
 	
-	
 
 func _change_sprite_according_cell():
 	if tilemap.is_point_death_cells(cursor_map_position_relative_local):
@@ -33,12 +32,11 @@ func _change_sprite_according_cell():
 	elif tilemap.is_point_wall_cells(cursor_map_position_relative_local):
 		Input.set_custom_mouse_cursor(stop)
 		_activate_or_deactivate_grid_sprite(false) 
-	elif not tilemap.is_point_wall_cells(cursor_map_position_relative_local):
+	elif not tilemap.is_point_wall_cells(cursor_map_position_relative_local) and not tilemap.is_point_death_cells(cursor_map_position_relative_local):
 		_activate_or_deactivate_grid_sprite(true) 
-	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
+	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
 		Input.set_custom_mouse_cursor(grab)
-	elif Input.is_action_just_released(InputsHelper.LEFT_CLICK):
-		Input.set_custom_mouse_cursor(point_out)
+	else: Input.set_custom_mouse_cursor(point_out)
 	
 
 ## Muestra el grid en la posición del ratón, relativa al tilemap

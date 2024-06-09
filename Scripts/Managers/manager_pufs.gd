@@ -21,13 +21,13 @@ var poor_pufs: Array
 var all_pufs: Array
 
 var is_picked_up: bool = false
-var spawn_initial_pufs: bool = true # Cuando se pone a false, comienzan a spawnear únicamente ricos
-var first_puf: bool = true
-
+var is_spawn_initial_pufs: bool = true # Cuando se pone a false, comienzan a spawnear únicamente ricos
+var is_first_puf: bool = true
+var is_stop_immediately = false
 # Variables para el sistema de selección de pufs
 @onready var parent: Node2D = get_node("../")
 @onready var dragging_puf: Node2D
-@onready var puf: PackedScene = preload("res://Scenes/puf.tscn")
+@onready var puf: PackedScene = preload(PathsHelper.PATH_PUF)
 @onready var timer_spawn: Timer = $TimerSpawn
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 
@@ -39,9 +39,11 @@ func _process(delta):
 	if Input.is_action_just_pressed("left_click"):
 		emit_signal("mouse_released")
 	is_picked_up = true if selected_pufs.is_empty() else false
-	if spawn_initial_pufs:
+	if is_spawn_initial_pufs:
 		if all_pufs.size() == limit_initial_spawn_puf:
 			timer_spawn.stop() 
+	if is_stop_immediately:
+		_deselect_all_pufs_selected()
 
 func _born_a_puf():
 	var new_puf: Node2D
@@ -51,7 +53,7 @@ func _born_a_puf():
 	var random_global_position = tilemap.astar_grid.get_point_position(Vector2(random_position.x, random_position.y)) # Transforma las coordenadas locales del grid en globales
 	#print("Posición random global: " + str(random_global_position))
 	new_puf = puf.instantiate()
-	if !spawn_initial_pufs:
+	if not is_spawn_initial_pufs:
 		new_puf.social_class = DefinitionsHelper.RICH_SOCIAL_CLASS
 	new_puf.position = random_global_position
 	new_puf.get_node("SpritePuf").flip_h = flip # Cambia la dirección hacia la que mira el puf al instanciarse
@@ -91,6 +93,11 @@ func _remove_puf_in_array(puf: Node2D, array: Array):
 	if not array.is_empty() and array.has(puf):
 		array.erase(puf)
 
+func _deselect_all_pufs_selected():
+	if not selected_pufs.is_empty():
+		for puf in selected_pufs:
+			puf.stop_immediately()
+
 func _on_timer_spawn_timeout():
 	_born_a_puf()
 
@@ -119,7 +126,7 @@ func _on_unocupied_cell(cood_cell):
 			emit_signal("ocuppied_cells_array", ocuppied_cells)
 
 func _on_puf_dragging():
-	pass #TODO: HACER QUE SE DESELECCIONEN TODOS LOS PUFS
+	is_stop_immediately = true
 
 func _on_puf_undragging():
 	pass

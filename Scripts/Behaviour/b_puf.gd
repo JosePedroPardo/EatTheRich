@@ -10,7 +10,7 @@ signal cell_unocuppied(cood_cell)
 @export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
 @export var move_grid_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
-@export var move_drag_speed: float = 15 ## Velocidad a la que se desplaza el puf al ser arrastrado
+@export var move_drag_speed: float = 80 ## Velocidad a la que se desplaza el puf al ser arrastrado
 
 var myself: Puf: 
 	get: return myself
@@ -109,7 +109,7 @@ func _is_death_position(current_position: Vector2i) -> bool:
 	return not tilemap.is_point_death_cells(current_position)
 
 func _move_to_clic_position_according_to_speed(clic_position: Vector2, speed: float):
-	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_DRAG_PUF)
+	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_TERROR_PUF)
 	var direction = (tilemap.map_to_local(tilemap.local_to_map(clic_position)) - self.position).normalized()
 	self.velocity = (direction * speed)
 	move_and_slide()
@@ -127,15 +127,15 @@ func _move_to_grid_position_through_current_paths():
 	if current_paths.is_empty():
 		is_your_moving = false
 		is_look_to_target_position = false
-		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 		return
+	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
 	var target_position = tilemap.map_to_local(current_paths.front())
 	is_look_to_target_position = true
-	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
 	_emit_signal_with_ocuppied_grid_position(tilemap.local_to_map(self.global_position), true)
 	self.global_position = self.global_position.move_toward(target_position, move_grid_speed)
 	await get_tree().create_timer(wait_time_move).timeout
 	if self.global_position == target_position:
+		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 		is_your_moving = true
 		current_paths.pop_front()
 		_emit_signal_with_ocuppied_grid_position(target_position, true)
@@ -165,7 +165,8 @@ func _add_animation_to_queue(animation: String):
 
 func _mouse_button_pressed():
 	if !is_myself_rich():
-		_selectAndDeselect()
+		is_selected = not is_selected
+		selectAndDeselect(is_selected)
 	elif is_myself_rich(): 
 		is_dragging = true
 
@@ -181,8 +182,12 @@ func _change_sprite_according_social_class():
 		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_poor_pufs)
 	sprite_puf.texture = load(path_texture)
 
-func _selectAndDeselect(): 
-	is_selected = !is_selected
+func stop_immediately():
+	selectAndDeselect(false)
+	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
+
+func selectAndDeselect(select_or_not: bool): 
+	is_selected = select_or_not
 	outline_select_sprite.visible = is_selected
 	var name_signal: String = "puf_selected" if is_selected else "puf_deselected"
 	outline_select_sprite.play(DefinitionsHelper.ANIMATION_SELECTED_PUF) if is_selected else outline_select_sprite.stop()
@@ -211,12 +216,6 @@ func _on_mouse_exited():
 		self.position.y += +2
 		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_DROP_PUF)
 		_add_animation_to_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
-
-func _on_puf_dragging():
-	is_can_grid_move = false
-
-func _on_puf_undragging():
-	is_can_grid_move = false
 
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():

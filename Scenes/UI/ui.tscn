@@ -137,6 +137,7 @@ offset_bottom = 104.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 theme_override_constants/separation = -2
 alignment = 1
 
@@ -249,6 +250,7 @@ offset_bottom = 100.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 alignment = 1
 
 [node name="YearContainer" type="VBoxContainer" parent="AnimationContainer"]

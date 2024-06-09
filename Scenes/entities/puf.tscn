@@ -1,12 +1,12 @@
 [gd_scene load_steps=14 format=3 uid="uid://b4xp0w52hwj68"]
 
-[ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="1_2o3lj"]
-[ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_a7dnk"]
-[ext_resource type="AnimationLibrary" uid="uid://ig4s8klxx25" path="res://Resources/Animations/Pufs/Pufs.res" id="2_2xooe"]
-[ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="4_ha86j"]
-[ext_resource type="Texture2D" uid="uid://di573c1n2ua1r" path="res://Resources/Tileset/pufs/richv2.png" id="4_l7hwh"]
-[ext_resource type="Texture2D" uid="uid://b66mb70cikal5" path="res://Resources/Tileset/pufs/Selected_puf/Selected_e.png" id="7_jgdqv"]
-[ext_resource type="Texture2D" uid="uid://c6pua88wjwxqw" path="res://Resources/Tileset/pufs/Selected_puf/Selected_i.png" id="8_2ot62"]
+[ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_q7ds5"]
+[ext_resource type="AnimationLibrary" uid="uid://ig4s8klxx25" path="res://Resources/Animations/Pufs/Pufs.res" id="2_54i3k"]
+[ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="3_dpvcn"]
+[ext_resource type="Texture2D" uid="uid://di573c1n2ua1r" path="res://Resources/Tileset/pufs/richv2.png" id="4_dve2d"]
+[ext_resource type="Texture2D" uid="uid://b66mb70cikal5" path="res://Resources/Tileset/pufs/Selected_puf/Selected_e.png" id="5_ac0b0"]
+[ext_resource type="Texture2D" uid="uid://c6pua88wjwxqw" path="res://Resources/Tileset/pufs/Selected_puf/Selected_i.png" id="6_hsppp"]
+[ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="7_g2vq3"]
 
 [sub_resource type="Animation" id="Animation_r0hht"]
 length = 0.001
@@ -107,10 +107,10 @@ size = Vector2(14, 18)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("7_jgdqv")
+"texture": ExtResource("5_ac0b0")
 }, {
 "duration": 1.0,
-"texture": ExtResource("8_2ot62")
+"texture": ExtResource("6_hsppp")
 }],
 "loop": true,
 "name": &"selected",
@@ -132,12 +132,12 @@ scale = Vector2(0.7, 0.7)
 collision_layer = 2
 collision_mask = 2
 input_pickable = true
-script = ExtResource("1_a7dnk")
+script = ExtResource("1_q7ds5")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_ngbqv"),
-"Pufs": ExtResource("2_2xooe")
+"Pufs": ExtResource("2_54i3k")
 }
 
 [node name="ShapePuf" type="CollisionShape2D" parent="."]
@@ -151,14 +151,14 @@ light_mask = 2
 visibility_layer = 2
 texture_filter = 1
 position = Vector2(0, 10)
-texture = ExtResource("1_2o3lj")
+texture = ExtResource("3_dpvcn")
 
 [node name="SpritePuf" type="Sprite2D" parent="."]
 light_mask = 2
 visibility_layer = 2
 texture_filter = 1
 position = Vector2(0, 3)
-texture = ExtResource("4_l7hwh")
+texture = ExtResource("4_dve2d")
 hframes = 4
 vframes = 4
 frame = 5
@@ -192,7 +192,7 @@ offset_right = 92.3333
 offset_bottom = 5.66667
 grow_horizontal = 2
 scale = Vector2(0.3, 0.3)
-theme_override_fonts/font = ExtResource("4_ha86j")
+theme_override_fonts/font = ExtResource("7_g2vq3")
 text = "Placeholder Text"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -226,5 +226,3 @@ debug_color = Color(0.956863, 0, 0.537255, 0.0745098)
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
-[connection signal="puf_dragging" from="." to="." method="_on_puf_dragging"]
-[connection signal="puf_undragging" from="." to="." method="_on_puf_undragging"]

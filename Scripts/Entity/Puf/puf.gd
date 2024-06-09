@@ -171,14 +171,14 @@ func _make_baby_puf(social_class_: Social_class):
 func _set_common_attributes(social_class_: Social_class):
 	self.social_class = social_class_
 	self.is_interactive = true if social_class == Social_class.POOR else false
-	self.name_of_puf = _get_random_string(PathsHelper.PATH_NAMES, NAMES)
-	self.surname = _get_random_string(PathsHelper.PATH_NAMES, SURNAMES)
-	self.background = _get_random_background(_is_a_baby(), PathsHelper.PATH_BACKGROUNDS)
-	self.noble_title = _get_random_noble_title(_is_a_rich(), PathsHelper.PATH_NOBLE_TITLE)
-	self.profession = _get_random_string (PathsHelper.PATH_JOBS, JOBS)
+	self.name_of_puf = _get_random_string(PathsHelper.JSON_PATH_NAMES, NAMES)
+	self.surname = _get_random_string(PathsHelper.JSON_PATH_NAMES, SURNAMES)
+	self.background = _get_random_background(_is_a_baby(), PathsHelper.JSON_PATH_BACKGROUNDS)
+	self.noble_title = _get_random_noble_title(_is_a_rich(), PathsHelper.JSON_PATH_NOBLE_TITLE)
+	self.profession = _get_random_string (PathsHelper.JSON_PATH_JOBS, JOBS)
 	self.height = randf_range(MIN_HEIGHT, MAX_HEIGHT)
 	self.constitution = Constitution.find_key(RandomHelper.get_random_enum(Constitution)).to_lower().capitalize()
-	self.place = _get_random_place_of_birth(PathsHelper.PATH_ORIGINS)
+	self.place = _get_random_place_of_birth(PathsHelper.JSON_PATH_ORIGINS)
 	self.hunger = _get_hunger_according_to_social_class(self.social_class)
 	self.thirst = _get_thirst_according_to_social_class(self.social_class)
 	self.mood =  Mood.find_key(RandomHelper.get_random_enum(Mood)).to_lower().capitalize()
