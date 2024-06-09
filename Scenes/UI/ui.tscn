@@ -264,7 +264,6 @@ alignment = 1
 visible = false
 light_mask = 16
 visibility_layer = 16
-texture_filter = 1
 position = Vector2(260, 50)
 
 [node name="PollutionContainer" type="VBoxContainer" parent="AnimationContainer"]
@@ -298,5 +297,4 @@ alignment = 1
 visible = false
 light_mask = 16
 visibility_layer = 16
-texture_filter = 1
 position = Vector2(285, 50)

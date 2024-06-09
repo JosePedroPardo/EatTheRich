@@ -9,19 +9,20 @@
 
 [node name="Game" type="Node2D"]
 
-[node name="MouseManager" parent="." instance=ExtResource("1_addr5")]
-
 [node name="UI" parent="." instance=ExtResource("1_ct4x2")]
 
 [node name="StatisticsManager" parent="." instance=ExtResource("2_hbglm")]
 wait_year = 3.0
 
+[node name="MouseManager" parent="." instance=ExtResource("1_addr5")]
+
 [node name="Camera2D" parent="." instance=ExtResource("3_ornbr")]
 position = Vector2(656, 352)
 multiplier_speed = 5.0
+zoom_speed = 8.0
+edge_margin = 40
 
 [node name="ManagerPufs" parent="." instance=ExtResource("1_hblf1")]
-position = Vector2(104, 96)
 spawn_time = 0.2
 
 [node name="TileMap" parent="." instance=ExtResource("1_1ss2t")]

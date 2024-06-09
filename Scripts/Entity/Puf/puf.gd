@@ -140,7 +140,7 @@ var descendant: Array[Puf]: # Descendiente
 
 func _init(social_class_: Social_class, is_baby: bool):
 	_next_id()
-	self.birth_year = BehaviourStatistics.current_year
+	self.birth_year = 0
 	if social_class_ == DefinitionsHelper.INDEX_RANDOM_SOCIAL_CLASS:
 		self.social_class = RandomHelper.get_random_enum(self.Social_class)
 		_make_initial_puf()

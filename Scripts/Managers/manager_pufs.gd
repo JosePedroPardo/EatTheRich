@@ -1,64 +1,66 @@
 class_name ManagerPufs
 extends Node2D
 
-signal mouse_released
-signal ocuppied_cells_array(ocuppied_cells)
+signal ocuppied_cells_array(ocuppied_cells: Array[Vector2i])
 signal born_puf()
 signal born_a_rich()
 signal born_a_poor()
+signal update_current_total_pufs(pufs: Array[Node2D])
 
 @export_range(0, 100) var limit_initial_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20) ## 0 es equivalente a un número aleatorio entre 15 y 20
 @export var spawn_time: float = 5
 @export var spawn_time_to_rich: float = 30
 
-var spawn_cells: Array[Vector2i] 
-var ocuppied_cells: Array[Vector2i] 
-var selected_pufs: Array:
+var selected_pufs: Array[Node2D]:
 	get: 
 		return selected_pufs
-var rich_pufs: Array 
-var poor_pufs: Array 
-var all_pufs: Array
+
+var spawn_cells: Array[Vector2i] 
+var ocuppied_cells: Array[Vector2i] 
+var rich_pufs: Array[Node2D] 
+var poor_pufs: Array[Node2D] 
+var current_pufs: Array[Node2D]
 
 var is_picked_up: bool = false
 var is_spawn_initial_pufs: bool = true # Cuando se pone a false, comienzan a spawnear únicamente ricos
 var is_first_puf: bool = true
-var is_stop_immediately = false
+var is_dragging = false
+
 # Variables para el sistema de selección de pufs
 @onready var parent: Node2D = get_node("../")
-@onready var dragging_puf: Node2D
 @onready var puf: PackedScene = preload(PathsHelper.PATH_PUF)
-@onready var timer_spawn: Timer = $TimerSpawn
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
+@onready var timer_spawn: Timer = $TimerSpawn
+@onready var interact_label: Label = $InteractLabel
+@onready var blood_stain_sprite: PackedScene = preload(PathsHelper.SPRITE_BLOOD_STAIN_PATH)
 
 func _ready():
 	timer_spawn.wait_time = spawn_time
 	timer_spawn.start()
 
 func _process(delta):
-	if Input.is_action_just_pressed("left_click"):
-		emit_signal("mouse_released")
 	is_picked_up = true if selected_pufs.is_empty() else false
 	if is_spawn_initial_pufs:
-		if all_pufs.size() == limit_initial_spawn_puf:
+		if current_pufs.size() == limit_initial_spawn_puf:
 			timer_spawn.stop() 
-	if is_stop_immediately:
+	if is_dragging:
 		_deselect_all_pufs_selected()
+
+func _physics_process(delta):
+	interact_label.position = get_global_mouse_position()
 
 func _born_a_puf():
 	var new_puf: Node2D
 	var random_position = spawn_cells[RandomHelper.get_random_int_in_range(0, spawn_cells.size()-1)]
 	var flip: int = RandomHelper.get_random_int_in_range(0, 1)
-	#print("Posición random:" + str(random_position))
 	var random_global_position = tilemap.astar_grid.get_point_position(Vector2(random_position.x, random_position.y)) # Transforma las coordenadas locales del grid en globales
-	#print("Posición random global: " + str(random_global_position))
 	new_puf = puf.instantiate()
 	if not is_spawn_initial_pufs:
 		new_puf.social_class = DefinitionsHelper.RICH_SOCIAL_CLASS
 	new_puf.position = random_global_position
 	new_puf.get_node("SpritePuf").flip_h = flip # Cambia la dirección hacia la que mira el puf al instanciarse
 	_emit_signal_according_born_social_class_puf(new_puf)
-	_save_puf_in_array(new_puf, all_pufs)
+	_save_puf_in_array(new_puf, current_pufs)
 	
 	new_puf.connect("puf_selected", Callable(self, "_on_puf_selected"))
 	new_puf.connect("puf_deselected", Callable(self, "_on_puf_deselected"))
@@ -66,6 +68,8 @@ func _born_a_puf():
 	new_puf.connect("puf_undragging", Callable(self, "_on_puf_undragging"))
 	new_puf.connect("cell_ocuppied", Callable(self, "_on_ocupied_cell"))
 	new_puf.connect("cell_unocuppied", Callable(self, "_on_unocupied_cell"))
+	new_puf.connect("change_interaction_label", Callable(self, "_on_change_interaction_label"))
+	new_puf.connect("puf_smashed", Callable(self, "_on_puf_smashed"))
 	parent.add_child(new_puf)
 
 func _emit_signal_according_born_social_class_puf(new_puf):
@@ -75,7 +79,6 @@ func _emit_signal_according_born_social_class_puf(new_puf):
 	else: 
 		born_a_poor.emit()
 		_save_puf_in_array(new_puf, poor_pufs)
-	
 
 func _finished_spawn_initial_pufs():
 	timer_spawn.wait_time = spawn_time_to_rich
@@ -97,6 +100,9 @@ func _deselect_all_pufs_selected():
 	if not selected_pufs.is_empty():
 		for puf in selected_pufs:
 			puf.stop_immediately()
+
+func _emit_signal_assemble():
+	pass # TODO: Hacer que mande la señal de assemble
 
 func _on_timer_spawn_timeout():
 	_born_a_puf()
@@ -126,7 +132,7 @@ func _on_unocupied_cell(cood_cell):
 			emit_signal("ocuppied_cells_array", ocuppied_cells)
 
 func _on_puf_dragging():
-	is_stop_immediately = true
+	is_dragging = true
 
 func _on_puf_undragging():
 	pass
@@ -136,3 +142,21 @@ func _on_tile_map_ocuppied_coordinates(ocuppied_coordinates):
 
 func _on_tile_map_spawn_coordinates(spawn_coordinates):
 	spawn_cells = spawn_coordinates
+
+func _on_change_interaction_label(text: String):
+	if text: 
+		interact_label.visible = true
+		interact_label.text = text
+	else: 
+		interact_label.visible = false
+		interact_label.text = ""
+
+func _on_puf_smashed(death_position: Vector2i):
+	emit_signal("update_current_total_pufs", current_pufs.size())
+	await get_tree().create_timer(2).timeout
+	var blood_stain = blood_stain_sprite.instantiate()
+	blood_stain.stop()
+	blood_stain.position = death_position
+	blood_stain.visible = true
+	blood_stain.play("default")
+	parent.add_child(blood_stain)

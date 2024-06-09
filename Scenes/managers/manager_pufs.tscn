@@ -1,9 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://cl76bcgy7g0e8"]
+[gd_scene load_steps=3 format=3 uid="uid://cl76bcgy7g0e8"]
 
 [ext_resource type="Script" path="res://Scripts/Managers/manager_pufs.gd" id="1_k17n5"]
+[ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="2_oghow"]
 
 [node name="ManagerPufs" type="Node2D"]
+z_index = 2
+texture_filter = 1
 script = ExtResource("1_k17n5")
+
+[node name="InteractLabel" type="Label" parent="."]
+visible = false
+light_mask = 16
+visibility_layer = 16
+z_index = 20
+texture_filter = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_right = 107.0
+offset_bottom = 16.0
+grow_horizontal = 2
+size_flags_horizontal = 6
+size_flags_vertical = 2
+theme_override_fonts/font = ExtResource("2_oghow")
+text = "Placeholder Text"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TimerSpawn" type="Timer" parent="."]
 

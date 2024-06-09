@@ -21,6 +21,11 @@ const INDEX_RANDOM_SOCIAL_CLASS: int = -1
 const INDEX_RICH_SOCIAL_CLASS: int = 1
 const INDEX_POOR_SOCIAL_CLASS: int = 0
 
+''' Ways of dying of the Pufs'''
+const WAY_DYING_SMASH: String = "smash"
+const WAY_DYING_BY_FALL_PUF: String = "by_fall"
+const WAY_DYING_NEEDS: String = "needs"
+
 ''' Texture puf '''
 const texture_rich_pufs = [
 	PathsHelper.SPRITE_RICH_002, 
@@ -59,27 +64,29 @@ const ANIMATION_DRAG_PUF: String = "Pufs/drag"
 const ANIMATION_DROP_PUF: String = "Pufs/drop"
 const ANIMATION_TERROR_PUF: String = "Pufs/terror"
 const ANIMATION_DEATH_BY_FALL_PUF: String = "Pufs/DBFall"
-const ANIMATION_TO_DIE: String = "Pufs/ToDie"
+const ANIMATION_TO_DIE_PUF: String = "Pufs/ToDie"
+
+const ANIMATION_DEATH_BY_SMASH_PUF: String = "Cursor/DBSmash"
 
 const ANIMATION_PLUS_UI: String = "MinumPlus/plus"
 const ANIMATION_MINUM_UI: String = "MinumPlus/minum"
 const ANIMATION_UP_UI: String = "Pollution/up"
 const ANIMATION_DOWN_UI: String = "Pollution/down"
 
-''' ALL LAYERS 2D '''
+''' All layers 2D '''
 const LAYER_GROUND_2D: int = 0
 const LAYER_ENTITIES_2D: int = 1
 const LAYER_ITEMS_2D: int = 2
 const LAYER_ENVIROMENT_2D: int = 3
 const LAYER_GUI_2D: int = 4
 
-''' LAYERS IN TILEMAP '''
+''' Layers in tilemap '''
 const TILEMAP_LAYER_TYPE_WALL = "wall"
 const TILEMAP_LAYER_TYPE_SPAWN = "spawn"
 const TILEMAP_LAYER_TYPE_OUTLINE = "outline"
 const TILEMAP_LAYER_TYPE_DEATH = "death"
 
-''' PATHS OF TILEMAP LAYERS'''
+''' Paths fo tilemap layers '''
 const TM_LAYER_GROUND: int = 0
 const TM_LAYER_PATHS: int = 1
 
