@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://cxplgw56ji1xh"]
+
+[ext_resource type="Texture2D" uid="uid://bk2dyeemdtrvq" path="res://Resources/UI/Hands/cursores.png" id="1_lwvpt"]
+[ext_resource type="AnimationLibrary" uid="uid://xtu07u24q8mu" path="res://Resources/Animations/Cursor.res" id="2_dg8ly"]
+
+[node name="SmashSprite" type="Sprite2D"]
+texture_filter = 1
+position = Vector2(2, 0)
+texture = ExtResource("1_lwvpt")
+hframes = 7
+frame = 3
+
+[node name="SmashAnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"Cursor": ExtResource("2_dg8ly")
+}
