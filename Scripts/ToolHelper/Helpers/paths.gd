@@ -28,6 +28,7 @@ const CURSOR_CLICK : String =  "res://Resources/UI/Hands/cursor_normal_click.png
 const CURSOR_GRAB: String =  "res://Resources/UI/Hands/cursor_normal_close.png"
 const CURSOR_SMASH: String =  "res://Resources/UI/Hands/cursor_normal_open.png"
 const CURSOR_DEATH: String =  "res://Resources/UI/Hands/cursor_normal_death.png"
+const CURSOR_STOP: String =  "res://Resources/UI/Hands/cursor_normal_stop.png"
 
 ''' PATHS OF ELEMENTS OF UI IN RELATION TO THE MAIN SCENE '''
 const UI_PANEL_TO_SELECTED_AREA: String = ("../UI/PanelDraw")

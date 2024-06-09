@@ -10,7 +10,7 @@ signal cell_unocuppied(cood_cell)
 @export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
 @export var move_grid_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
-@export var move_drag_speed: float = 75 ## Velocidad a la que se desplaza el puf al ser arrastrado
+@export var move_drag_speed: float = 15 ## Velocidad a la que se desplaza el puf al ser arrastrado
 
 var myself: Puf: 
 	get: return myself

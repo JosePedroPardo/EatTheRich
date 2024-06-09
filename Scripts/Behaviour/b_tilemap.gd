@@ -51,9 +51,7 @@ func _ready():
 							death_cells.append(coordinates)
 						astar_grid.set_point_solid(coordinates, cell_point_solid)
 	spawn_cells = get_cells_between(spawn_cells[0], spawn_cells[1]) 
-	for coor_wall in spawn_cells:
-		if spawn_cells.has(coor_wall):
-			spawn_cells.erase(coor_wall)
+
 		# self.set_cell(0,coor_wall,30) # Muestra los espacios intransitables
 	emit_signal("spawn_coordinates", spawn_cells)
 	emit_signal("death_coordinates", death_cells)
@@ -61,6 +59,9 @@ func _ready():
 
 func is_point_death_cells(map_position) -> bool:
 	return death_cells.has(map_position)
+
+func is_point_wall_cells(map_position) -> bool:
+	return wall_cells.has(map_position)
 
 func is_point_walkable_map_local_position(map_position) -> bool:
 	if map_rect.has_point(map_position):
