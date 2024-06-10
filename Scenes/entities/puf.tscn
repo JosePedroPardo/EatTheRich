@@ -221,6 +221,6 @@ debug_color = Color(0.956863, 0, 0.537255, 0.0745098)
 
 [node name="WaitTime" type="Timer" parent="."]
 
-[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="input_event" from="InteractionComponents/AssembleArea" to="." method="_on_assemble_area_input_event"]
 [connection signal="mouse_entered" from="InteractionComponents/AssembleArea" to="." method="_on_assemble_area_mouse_entered"]
 [connection signal="mouse_exited" from="InteractionComponents/AssembleArea" to="." method="_on_assemble_area_mouse_exited"]

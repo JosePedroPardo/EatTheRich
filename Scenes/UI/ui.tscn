@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bg2ohhatacu6c"]
+[gd_scene load_steps=15 format=3 uid="uid://bg2ohhatacu6c"]
 
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="1_0nux4"]
 [ext_resource type="StyleBox" uid="uid://bvrmbi7cgm6yg" path="res://Resources/UI/Paneles/panel_multiple_select.tres" id="1_7mjoj"]
@@ -9,6 +9,7 @@
 [ext_resource type="LabelSettings" uid="uid://c6lssx3ofufsc" path="res://Resources/tres/polution_labels_result.tres" id="6_rsfbn"]
 [ext_resource type="LabelSettings" uid="uid://ch3y84cgejldc" path="res://Resources/tres/year_labels_result.tres" id="7_ggdfu"]
 [ext_resource type="PackedScene" uid="uid://dgfxikjwkkie8" path="res://Scenes/UI/minumplus_anim.tscn" id="9_dpc7w"]
+[ext_resource type="LabelSettings" uid="uid://vvygoxaewh6j" path="res://Resources/tres/secundary_label_settings.tres" id="9_gndac"]
 [ext_resource type="Texture2D" uid="uid://btq5og5qmqd56" path="res://Resources/UI/arrows.png" id="10_o8mrm"]
 [ext_resource type="AnimationLibrary" uid="uid://ge5l8b021ce" path="res://Resources/Animations/Pollution.res" id="11_g2ukp"]
 
@@ -143,22 +144,27 @@ layout_mode = 2
 tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
 icon_alignment = 1
 
-[node name="SuperiorContainer" type="HBoxContainer" parent="."]
-light_mask = 16
-visibility_layer = 16
-texture_filter = 1
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 20.0
-offset_bottom = 104.0
+offset_top = 24.0
+offset_bottom = 97.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-mouse_filter = 2
-theme_override_constants/separation = -2
 alignment = 1
 
-[node name="YearContainer" type="VBoxContainer" parent="SuperiorContainer"]
+[node name="InfoContainer" type="HBoxContainer" parent="VBoxContainer"]
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="YearContainer" type="VBoxContainer" parent="VBoxContainer/InfoContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -166,7 +172,7 @@ size_flags_horizontal = 7
 theme_override_constants/separation = -7
 alignment = 1
 
-[node name="YResult" type="Label" parent="SuperiorContainer/YearContainer" groups=["ui_labels_result"]]
+[node name="YResult" type="Label" parent="VBoxContainer/InfoContainer/YearContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -176,7 +182,7 @@ label_settings = ExtResource("7_ggdfu")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Years" type="Label" parent="SuperiorContainer/YearContainer"]
+[node name="Years" type="Label" parent="VBoxContainer/InfoContainer/YearContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -185,7 +191,7 @@ text = "Year"
 label_settings = ExtResource("5_vmpy2")
 horizontal_alignment = 1
 
-[node name="PollutionContainer" type="VBoxContainer" parent="SuperiorContainer"]
+[node name="PollutionContainer" type="VBoxContainer" parent="VBoxContainer/InfoContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -193,14 +199,14 @@ size_flags_horizontal = 7
 theme_override_constants/separation = -7
 alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SuperiorContainer/PollutionContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/InfoContainer/PollutionContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
 size_flags_horizontal = 4
 alignment = 1
 
-[node name="PResult" type="Label" parent="SuperiorContainer/PollutionContainer/HBoxContainer" groups=["ui_labels_result"]]
+[node name="PResult" type="Label" parent="VBoxContainer/InfoContainer/PollutionContainer/HBoxContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -210,7 +216,7 @@ label_settings = ExtResource("6_rsfbn")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PercentResult" type="Label" parent="SuperiorContainer/PollutionContainer/HBoxContainer"]
+[node name="PercentResult" type="Label" parent="VBoxContainer/InfoContainer/PollutionContainer/HBoxContainer"]
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
@@ -222,7 +228,7 @@ label_settings = ExtResource("7_ggdfu")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Pollution" type="Label" parent="SuperiorContainer/PollutionContainer"]
+[node name="Pollution" type="Label" parent="VBoxContainer/InfoContainer/PollutionContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -231,7 +237,7 @@ text = "Polution"
 label_settings = ExtResource("5_vmpy2")
 horizontal_alignment = 1
 
-[node name="PoblationContainer" type="VBoxContainer" parent="SuperiorContainer"]
+[node name="PoblationContainer" type="VBoxContainer" parent="VBoxContainer/InfoContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -239,24 +245,105 @@ size_flags_horizontal = 7
 theme_override_constants/separation = -7
 alignment = 1
 
-[node name="PoResult" type="Label" parent="SuperiorContainer/PoblationContainer" groups=["ui_labels_result"]]
+[node name="PoResult" type="Label" parent="VBoxContainer/InfoContainer/PoblationContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
+size_flags_vertical = 7
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "0"
 label_settings = ExtResource("7_ggdfu")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Poblation" type="Label" parent="SuperiorContainer/PoblationContainer"]
+[node name="Poblation" type="Label" parent="VBoxContainer/InfoContainer/PoblationContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
+size_flags_vertical = 7
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "Poblation"
 label_settings = ExtResource("5_vmpy2")
 horizontal_alignment = 1
+
+[node name="SubinfoContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="SILeft" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="SICenter" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="SIRight" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -10
+alignment = 1
+
+[node name="PoorPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIRight"]
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="WorkerLabel" type="Label" parent="VBoxContainer/SubinfoContainer/SIRight/PoorPoblation"]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = " workers"
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIRight/PoorPoblation" groups=["ui_labels_result"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "0 "
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 1
+
+[node name="RichPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIRight"]
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="BourgeoisLabel" type="Label" parent="VBoxContainer/SubinfoContainer/SIRight/RichPoblation"]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "bourgeois"
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIRight/RichPoblation" groups=["ui_labels_result"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "0 "
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="AnimationContainer" type="HBoxContainer" parent="."]
 texture_filter = 1

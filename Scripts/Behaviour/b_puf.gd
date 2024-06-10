@@ -206,14 +206,6 @@ func _emit_signal_with_ocuppied_grid_position(current_grid_cell: Vector2, free_o
 	var signal_name = "cell_unocuppied" if free_or_not else "cell_ocuppied"  
 	emit_signal(signal_name, Vector2i(current_grid_cell))
 
-func _on_input_event(viewport, event, shape_idx): #Cuando un evento interactua con el characterbody2D
-	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
-		current_clic_position = get_global_mouse_position()
-		is_dragging = true
-	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
-		is_dragging = false
-
-
 func _on_ocuppied_cells(_ocuppied_cells):
 	ocuppied_cells = _ocuppied_cells
 
@@ -228,6 +220,13 @@ func _on_assemble_area_mouse_entered():
 		_change_interact_ui_label(InteractHelper.INTERACTION_SMASH_TEXT)
 	else: 
 		_reproduce_animation(DefinitionsHelper.ANIMATION_PICK_ME)
+
+func _on_assemble_area_input_event(viewport, event, shape_idx):  #Cuando un evento interactua con el characterbody2D
+	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
+		current_clic_position = get_global_mouse_position()
+		is_dragging = true
+	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
+		is_dragging = false
 
 func _on_assemble_area_mouse_exited():
 	is_mouse_top = false
