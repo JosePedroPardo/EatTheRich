@@ -4,7 +4,7 @@ extends Node
 @export var wait_year: float = 60 ## La duración de un año
 @export var max_pollution: float = 100
 @export var slow_increment: float = wait_year / 100
-@export var debug_invert_pollution: bool = false
+@export var is_debug_invert_pollution: bool = false
 
 var total_rich_pufs: int = 0
 var total_poor_pufs: int = 0
@@ -23,11 +23,13 @@ var poor_pollution: float = 0.033 ## Cantidad de pollution generada por año por
 var building_rich_pollution: float = rich_pollution * 0.3
 var building_poor_pollution: float = poor_pollution * 0.3
 
+@onready var total_pufs: Array
 @onready var ui_labels = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_LABELS_RESULT)
 @onready var ui_years_label = PathsHelper.get_node_by_name(ui_labels, "YResult")
 @onready var ui_pollution_label =  PathsHelper.get_node_by_name(ui_labels, "PResult")
 @onready var ui_poblation_label =  PathsHelper.get_node_by_name(ui_labels, "PoResult")
-@onready var total_pufs: Array
+@onready var ui_poblation_poor_label =  PathsHelper.get_node_by_name(ui_labels, "WResult")
+@onready var ui_poblation_rich_label =  PathsHelper.get_node_by_name(ui_labels, "BResult")
 
 @onready var ui_sprites = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_STATISTICS_ANIMATIONS)
 @onready var year_sprite: Sprite2D = PathsHelper.get_node_by_name(ui_sprites, "YearSprite")
@@ -35,12 +37,15 @@ var building_poor_pollution: float = poor_pollution * 0.3
 @onready var poblation_sprite: Sprite2D = PathsHelper.get_node_by_name(ui_sprites, "PoblationSprite")
 @onready var year_animation_player: AnimationPlayer = year_sprite.get_child(0)
 @onready var poblation_animation_player: AnimationPlayer = poblation_sprite.get_child(0)
-@onready var pollution_sprite_player: AnimationPlayer =pollution_sprite.get_child(0)
+@onready var pollution_sprite_player: AnimationPlayer = pollution_sprite.get_child(0)
 @onready var year_timer: Timer = $YearsTimer
+
+@onready var debug_invert_pollution_button: Button = get_tree().get_first_node_in_group("debug_invert_pollution_button")
 
 func _ready():
 	year_timer.wait_time = wait_year
 	year_timer.start()
+	debug_invert_pollution_button.connect("pressed", Callable(self, "_on_button_debug_invert_pollution_toggled"))
 
 func _process(delta):
 	ui_pollution_label.text = String.num(actual_pollution, 2)
@@ -57,6 +62,8 @@ func _update_poblation():
 			animation_to_play = DefinitionsHelper.ANIMATION_MINUM_UI
 		total_pufs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_PUFS)
 		ui_poblation_label.text = str(total_pufs.size())
+		ui_poblation_poor_label.text = str(total_poor_pufs)
+		ui_poblation_rich_label.text = str(total_rich_pufs)
 		_reproduce_animation(poblation_sprite, poblation_animation_player,animation_to_play, true)
 
 func _change_visibility_sprite(sprite: Sprite2D, visibility: bool):
@@ -81,7 +88,7 @@ func _update_pollution(delta):
 		_change_visibility_sprite(pollution_sprite, false)
 
 func _calculate_total_pollution() -> float:
-	if debug_invert_pollution: 
+	if is_debug_invert_pollution: 
 		return -1 * ((total_rich_pufs + total_rich_buildings) * rich_pollution) + ((total_poor_pufs + total_poor_buildings) * poor_pollution)
 	return ((total_rich_pufs + total_rich_buildings) * rich_pollution) + ((total_poor_pufs + total_poor_buildings) * poor_pollution)
 
@@ -118,6 +125,12 @@ func _on_manager_pufs_born_a_rich():
 func _on_manager_pufs_born_a_poor():
 	total_poor_pufs += 1
 
+func _on_manager_pufs_dead_a_rich():
+	total_rich_pufs -= 1
+	
+func _on_manager_pufs_dead_a_poor():
+	total_poor_pufs -= 1
+
 func _on_years_timer_timeout():
 	year += 1
 	ui_years_label.text = str(year)
@@ -125,3 +138,6 @@ func _on_years_timer_timeout():
 	_reproduce_animation(year_sprite, year_animation_player, DefinitionsHelper.ANIMATION_PLUS_UI, false)
 	var animation_to_play = DefinitionsHelper.ANIMATION_DOWN_UI if actual_pollution > target_pollution else DefinitionsHelper.ANIMATION_UP_UI
 	_update_animations_to_pollution(animation_to_play)
+
+func _on_button_debug_invert_pollution_toggled():
+	is_debug_invert_pollution = !is_debug_invert_pollution

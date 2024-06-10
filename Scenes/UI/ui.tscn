@@ -38,7 +38,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(280, 60)]
+"values": [Vector2(290, 66)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8bhhg"]
@@ -54,95 +54,6 @@ light_mask = 16
 visibility_layer = 16
 texture_filter = 1
 theme_override_styles/panel = ExtResource("1_7mjoj")
-
-[node name="PanelContainer" type="PanelContainer" parent="."]
-visible = false
-light_mask = 16
-visibility_layer = 16
-texture_filter = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_left = 21.0
-offset_top = 109.0
-offset_right = 331.0
-offset_bottom = -429.0
-grow_vertical = 2
-scale = Vector2(0.7, 0.7)
-
-[node name="DebugContainer" type="VBoxContainer" parent="PanelContainer"]
-texture_filter = 1
-layout_mode = 2
-theme_override_constants/separation = -6
-
-[node name="DebugLabels" type="Label" parent="PanelContainer/DebugContainer"]
-texture_filter = 1
-layout_mode = 2
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "Debug_statistics:"
-label_settings = ExtResource("4_hep84")
-
-[node name="FPSContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
-layout_mode = 2
-
-[node name="FPS" type="Label" parent="PanelContainer/DebugContainer/FPSContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "FPS:"
-label_settings = ExtResource("4_hep84")
-
-[node name="F_result" type="Label" parent="PanelContainer/DebugContainer/FPSContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "1920"
-label_settings = ExtResource("5_hwmkk")
-
-[node name="ResolutionContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
-layout_mode = 2
-
-[node name="Resolution" type="Label" parent="PanelContainer/DebugContainer/ResolutionContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "Resolution:"
-label_settings = ExtResource("4_hep84")
-
-[node name="R_result" type="Label" parent="PanelContainer/DebugContainer/ResolutionContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "1920"
-label_settings = ExtResource("5_hwmkk")
-
-[node name="MouseContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
-layout_mode = 2
-
-[node name="MouseMove" type="Label" parent="PanelContainer/DebugContainer/MouseContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "Camera Move Mouse"
-label_settings = ExtResource("4_hep84")
-
-[node name="Button" type="CheckButton" parent="PanelContainer/DebugContainer/MouseContainer"]
-light_mask = 16
-visibility_layer = 16
-layout_mode = 2
-tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
-button_pressed = true
-icon_alignment = 1
-
-[node name="InvertContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
-layout_mode = 2
-
-[node name="InvertPollution" type="Label" parent="PanelContainer/DebugContainer/InvertContainer"]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "Invert Pollution"
-label_settings = ExtResource("4_hep84")
-
-[node name="Button" type="CheckButton" parent="PanelContainer/DebugContainer/InvertContainer"]
-light_mask = 16
-visibility_layer = 16
-layout_mode = 2
-tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
-icon_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchors_preset = 10
@@ -161,10 +72,9 @@ texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
-theme_override_constants/separation = 0
 alignment = 1
 
-[node name="YearContainer" type="VBoxContainer" parent="VBoxContainer/InfoContainer"]
+[node name="PoblationContainer" type="VBoxContainer" parent="VBoxContainer/InfoContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -172,22 +82,24 @@ size_flags_horizontal = 7
 theme_override_constants/separation = -7
 alignment = 1
 
-[node name="YResult" type="Label" parent="VBoxContainer/InfoContainer/YearContainer" groups=["ui_labels_result"]]
+[node name="PoResult" type="Label" parent="VBoxContainer/InfoContainer/PoblationContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
+size_flags_vertical = 7
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "0"
 label_settings = ExtResource("7_ggdfu")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Years" type="Label" parent="VBoxContainer/InfoContainer/YearContainer"]
+[node name="Poblation" type="Label" parent="VBoxContainer/InfoContainer/PoblationContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
+size_flags_vertical = 7
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "Year"
+text = "Poblation"
 label_settings = ExtResource("5_vmpy2")
 horizontal_alignment = 1
 
@@ -237,7 +149,7 @@ text = "Polution"
 label_settings = ExtResource("5_vmpy2")
 horizontal_alignment = 1
 
-[node name="PoblationContainer" type="VBoxContainer" parent="VBoxContainer/InfoContainer"]
+[node name="YearContainer" type="VBoxContainer" parent="VBoxContainer/InfoContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -245,30 +157,93 @@ size_flags_horizontal = 7
 theme_override_constants/separation = -7
 alignment = 1
 
-[node name="PoResult" type="Label" parent="VBoxContainer/InfoContainer/PoblationContainer" groups=["ui_labels_result"]]
+[node name="YResult" type="Label" parent="VBoxContainer/InfoContainer/YearContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
-size_flags_vertical = 7
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "0"
 label_settings = ExtResource("7_ggdfu")
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="Poblation" type="Label" parent="VBoxContainer/InfoContainer/PoblationContainer"]
+[node name="Years" type="Label" parent="VBoxContainer/InfoContainer/YearContainer"]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
-size_flags_vertical = 7
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "Poblation"
+text = "Year"
 label_settings = ExtResource("5_vmpy2")
 horizontal_alignment = 1
 
 [node name="SubinfoContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 alignment = 1
+
+[node name="SIPoblation" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = -10
+alignment = 1
+
+[node name="PoorPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIPoblation"]
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="WorkerLabel" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/PoorPoblation"]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = " workers"
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/PoorPoblation" groups=["ui_labels_result"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "0 "
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 1
+
+[node name="RichPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIPoblation"]
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="BourgeoisLabel" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/RichPoblation"]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "bourgeois"
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/RichPoblation" groups=["ui_labels_result"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "0 "
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="SILeft" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
 layout_mode = 2
@@ -280,70 +255,89 @@ layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="SIRight" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = -10
-alignment = 1
-
-[node name="PoorPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIRight"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+visible = false
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
 layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 3
-alignment = 1
 
-[node name="WorkerLabel" type="Label" parent="VBoxContainer/SubinfoContainer/SIRight/PoorPoblation"]
-light_mask = 16
-visibility_layer = 16
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = " workers"
-label_settings = ExtResource("9_gndac")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="WResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIRight/PoorPoblation" groups=["ui_labels_result"]]
-light_mask = 16
-visibility_layer = 16
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "0 "
-label_settings = ExtResource("9_gndac")
-horizontal_alignment = 1
-
-[node name="RichPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIRight"]
-light_mask = 16
-visibility_layer = 16
+[node name="DebugContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer"]
 texture_filter = 1
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/separation = -6
 alignment = 1
 
-[node name="BourgeoisLabel" type="Label" parent="VBoxContainer/SubinfoContainer/SIRight/RichPoblation"]
-light_mask = 16
-visibility_layer = 16
+[node name="DebugLabels" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer"]
+texture_filter = 1
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "bourgeois"
-label_settings = ExtResource("9_gndac")
-horizontal_alignment = 1
-vertical_alignment = 1
+text = "Debug_statistics:"
+label_settings = ExtResource("4_hep84")
 
-[node name="BResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIRight/RichPoblation" groups=["ui_labels_result"]]
+[node name="FPSContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="FPS" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer/FPSContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "FPS:"
+label_settings = ExtResource("4_hep84")
+
+[node name="F_result" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer/FPSContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "1920"
+label_settings = ExtResource("5_hwmkk")
+
+[node name="ResolutionContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="Resolution" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer/ResolutionContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Resolution:"
+label_settings = ExtResource("4_hep84")
+
+[node name="R_result" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer/ResolutionContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "1920"
+label_settings = ExtResource("5_hwmkk")
+
+[node name="MouseContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="MouseMove" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer/MouseContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Camera Move Mouse"
+label_settings = ExtResource("4_hep84")
+
+[node name="Button" type="CheckButton" parent="VBoxContainer/PanelContainer/DebugContainer/MouseContainer" groups=["debug_move_mouse"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
-size_flags_horizontal = 3
+tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
+icon_alignment = 1
+
+[node name="InvertContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="InvertPollution" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer/InvertContainer"]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "0 "
-label_settings = ExtResource("9_gndac")
-horizontal_alignment = 1
-vertical_alignment = 1
+text = "Invert Pollution"
+label_settings = ExtResource("4_hep84")
+
+[node name="Button" type="CheckButton" parent="VBoxContainer/PanelContainer/DebugContainer/InvertContainer" groups=["debug_invert_pollution_button"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
+icon_alignment = 1
 
 [node name="AnimationContainer" type="HBoxContainer" parent="."]
 texture_filter = 1
@@ -357,39 +351,6 @@ size_flags_vertical = 3
 mouse_filter = 2
 alignment = 1
 
-[node name="YearContainer" type="VBoxContainer" parent="AnimationContainer"]
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 5
-theme_override_constants/separation = -7
-alignment = 1
-
-[node name="YearSprite" parent="AnimationContainer/YearContainer" groups=["ui_statistics_animations"] instance=ExtResource("9_dpc7w")]
-visible = false
-light_mask = 16
-visibility_layer = 16
-position = Vector2(260, 50)
-
-[node name="PollutionContainer" type="VBoxContainer" parent="AnimationContainer"]
-layout_mode = 2
-size_flags_horizontal = 7
-size_flags_vertical = 5
-theme_override_constants/separation = -7
-alignment = 1
-
-[node name="PollutionSprite" type="Sprite2D" parent="AnimationContainer/PollutionContainer" groups=["ui_statistics_animations"]]
-visible = false
-position = Vector2(280, 60)
-scale = Vector2(1.3, 1.3)
-texture = ExtResource("10_o8mrm")
-hframes = 2
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimationContainer/PollutionContainer/PollutionSprite"]
-libraries = {
-"": SubResource("AnimationLibrary_8bhhg"),
-"Pollution": ExtResource("11_g2ukp")
-}
-
 [node name="PoblationContainer" type="VBoxContainer" parent="AnimationContainer"]
 layout_mode = 2
 size_flags_horizontal = 7
@@ -402,3 +363,39 @@ visible = false
 light_mask = 16
 visibility_layer = 16
 position = Vector2(285, 50)
+
+[node name="PollutionContainer" type="VBoxContainer" parent="AnimationContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+theme_override_constants/separation = -7
+alignment = 1
+
+[node name="PollutionSprite" type="Sprite2D" parent="AnimationContainer/PollutionContainer" groups=["ui_statistics_animations"]]
+light_mask = 32
+visibility_layer = 32
+texture_filter = 1
+position = Vector2(290, 66)
+scale = Vector2(2, 2)
+texture = ExtResource("10_o8mrm")
+hframes = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimationContainer/PollutionContainer/PollutionSprite"]
+libraries = {
+"": SubResource("AnimationLibrary_8bhhg"),
+"Pollution": ExtResource("11_g2ukp")
+}
+
+[node name="YearContainer" type="VBoxContainer" parent="AnimationContainer"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 5
+theme_override_constants/separation = -7
+alignment = 1
+
+[node name="YearSprite" parent="AnimationContainer/YearContainer" groups=["ui_statistics_animations"] instance=ExtResource("9_dpc7w")]
+visible = false
+light_mask = 16
+visibility_layer = 16
+position = Vector2(260, 50)

@@ -5,6 +5,8 @@ signal ocuppied_cells_array(ocuppied_cells: Array[Vector2i])
 signal born_puf()
 signal born_a_rich()
 signal born_a_poor()
+signal dead_a_rich()
+signal dead_a_poor()
 signal update_current_total_pufs(pufs: Array[Node2D])
 signal celebration_all_pufs()
 
@@ -21,6 +23,8 @@ var ocuppied_cells: Array[Vector2i]
 var rich_pufs: Array[Node2D] 
 var poor_pufs: Array[Node2D] 
 var current_pufs: Array[Node2D]
+var rich_pufs_adjacent: Array[Node2D]
+var poor_pufs_adjacent: Array[Node2D]
 
 var is_picked_up: bool = false
 var is_spawn_initial_pufs: bool = true # Cuando se pone a false, comienzan a spawnear únicamente ricos
@@ -59,13 +63,13 @@ func _born_a_puf():
 	_emit_signal_according_born_social_class_puf(new_puf)
 	_save_puf_in_array(new_puf, current_pufs)
 	
-	new_puf.connect("puf_selected", Callable(self, "_on_puf_selected"))
-	new_puf.connect("puf_deselected", Callable(self, "_on_puf_deselected"))
 	new_puf.connect("puf_dragging", Callable(self, "_on_puf_dragging"))
 	new_puf.connect("puf_undragging", Callable(self, "_on_puf_undragging"))
 	new_puf.connect("cell_ocuppied", Callable(self, "_on_ocupied_cell"))
 	new_puf.connect("cell_unocuppied", Callable(self, "_on_unocupied_cell"))
 	new_puf.connect("puf_smashed", Callable(self, "_on_puf_smashed"))
+	new_puf.connect("pufs_rich_at_my_side", Callable(self, "_on_pufs_rich_at_my_side"))
+	new_puf.connect("pufs_poor_at_my_side", Callable(self, "_on_pufs_poor_at_my_side"))
 	parent.add_child(new_puf)
 
 func _emit_signal_according_born_social_class_puf(new_puf):
@@ -142,6 +146,13 @@ func _on_tile_map_spawn_coordinates(spawn_coordinates):
 func _on_puf_smashed(death_puf: Node2D):
 	_put_blood_stain(death_puf.position)
 	emit_signal("celebration_all_pufs", DefinitionsHelper.TYPE_CELEBRATION_SMASH_PUF)
+	dead_a_rich.emit()
+
+func _on_pufs_rich_at_my_side(pufs: Array[Node2D]):
+	rich_pufs_adjacent = pufs
+
+func _on_pufs_poor_at_my_side(pufs: Array[Node2D]):
+	poor_pufs_adjacent = pufs
 
 func _put_blood_stain(death_position: Vector2i):
 	emit_signal("update_current_total_pufs", current_pufs.size())

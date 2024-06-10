@@ -33,5 +33,7 @@ spawn_time = 0.2
 [connection signal="born_a_poor" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_born_a_poor"]
 [connection signal="born_a_rich" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_born_a_rich"]
 [connection signal="born_puf" from="ManagerPufs" to="TileMap" method="_on_manager_pufs_born_puf"]
+[connection signal="dead_a_poor" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_dead_a_poor"]
+[connection signal="dead_a_rich" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_dead_a_rich"]
 [connection signal="ocuppied_coordinates" from="TileMap" to="ManagerPufs" method="_on_tile_map_ocuppied_coordinates"]
 [connection signal="spawn_coordinates" from="TileMap" to="ManagerPufs" method="_on_tile_map_spawn_coordinates"]

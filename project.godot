@@ -113,9 +113,10 @@ debug_mode={
 
 2d_render/layer_1="Ground"
 2d_render/layer_2="Entities"
-2d_render/layer_3="Items"
-2d_render/layer_4="Enviroment"
-2d_render/layer_5="GUI"
+2d_render/layer_3="Grass"
+2d_render/layer_4="Items"
+2d_render/layer_5="Enviroment"
+2d_render/layer_6="GUI"
 2d_physics/layer_1="Ground"
 2d_navigation/layer_1="Ground"
 2d_physics/layer_2="Entities"
@@ -126,3 +127,7 @@ debug_mode={
 2d_navigation/layer_4="Enviroment"
 2d_physics/layer_5="GUI"
 2d_navigation/layer_5="GUI"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.129412, 0.129412, 0.137255, 1)

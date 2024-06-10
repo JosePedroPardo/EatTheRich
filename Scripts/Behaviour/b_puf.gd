@@ -3,14 +3,20 @@ extends CharacterBody2D
 signal cell_ocuppied(cood_cell: Vector2i)
 signal cell_unocuppied(cood_cell: Vector2i)
 signal puf_dead(puf: Vector2i)
+signal puf_smashed(puf: Node2D)
+signal pufs_rich_at_my_side(puf_rich_at_my_side: Array[Node2D])
+signal pufs_poor_at_my_side(puf_poor_at_my_side: Array[Node2D])
 signal puf_dragging
 signal puf_undragging
-signal puf_smashed(puf: Node2D)
 
+@export var minimum_poor_pufs_to_join: int = 3 ## Unidades mínimas de puf pobres para unirse
+@export var minimum_rich_pufs_to_join: int = 2 ## Unidades mínimas de puf ricos para unirse
 @export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
+@export var wait_time_finish_celebration: float = 2 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
 @export var move_grid_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
 @export var move_drag_speed: float = 80 ## Velocidad a la que se desplaza el puf al ser arrastrado
+@export var degress_rotation: float = 90 ## Grados de rotación del sprite al arrastrarlo
 
 var myself: Puf: 
 	get: return myself
@@ -31,6 +37,8 @@ var is_can_grid_move: bool = false
 var is_your_moving: bool = false
 var is_look_to_target_position: bool = false
 var is_mouse_top: bool = false
+var puf_rich_at_my_side: Array[Node2D]
+var puf_poor_at_my_side: Array[Node2D]
 var ocuppied_cells: Array[Vector2i]
 var death_cells: Array[Vector2i]
 var current_paths: Array[Vector2i]
@@ -39,23 +47,22 @@ var global_cursor_map_position_relative_local_tilemap: Vector2i
 var local_cursor_map_position_relative_local_tilemap: Vector2i
 var global_cursor_map_position_relative_global_tilemap: Vector2i
 var current_position_relative_to_local_tilemap: Vector2i
-var look_at_position: Vector2
 var current_clic_position: Vector2
 var target_grid_position: Vector2
 
-@onready var sprite_puf: Sprite2D = $SpritePuf
-@onready var smash_sprite: Sprite2D = $SmashSprite
-@onready var outline_select_sprite: AnimatedSprite2D = $SelectedPuf
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var smash_animation_player: AnimationPlayer = smash_sprite.get_child(0)
 @onready var wait_timer: Timer = $WaitTime
+@onready var interact_label: Label = $InteractLabel
+@onready var name_label: Label = $NameLabel
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var manager_puf: Node2D = get_node(PathsHelper.MANAGER_PUF_PATH)
+@onready var smash_sprite: Sprite2D = $SmashSprite
+@onready var sprite_puf: Sprite2D = $SpritePuf
+@onready var smash_animation_player: AnimationPlayer = smash_sprite.get_child(0)
 @onready var assemble_area: CollisionShape2D = $InteractionComponents/AssembleArea/AssembleShape
 @onready var repulsion_area: CollisionShape2D = $InteractionComponents/RepulsionArea/RepulsionShape
 @onready var shape_puf: CollisionShape2D = $ShapePuf
-@onready var manager_puf: Node2D = get_node(PathsHelper.MANAGER_PUF_PATH)
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
-@onready var interact_label: Label = $InteractLabel
 
 func _init():
 	myself = Puf.new(social_class, is_baby)
@@ -82,22 +89,29 @@ func _process(delta):
 				_change_interact_ui_label(InteractHelper.INTERACTION_ASSEMBLE_TEXT)
 
 func _physics_process(delta):
+	if not is_myself_rich():
+		if not puf_poor_at_my_side.is_empty():
+			print(puf_poor_at_my_side.size() % minimum_poor_pufs_to_join)
+			if (puf_poor_at_my_side.size() % minimum_poor_pufs_to_join) == 0:
+				_assemble_pufs()
 	if is_dragging:
 		current_clic_position = get_global_mouse_position()
 		_move_to_clic_position_according_to_speed(current_clic_position, move_drag_speed)
 		_look_to_mouse(current_clic_position)
-		_rotate_to_mouse(current_clic_position)
+	else: _stop_rotation()
+
+func _assemble_pufs():
+	var interact_text: String = ""
+	match puf_poor_at_my_side.size():
+		minimum_poor_pufs_to_join: interact_text = InteractHelper.INTERACTION_ASSEMBLE_TEXT
+		_: interact_text = InteractHelper.INTERACTION_ASSEMBLE_TEXT
+	_change_interact_ui_label(interact_text)
 
 func _look_to_mouse(clic_position: Vector2):
 	sprite_puf.flip_h = clic_position.x < 0
 
-func _rotate_to_mouse(clic_position: Vector2):
-	if is_dragging:
-		var direction = (clic_position - self.position).normalized()
-		var angle_to_rotate = direction.angle() - self.rotation
-		if abs(angle_to_rotate) > 60:
-			angle_to_rotate = sign(angle_to_rotate) * 60
-		sprite_puf.rotation += angle_to_rotate
+func _stop_rotation():
+	sprite_puf.rotation = 0
 
 func _is_position_free(current_position: Vector2i) -> bool:
 	current_position = tilemap.map_to_local(current_position)
@@ -206,14 +220,45 @@ func _emit_signal_with_ocuppied_grid_position(current_grid_cell: Vector2, free_o
 	var signal_name = "cell_unocuppied" if free_or_not else "cell_ocuppied"  
 	emit_signal(signal_name, Vector2i(current_grid_cell))
 
+func _emit_signal_to_rich_at_my_side(body, is_add: bool):
+	if body != self:
+		if is_add:
+			if not puf_rich_at_my_side.has(body):
+				puf_rich_at_my_side.append(body)
+				emit_signal("pufs_rich_at_my_side", puf_rich_at_my_side)
+		else: 
+			if puf_rich_at_my_side.has(body):
+				puf_rich_at_my_side.erase(body)
+	emit_signal("pufs_rich_at_my_side", puf_rich_at_my_side)
+
+func _emit_signal_to_poor_at_my_side(body, is_add: bool):
+	if body != self:
+		if is_add:
+			if puf_poor_at_my_side.has(body):
+				puf_poor_at_my_side.append(body)
+				print(puf_poor_at_my_side)
+		else: 
+			if puf_poor_at_my_side.has(body):
+				puf_poor_at_my_side.erase(body)
+	emit_signal("pufs_poor_at_my_side", puf_poor_at_my_side)
+
+func _on_mouse_area_input_event(viewport, event, shape_idx):  #Cuando un evento interactua con el area
+	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
+		current_clic_position = get_global_mouse_position()
+		is_dragging = true
+		_look_to_mouse(current_clic_position)
+	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
+		is_dragging = false
+
 func _on_ocuppied_cells(_ocuppied_cells):
 	ocuppied_cells = _ocuppied_cells
 
 func _on_death_cells(_death_cells):
 	death_cells = _death_cells
 
-func _on_assemble_area_mouse_entered():
+func _on_mouse_area_mouse_entered():
 	is_mouse_top = true
+	name_label.text = get_name_of_puf()
 	self.position.y += -2
 	if is_myself_rich():
 		_reproduce_animation(DefinitionsHelper.ANIMATION_TERROR_PUF)
@@ -221,15 +266,9 @@ func _on_assemble_area_mouse_entered():
 	else: 
 		_reproduce_animation(DefinitionsHelper.ANIMATION_PICK_ME)
 
-func _on_assemble_area_input_event(viewport, event, shape_idx):  #Cuando un evento interactua con el characterbody2D
-	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
-		current_clic_position = get_global_mouse_position()
-		is_dragging = true
-	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
-		is_dragging = false
-
-func _on_assemble_area_mouse_exited():
+func _on_mouse_area_mouse_exited():
 	is_mouse_top = false
+	name_label.text = ""
 	self.position.y += +2
 	if is_myself_rich():
 		_reproduce_animation(DefinitionsHelper.ANIMATION_DROP_PUF)
@@ -245,8 +284,30 @@ func _on_celebration_all_pufs(type_celebration: String):
 		DefinitionsHelper.TYPE_CELEBRATION_SMASH_PUF:
 			if not is_myself_rich(): animation_to_play = DefinitionsHelper.ANIMATION_CELEBRATION_PUF
 			else: animation_to_play = DefinitionsHelper.ANIMATION_TERROR_PUF
+			await get_tree().create_timer(1).timeout
 			_reproduce_animation(animation_to_play)
-	_add_animation_to_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
+	await get_tree().create_timer(wait_time_finish_celebration).timeout
+	_reproduce_animation(DefinitionsHelper.ANIMATION_IDLE_PUF)
+
+func _on_repulsion_area_body_entered(body):
+	if body != self:
+		pass
+
+func _on_repulsion_area_body_exited(body):
+	if body != self:
+		pass
+
+func _on_assemble_area_body_entered(body):
+	if is_myself_rich():
+		_emit_signal_to_rich_at_my_side(body, true)
+	else: _emit_signal_to_poor_at_my_side(body, true)
+
+func _on_assemble_area_body_exited(body):
+	if is_myself_rich():
+		_emit_signal_to_rich_at_my_side(body, false)
+	else: _emit_signal_to_poor_at_my_side(body, false)
+
+
 
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():

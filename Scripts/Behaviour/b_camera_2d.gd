@@ -22,14 +22,13 @@ var start_v: Vector2 = Vector2()
 var end: Vector2 = Vector2()
 var end_v: Vector2 = Vector2()
 var is_dragging: bool = false
-var is_mouse_move: bool = true
+var is_mouse_move: bool = false
 
 @onready var box: Panel = get_node(PathsHelper.UI_PANEL_TO_SELECTED_AREA)
-@onready var mouse_camera_button: Button = get_node(PathsHelper.UI_TOOGLE_BUTTON_MOUSE_CAMERA)
+@onready var mouse_camera_button: Button = get_tree().get_first_node_in_group("debug_move_mouse")
 
 func _ready():
 	mouse_camera_button.connect("pressed", Callable(self, "_on_toogle_button_changes_mouse_move"))
-	connect("area_selected", Callable(get_parent(), "_on_area_selected"))
 
 func _process(delta):
 	zoom_camera(delta)

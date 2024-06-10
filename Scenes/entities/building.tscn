@@ -19,8 +19,10 @@ shape = SubResource("RectangleShape2D_6hl1c")
 texture_filter = 1
 texture = ExtResource("2_gnhk0")
 hframes = 8
-vframes = 2
+vframes = 5
 region_rect = Rect2(16, 16, 0, 0)
+
+[node name="WindmillSprite" type="AnimatedSprite2D" parent="."]
 
 [node name="CaptationArea" type="Area2D" parent="."]
 light_mask = 2
