@@ -18,6 +18,8 @@ wait_year = 3.0
 
 [node name="Camera2D" parent="." instance=ExtResource("3_ornbr")]
 position = Vector2(656, 352)
+drag_horizontal_enabled = false
+drag_vertical_enabled = false
 multiplier_speed = 5.0
 zoom_speed = 8.0
 edge_margin = 40

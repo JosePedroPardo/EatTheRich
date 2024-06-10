@@ -21,6 +21,9 @@ const INDEX_RANDOM_SOCIAL_CLASS: int = -1
 const INDEX_RICH_SOCIAL_CLASS: int = 1
 const INDEX_POOR_SOCIAL_CLASS: int = 0
 
+'''  Type of celebration puf'''
+const TYPE_CELEBRATION_SMASH_PUF: String = "smash"
+
 ''' Ways of dying of the Pufs'''
 const WAY_DYING_SMASH: String = "smash"
 const WAY_DYING_BY_FALL_PUF: String = "by_fall"
@@ -63,10 +66,14 @@ const ANIMATION_SICK_PUF: String = "Pufs/sick"
 const ANIMATION_DRAG_PUF: String = "Pufs/drag"
 const ANIMATION_DROP_PUF: String = "Pufs/drop"
 const ANIMATION_TERROR_PUF: String = "Pufs/terror"
+const ANIMATION_CELEBRATION_PUF: String = "Pufs/celebration"
+const ANIMATION_PICK_ME: String = "Pufs/pick_me"
+const ANIMATION_JUMP_PUF: String = "Pufs/jump"
 const ANIMATION_DEATH_BY_FALL_PUF: String = "Pufs/DBFall"
 const ANIMATION_TO_DIE_PUF: String = "Pufs/ToDie"
+const ANIMATION_DEATH_BY_SMASH_PUF: String = "Pufs/DBSmash"
 
-const ANIMATION_DEATH_BY_SMASH_PUF: String = "Cursor/DBSmash"
+const ANIMATION_DEATH_BY_SMASH_CURSOR: String = "Cursor/DBSmash"
 
 const ANIMATION_PLUS_UI: String = "MinumPlus/plus"
 const ANIMATION_MINUM_UI: String = "MinumPlus/minum"
@@ -92,6 +99,7 @@ const TM_LAYER_PATHS: int = 1
 
 ''' Names of groups'''
 const GROUP_PUFS: String = "pufs"
+const GROUP_MANAGER_PUFS: String = "manager_pufs"
 const GROUP_UI_LABELS_RESULT: String = "ui_labels_result"
 const GROUP_UI_STATISTICS_ANIMATIONS: String = "ui_statistics_animations"
 const GROUP_TILEMAP: String = "tilemap"

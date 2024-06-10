@@ -3,11 +3,11 @@
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="1_0nux4"]
 [ext_resource type="StyleBox" uid="uid://bvrmbi7cgm6yg" path="res://Resources/UI/Paneles/panel_multiple_select.tres" id="1_7mjoj"]
 [ext_resource type="Script" path="res://Scripts/ui.gd" id="1_a8sun"]
-[ext_resource type="LabelSettings" uid="uid://bvd1eag1a4sun" path="res://Scenes/tres/debug_labels.tres" id="4_hep84"]
-[ext_resource type="LabelSettings" uid="uid://dscjv5p181cqc" path="res://Scenes/tres/debug_labels_result.tres" id="5_hwmkk"]
-[ext_resource type="LabelSettings" uid="uid://u6qs3exbx532" path="res://Scenes/tres/text_ui_labels.tres" id="5_vmpy2"]
-[ext_resource type="LabelSettings" uid="uid://c6lssx3ofufsc" path="res://Scenes/tres/polution_labels_result.tres" id="6_rsfbn"]
-[ext_resource type="LabelSettings" uid="uid://ch3y84cgejldc" path="res://Scenes/tres/year_labels_result.tres" id="7_ggdfu"]
+[ext_resource type="LabelSettings" uid="uid://bvd1eag1a4sun" path="res://Resources/tres/debug_labels.tres" id="4_hep84"]
+[ext_resource type="LabelSettings" uid="uid://dscjv5p181cqc" path="res://Resources/tres/debug_labels_result.tres" id="5_hwmkk"]
+[ext_resource type="LabelSettings" uid="uid://u6qs3exbx532" path="res://Resources/tres/text_ui_labels.tres" id="5_vmpy2"]
+[ext_resource type="LabelSettings" uid="uid://c6lssx3ofufsc" path="res://Resources/tres/polution_labels_result.tres" id="6_rsfbn"]
+[ext_resource type="LabelSettings" uid="uid://ch3y84cgejldc" path="res://Resources/tres/year_labels_result.tres" id="7_ggdfu"]
 [ext_resource type="PackedScene" uid="uid://dgfxikjwkkie8" path="res://Scenes/UI/minumplus_anim.tscn" id="9_dpc7w"]
 [ext_resource type="Texture2D" uid="uid://btq5og5qmqd56" path="res://Resources/UI/arrows.png" id="10_o8mrm"]
 [ext_resource type="AnimationLibrary" uid="uid://ge5l8b021ce" path="res://Resources/Animations/Pollution.res" id="11_g2ukp"]
@@ -55,6 +55,7 @@ texture_filter = 1
 theme_override_styles/panel = ExtResource("1_7mjoj")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
+visible = false
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
@@ -124,6 +125,22 @@ visibility_layer = 16
 layout_mode = 2
 tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
 button_pressed = true
+icon_alignment = 1
+
+[node name="InvertContainer" type="HBoxContainer" parent="PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="InvertPollution" type="Label" parent="PanelContainer/DebugContainer/InvertContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Invert Pollution"
+label_settings = ExtResource("4_hep84")
+
+[node name="Button" type="CheckButton" parent="PanelContainer/DebugContainer/InvertContainer"]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
 icon_alignment = 1
 
 [node name="SuperiorContainer" type="HBoxContainer" parent="."]

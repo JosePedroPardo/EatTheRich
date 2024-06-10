@@ -1,14 +1,11 @@
 extends CharacterBody2D
 
-signal puf_selected(puf: Node2D)
-signal puf_deselected(puf: Node2D)
 signal cell_ocuppied(cood_cell: Vector2i)
 signal cell_unocuppied(cood_cell: Vector2i)
 signal puf_dead(puf: Vector2i)
 signal puf_dragging
 signal puf_undragging
-signal puf_smashed(puf: Vector2i)
-signal change_interaction_label(text: String)
+signal puf_smashed(puf: Node2D)
 
 @export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
 @export var can_assemble: bool = false
@@ -23,11 +20,7 @@ var is_baby: bool = false:
 	get: return is_baby
 	set(_is_baby):
 		is_baby = _is_baby
-var is_selected: bool = false:
-	get:
-		return is_selected
-	set(new_bool):
-		is_selected = new_bool
+
 var social_class: int = DefinitionsHelper.INDEX_RANDOM_SOCIAL_CLASS:
 	set(_social_class):
 		social_class = _social_class
@@ -37,7 +30,6 @@ var is_dragging: bool = false
 var is_can_grid_move: bool = false
 var is_your_moving: bool = false
 var is_look_to_target_position: bool = false
-var im_alive: bool = true
 var is_mouse_top: bool = false
 var ocuppied_cells: Array[Vector2i]
 var death_cells: Array[Vector2i]
@@ -63,6 +55,7 @@ var target_grid_position: Vector2
 @onready var manager_puf: Node2D = get_node(PathsHelper.MANAGER_PUF_PATH)
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
+@onready var interact_label: Label = $InteractLabel
 
 func _init():
 	myself = Puf.new(social_class, is_baby)
@@ -73,56 +66,38 @@ func _ready():
 	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 	initial_grid_cell = tilemap.local_to_map(self.position)
 	manager_puf.connect("ocuppied_cells_array", Callable(self, "_on_ocuppied_cells"))
+	manager_puf.connect("celebration_all_pufs", Callable(self, "_on_celebration_all_pufs"))
 	emit_signal("cell_ocuppied", initial_grid_cell)
 	tilemap.connect("death_coordinates", Callable(self, "_on_death_cells"))
 
 func _process(delta):
-	if not im_alive:
-		return
-	
+	_update_all_position_grid()
 	if is_mouse_top:
 		if is_myself_rich():
 			if Input.is_action_just_pressed(InputsHelper.SMASH_PUF):
 				_smash_rich()
 				_die(way_diying)
-				
-	
-	_update_all_position_grid()
-	if is_selected: 
-		if is_your_moving and is_look_to_target_position: _look_to_mouse(look_at_position)
-		else: _look_to_mouse(get_local_mouse_position())
-		if is_can_grid_move: 
-			_move_to_grid_position_through_current_paths()
-	
-	if Input.is_action_just_pressed(InputsHelper.ASSEMBLE_PUF) and can_assemble:
-		print("se juntan")
+		else: 
+			if Input.is_action_just_pressed(InputsHelper.ASSEMBLE_PUF) and can_assemble:
+				_change_interact_ui_label(InteractHelper.INTERACTION_ASSEMBLE_TEXT)
 
 func _physics_process(delta):
 	if is_dragging:
 		current_clic_position = get_global_mouse_position()
 		_move_to_clic_position_according_to_speed(current_clic_position, move_drag_speed)
-		_look_to_mouse(current_clic_position)	
-	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
-		current_clic_position = get_global_mouse_position()
-		_to_where_i_look() 
-		if is_selected:
-			_calculate_current_paths_through_clic_position(current_clic_position)
-
-func _on_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				_mouse_button_pressed()
-			else:
-				_mouse_button_released()
-			if is_myself_rich():
-				_emit_signal_with_when_dragging()
-
-func _to_where_i_look():
-	look_at_position = get_local_mouse_position()
+		_look_to_mouse(current_clic_position)
+		_rotate_to_mouse(current_clic_position)
 
 func _look_to_mouse(clic_position: Vector2):
 	sprite_puf.flip_h = clic_position.x < 0
+
+func _rotate_to_mouse(clic_position: Vector2):
+	if is_dragging:
+		var direction = (clic_position - self.position).normalized()
+		var angle_to_rotate = direction.angle() - self.rotation
+		if abs(angle_to_rotate) > 60:
+			angle_to_rotate = sign(angle_to_rotate) * 60
+		sprite_puf.rotation += angle_to_rotate
 
 func _is_position_free(current_position: Vector2i) -> bool:
 	current_position = tilemap.map_to_local(current_position)
@@ -133,8 +108,11 @@ func _is_death_position(current_position: Vector2i) -> bool:
 	return not tilemap.is_point_death_cells(current_position)
 
 func _move_to_clic_position_according_to_speed(clic_position: Vector2, speed: float):
-	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_TERROR_PUF)
+	var animation_to_play = ""
 	var direction = (tilemap.map_to_local(tilemap.local_to_map(clic_position)) - self.position).normalized()
+	if is_myself_rich(): animation_to_play = DefinitionsHelper.ANIMATION_TERROR_PUF
+	else: animation_to_play = DefinitionsHelper.ANIMATION_JUMP_PUF
+	_reproduce_animation(animation_to_play)
 	self.velocity = (direction * speed)
 	move_and_slide()
 
@@ -152,51 +130,25 @@ func _move_to_grid_position_through_current_paths():
 		is_your_moving = false
 		is_look_to_target_position = false
 		return
-	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_RUN_PUF)
+	_reproduce_animation(DefinitionsHelper.ANIMATION_RUN_PUF)
 	var target_position = tilemap.map_to_local(current_paths.front())
 	is_look_to_target_position = true
 	_emit_signal_with_ocuppied_grid_position(tilemap.local_to_map(self.global_position), true)
 	self.global_position = self.global_position.move_toward(target_position, move_grid_speed)
 	await get_tree().create_timer(wait_time_move).timeout
 	if self.global_position == target_position:
-		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
+		_reproduce_animation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 		is_your_moving = true
 		current_paths.pop_front()
 		_emit_signal_with_ocuppied_grid_position(target_position, true)
 
-func _reproduce_animation_according_to_situation(situation: String):
-	var animation: String = DefinitionsHelper.ANIMATION_IDLE_PUF
-	match situation:
-		DefinitionsHelper.ANIMATION_SELECTED_PUF: animation = DefinitionsHelper.ANIMATION_SELECTED_PUF
-		DefinitionsHelper.ANIMATION_WALK_PUF: animation = DefinitionsHelper.ANIMATION_WALK_PUF
-		DefinitionsHelper.ANIMATION_RUN_PUF: animation = DefinitionsHelper.ANIMATION_RUN_PUF
-		DefinitionsHelper.ANIMATION_RESET_PUF: animation = DefinitionsHelper.ANIMATION_RESET_PUF
-		DefinitionsHelper.ANIMATION_DIE_PUF: animation = DefinitionsHelper.ANIMATION_DIE_PUF
-		DefinitionsHelper.ANIMATION_IDLE_PUF: animation = DefinitionsHelper.ANIMATION_IDLE_PUF
-		DefinitionsHelper.ANIMATION_SICK_PUF: animation = DefinitionsHelper.ANIMATION_SICK_PUF
-		DefinitionsHelper.ANIMATION_DRAG_PUF: animation = DefinitionsHelper.ANIMATION_DRAG_PUF
-		DefinitionsHelper.ANIMATION_DROP_PUF: animation = DefinitionsHelper.ANIMATION_DROP_PUF
-		DefinitionsHelper.ANIMATION_TERROR_PUF: animation = DefinitionsHelper.ANIMATION_TERROR_PUF
-		DefinitionsHelper.ANIMATION_DEATH_BY_FALL_PUF: animation = DefinitionsHelper.ANIMATION_DEATH_BY_FALL_PUF
-		DefinitionsHelper.ANIMATION_TO_DIE_PUF: animation = DefinitionsHelper.ANIMATION_TO_DIE_PUF
-		_: animation = DefinitionsHelper.ANIMATION_IDLE_PUF
+func _reproduce_animation(animation: String):
 	if not animation_player.get_queue().has(animation):
 		animation_player.play(animation)
 
 func _add_animation_to_queue(animation: String):
 	if animation_player.has_animation(animation):
 		animation_player.queue(animation)
-
-func _mouse_button_pressed():
-	if !is_myself_rich():
-		is_selected = not is_selected
-		selectAndDeselect(is_selected)
-	elif is_myself_rich(): 
-		is_dragging = true
-
-func _mouse_button_released():
-	if is_myself_rich(): 
-		is_dragging = false
 
 func _change_sprite_according_social_class():
 	var path_texture: String
@@ -207,34 +159,24 @@ func _change_sprite_according_social_class():
 	sprite_puf.texture = load(path_texture)
 
 func stop_immediately():
-	if is_myself_rich():
-		is_dragging = false
-	else:
-		selectAndDeselect(false)
-	_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_IDLE_PUF)
-
-func selectAndDeselect(select_or_not: bool): 
-	is_selected = select_or_not
-	outline_select_sprite.visible = is_selected
-	var name_signal: String = "puf_selected" if is_selected else "puf_deselected"
-	outline_select_sprite.play(DefinitionsHelper.ANIMATION_SELECTED_PUF) if is_selected else outline_select_sprite.stop()
-	emit_signal(name_signal, self)
+	is_dragging = false
+	_reproduce_animation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _die(die: String):
-	stop_immediately()
 	var animation_to_reproduce: String = ""
 	match die:
 		DefinitionsHelper.WAY_DYING_SMASH: animation_to_reproduce = DefinitionsHelper.ANIMATION_DEATH_BY_SMASH_PUF
 		DefinitionsHelper.WAY_DYING_BY_FALL_PUF: animation_to_reproduce = DefinitionsHelper.ANIMATION_DEATH_BY_FALL_PUF
 		DefinitionsHelper.WAY_DYING_NEEDS: animation_to_reproduce = DefinitionsHelper.ANIMATION_DIE_PUF
-	_reproduce_animation_according_to_situation(animation_to_reproduce)
+	_reproduce_animation(animation_to_reproduce)
+	stop_immediately()
+	_destroy_after_time(2)
 
 func _smash_rich():
-	emit_signal("puf_smashed", self.position)
+	emit_signal("puf_smashed", self)
 	smash_sprite.visible = true
-	smash_animation_player.play(DefinitionsHelper.ANIMATION_DEATH_BY_SMASH_PUF)
+	smash_animation_player.play(DefinitionsHelper.ANIMATION_DEATH_BY_SMASH_CURSOR)
 	way_diying = DefinitionsHelper.WAY_DYING_SMASH
-	im_alive = false
 	_invisible_after(smash_sprite, 2)
 
 func _update_all_position_grid():
@@ -250,15 +192,27 @@ func _destroy_after_time(time: float):
 func _invisible_after(node: Node2D, time: float):
 	await get_tree().create_timer(time).timeout
 	node.visible = false
+	
+func _change_interact_ui_label(text: String):
+	if text: 
+		interact_label.visible = true
+		interact_label.text = text
+	else: 
+		interact_label.visible = false
+		interact_label.text = ""
 
 ''' Métodos de señales '''
 func _emit_signal_with_ocuppied_grid_position(current_grid_cell: Vector2, free_or_not: bool):
 	var signal_name = "cell_unocuppied" if free_or_not else "cell_ocuppied"  
 	emit_signal(signal_name, Vector2i(current_grid_cell))
 
-func _emit_signal_with_when_dragging():
-	var signal_name = "puf_dragging" if is_dragging else "puf_undragging"  
-	emit_signal(signal_name)
+func _on_input_event(viewport, event, shape_idx): #Cuando un evento interactua con el characterbody2D
+	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
+		current_clic_position = get_global_mouse_position()
+		is_dragging = true
+	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
+		is_dragging = false
+
 
 func _on_ocuppied_cells(_ocuppied_cells):
 	ocuppied_cells = _ocuppied_cells
@@ -266,26 +220,34 @@ func _on_ocuppied_cells(_ocuppied_cells):
 func _on_death_cells(_death_cells):
 	death_cells = _death_cells
 
-func _on_mouse_entered():
-	if is_myself_rich():
-		self.position.y += -2
-		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_TERROR_PUF)
-
-func _on_mouse_exited():
-	if is_myself_rich():
-		self.position.y += +2
-		_reproduce_animation_according_to_situation(DefinitionsHelper.ANIMATION_DROP_PUF)
-		_add_animation_to_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
-
 func _on_assemble_area_mouse_entered():
 	is_mouse_top = true
+	self.position.y += -2
 	if is_myself_rich():
-		emit_signal("change_interaction_label", InteractHelper.INTERACTION_SMASH_TEXT)
+		_reproduce_animation(DefinitionsHelper.ANIMATION_TERROR_PUF)
+		_change_interact_ui_label(InteractHelper.INTERACTION_SMASH_TEXT)
+	else: 
+		_reproduce_animation(DefinitionsHelper.ANIMATION_PICK_ME)
 
 func _on_assemble_area_mouse_exited():
 	is_mouse_top = false
+	self.position.y += +2
 	if is_myself_rich():
-		emit_signal("change_interaction_label", "")
+		_reproduce_animation(DefinitionsHelper.ANIMATION_DROP_PUF)
+		_add_animation_to_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
+		_change_interact_ui_label("")
+	else: 
+		_reproduce_animation(DefinitionsHelper.ANIMATION_DROP_PUF)
+		_add_animation_to_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
+
+func _on_celebration_all_pufs(type_celebration: String):
+	var animation_to_play: String = ""
+	match type_celebration:
+		DefinitionsHelper.TYPE_CELEBRATION_SMASH_PUF:
+			if not is_myself_rich(): animation_to_play = DefinitionsHelper.ANIMATION_CELEBRATION_PUF
+			else: animation_to_play = DefinitionsHelper.ANIMATION_TERROR_PUF
+			_reproduce_animation(animation_to_play)
+	_add_animation_to_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():
@@ -408,4 +370,4 @@ func _get_variable_by_name(name: String):
 			return myself.jsonSerialize()		
 		_:
 			return null
-
+	

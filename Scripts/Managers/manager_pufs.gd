@@ -6,9 +6,10 @@ signal born_puf()
 signal born_a_rich()
 signal born_a_poor()
 signal update_current_total_pufs(pufs: Array[Node2D])
+signal celebration_all_pufs()
 
 @export_range(0, 100) var limit_initial_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20) ## 0 es equivalente a un número aleatorio entre 15 y 20
-@export var spawn_time: float = 5
+@export var spawn_time: float = 10
 @export var spawn_time_to_rich: float = 30
 
 var selected_pufs: Array[Node2D]:
@@ -31,7 +32,6 @@ var is_dragging = false
 @onready var puf: PackedScene = preload(PathsHelper.PATH_PUF)
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var timer_spawn: Timer = $TimerSpawn
-@onready var interact_label: Label = $InteractLabel
 @onready var blood_stain_sprite: PackedScene = preload(PathsHelper.SPRITE_BLOOD_STAIN_PATH)
 
 func _ready():
@@ -45,9 +45,6 @@ func _process(delta):
 			timer_spawn.stop() 
 	if is_dragging:
 		_deselect_all_pufs_selected()
-
-func _physics_process(delta):
-	interact_label.position = get_global_mouse_position()
 
 func _born_a_puf():
 	var new_puf: Node2D
@@ -68,7 +65,6 @@ func _born_a_puf():
 	new_puf.connect("puf_undragging", Callable(self, "_on_puf_undragging"))
 	new_puf.connect("cell_ocuppied", Callable(self, "_on_ocupied_cell"))
 	new_puf.connect("cell_unocuppied", Callable(self, "_on_unocupied_cell"))
-	new_puf.connect("change_interaction_label", Callable(self, "_on_change_interaction_label"))
 	new_puf.connect("puf_smashed", Callable(self, "_on_puf_smashed"))
 	parent.add_child(new_puf)
 
@@ -143,15 +139,11 @@ func _on_tile_map_ocuppied_coordinates(ocuppied_coordinates):
 func _on_tile_map_spawn_coordinates(spawn_coordinates):
 	spawn_cells = spawn_coordinates
 
-func _on_change_interaction_label(text: String):
-	if text: 
-		interact_label.visible = true
-		interact_label.text = text
-	else: 
-		interact_label.visible = false
-		interact_label.text = ""
+func _on_puf_smashed(death_puf: Node2D):
+	_put_blood_stain(death_puf.position)
+	emit_signal("celebration_all_pufs", DefinitionsHelper.TYPE_CELEBRATION_SMASH_PUF)
 
-func _on_puf_smashed(death_position: Vector2i):
+func _put_blood_stain(death_position: Vector2i):
 	emit_signal("update_current_total_pufs", current_pufs.size())
 	await get_tree().create_timer(2).timeout
 	var blood_stain = blood_stain_sprite.instantiate()

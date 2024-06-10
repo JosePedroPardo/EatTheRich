@@ -17,3 +17,5 @@ mono_crash.*.json
 # Archivos temporales de office
 ~$*
 .~*
+*.docx
+*.doc

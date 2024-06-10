@@ -80,7 +80,6 @@ func _update_pollution(delta):
 	else:
 		_change_visibility_sprite(pollution_sprite, false)
 
-
 func _calculate_total_pollution() -> float:
 	if debug_invert_pollution: 
 		return -1 * ((total_rich_pufs + total_rich_buildings) * rich_pollution) + ((total_poor_pufs + total_poor_buildings) * poor_pollution)
@@ -89,14 +88,6 @@ func _calculate_total_pollution() -> float:
 func _update_animations_to_pollution(animation_to_play: String):
 	pollution_sprite_player.stop()
 	pollution_sprite_player.play(animation_to_play)
-
-func _on_years_timer_timeout():
-	year += 1
-	ui_years_label.text = str(year)
-	target_pollution += _calculate_total_pollution()
-	_reproduce_animation(year_sprite, year_animation_player, DefinitionsHelper.ANIMATION_PLUS_UI, false)
-	var animation_to_play = DefinitionsHelper.ANIMATION_DOWN_UI if actual_pollution > target_pollution else DefinitionsHelper.ANIMATION_UP_UI
-	_update_animations_to_pollution(animation_to_play)
 
 func _reproduce_animation(animation_sprite: Sprite2D, animation_player: AnimationPlayer, animation: String, cut_animation: bool):
 	_change_visibility_sprite(animation_sprite, true)
@@ -109,9 +100,28 @@ func _reproduce_animation(animation_sprite: Sprite2D, animation_player: Animatio
 	elif animation_player.get_queue().is_empty(): 
 		animation_player.play(animation)
 
+func _shake_label(label: Label, intensity: float, duration: float, frequency: float):
+	var original_position = label.position
+	var elapsed_time = 0
+	while elapsed_time < duration:
+		await get_tree().create_timer(frequency).timeout
+		label.position = original_position + Vector2(
+			randf_range(-intensity, intensity),
+			0  # Solo movimiento horizontal
+		)
+		elapsed_time += frequency
+	label.position = original_position
+
 func _on_manager_pufs_born_a_rich():
 	total_rich_pufs += 1
 
 func _on_manager_pufs_born_a_poor():
 	total_poor_pufs += 1
 
+func _on_years_timer_timeout():
+	year += 1
+	ui_years_label.text = str(year)
+	target_pollution += _calculate_total_pollution()
+	_reproduce_animation(year_sprite, year_animation_player, DefinitionsHelper.ANIMATION_PLUS_UI, false)
+	var animation_to_play = DefinitionsHelper.ANIMATION_DOWN_UI if actual_pollution > target_pollution else DefinitionsHelper.ANIMATION_UP_UI
+	_update_animations_to_pollution(animation_to_play)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://b40x6gyiws4y2"]
+[gd_scene load_steps=5 format=3 uid="uid://b40x6gyiws4y2"]
 
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_buildings.gd" id="1_jh8dr"]
 [ext_resource type="Texture2D" uid="uid://bxontb3mmd6bd" path="res://Resources/Tileset/buildings/buildings.png" id="2_gnhk0"]
@@ -6,10 +6,13 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6hl1c"]
 size = Vector2(16, 16)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_epwe2"]
+size = Vector2(32, 32)
+
 [node name="StaticBody2D" type="StaticBody2D"]
 script = ExtResource("1_jh8dr")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="SizeShape" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_6hl1c")
 
 [node name="SpriteBuilding" type="Sprite2D" parent="."]
@@ -18,3 +21,14 @@ texture = ExtResource("2_gnhk0")
 hframes = 8
 vframes = 2
 region_rect = Rect2(16, 16, 0, 0)
+
+[node name="CaptationArea" type="Area2D" parent="."]
+light_mask = 2
+visibility_layer = 2
+collision_layer = 2
+collision_mask = 2
+
+[node name="CaptationShape" type="CollisionShape2D" parent="CaptationArea"]
+position = Vector2(0, -0.333)
+shape = SubResource("RectangleShape2D_epwe2")
+debug_color = Color(0.164706, 0.643137, 0, 0.113725)
