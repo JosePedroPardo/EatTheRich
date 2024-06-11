@@ -1,6 +1,6 @@
 extends Camera2D
 
-signal change_zoom(new_zoom: float, in_out: bool)
+signal change_zoom(in_out: bool)
 
 @export var multiplier_speed: float = 4
 @export var zoom_speed: float = 10.0
@@ -70,13 +70,13 @@ func _input(event: InputEvent) -> void:
 
 func _zoom_out():
 	zoom_factor -= 0.01 * zoom_speed
-	zoom_pos = tilemap.map_to_local(tilemap.local_to_map(get_global_mouse_position()))
-	emit_signal("change_zoom", self.zoom, false)
+	zoom_pos = get_global_mouse_position()
+	emit_signal("change_zoom", false)
 
 func _zoom_in():
 	zoom_factor += 0.01 * zoom_speed
-	zoom_pos = tilemap.map_to_local(tilemap.local_to_map(get_global_mouse_position()))
-	emit_signal("change_zoom", self.zoom, false)
+	zoom_pos = get_global_mouse_position()
+	emit_signal("change_zoom", true)
 
 func get_input_x() -> int:
 	return int(Input.is_action_pressed(InputsHelper.CAMERA_RIGHT)) - int(Input.is_action_pressed(InputsHelper.CAMERA_LEFT))
@@ -114,9 +114,9 @@ func input_for_zoom(event: InputEvent) -> void:
 		zoom_factor = 1.0
 	if event.is_pressed():
 		zooming = true
-		if event.is_action(InputsHelper.CAMERA_ZOOM_OUT) or event.is_action_pressed(InputsHelper.CAMERA_ZOOM_OUT):
+		if event.is_action_pressed(InputsHelper.CAMERA_ZOOM_OUT):
 			_zoom_out()
-		if event.is_action(InputsHelper.CAMERA_ZOOM_IN) or event.is_action_pressed(InputsHelper.CAMERA_ZOOM_IN):
+		if event.is_action_pressed(InputsHelper.CAMERA_ZOOM_IN):
 			_zoom_in()
 	else:
 		zooming = true

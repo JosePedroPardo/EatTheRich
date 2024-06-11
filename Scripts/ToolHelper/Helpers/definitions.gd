@@ -80,6 +80,12 @@ const ANIMATION_MINUM_UI: String = "MinumPlus/minum"
 const ANIMATION_UP_UI: String = "Pollution/up"
 const ANIMATION_DOWN_UI: String = "Pollution/down"
 
+const ANIMATION_BUILDING_BIG_WATERWELL: String = "big_waterwell"
+const ANIMATION_BUILDING_MEDIUM_WATERWELL: String = "medium_waterwell"
+const ANIMATION_BUILDING_SMALL_WATERWELL: String = "small_waterwell"
+const ANIMATION_BUILDING_WINDMILL: String = "windmill"
+const ANIMATION_BUILDING_CROP: String = "crop"
+
 ''' All layers 2D '''
 const LAYER_GROUND_2D: int = 0
 const LAYER_ENTITIES_2D: int = 1

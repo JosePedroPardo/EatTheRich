@@ -31,7 +31,6 @@ spawn_time = 0.2
 
 [node name="TileMap" parent="." instance=ExtResource("1_1ss2t")]
 
-[connection signal="selected_pufs" from="Camera2D" to="ManagerPufs" method="_on_camera_2d_selected_pufs"]
 [connection signal="born_a_poor" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_born_a_poor"]
 [connection signal="born_a_rich" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_born_a_rich"]
 [connection signal="born_puf" from="ManagerPufs" to="TileMap" method="_on_manager_pufs_born_puf"]

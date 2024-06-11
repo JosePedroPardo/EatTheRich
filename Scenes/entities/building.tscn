@@ -1,10 +1,123 @@
-[gd_scene load_steps=5 format=3 uid="uid://b40x6gyiws4y2"]
+[gd_scene load_steps=19 format=3 uid="uid://b40x6gyiws4y2"]
 
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_buildings.gd" id="1_jh8dr"]
 [ext_resource type="Texture2D" uid="uid://bxontb3mmd6bd" path="res://Resources/Tileset/buildings/buildings.png" id="2_gnhk0"]
+[ext_resource type="Material" uid="uid://cy7iwjou25tgf" path="res://Resources/tres/smooth_pixel_shader_material.tres" id="2_v3m3t"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6hl1c"]
 size = Vector2(16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lkk1d"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dauxi"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(0, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qxbxo"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kx05q"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0dg3s"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(32, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q02i8"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(48, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_06aiu"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(16, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_osk0i"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(16, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t1bsw"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(32, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jx4r3"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(32, 64, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_68u0k"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wchtb"]
+atlas = ExtResource("2_gnhk0")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mmlv4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lkk1d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dauxi")
+}],
+"loop": false,
+"name": &"big_waterweel",
+"speed": 0.01
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qxbxo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kx05q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0dg3s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q02i8")
+}],
+"loop": false,
+"name": &"crop",
+"speed": 0.5
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_06aiu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_osk0i")
+}],
+"loop": false,
+"name": &"medium_waterweel",
+"speed": 0.01
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t1bsw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jx4r3")
+}],
+"loop": false,
+"name": &"small_waterwell",
+"speed": 0.01
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_68u0k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wchtb")
+}],
+"loop": true,
+"name": &"windmill",
+"speed": 5.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_epwe2"]
 size = Vector2(32, 32)
@@ -16,13 +129,19 @@ script = ExtResource("1_jh8dr")
 shape = SubResource("RectangleShape2D_6hl1c")
 
 [node name="SpriteBuilding" type="Sprite2D" parent="."]
-texture_filter = 1
+visible = false
+texture_filter = 2
+material = ExtResource("2_v3m3t")
 texture = ExtResource("2_gnhk0")
 hframes = 8
 vframes = 5
 region_rect = Rect2(16, 16, 0, 0)
 
-[node name="WindmillSprite" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedBuilding" type="AnimatedSprite2D" parent="."]
+texture_filter = 2
+material = ExtResource("2_v3m3t")
+sprite_frames = SubResource("SpriteFrames_mmlv4")
+animation = &"big_waterweel"
 
 [node name="CaptationArea" type="Area2D" parent="."]
 light_mask = 2

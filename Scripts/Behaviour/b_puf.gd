@@ -14,10 +14,12 @@ signal puf_undragging
 @export var minimum_rich_pufs_to_join: int = 2 ## Unidades mínimas de puf ricos para unirse
 @export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
 @export var wait_time_finish_celebration: float = 2 ## Tiempo de espera entre un movimiento y el siguiente
-@export var can_assemble: bool = false
 @export var move_grid_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
 @export var move_drag_speed: float = 80 ## Velocidad a la que se desplaza el puf al ser arrastrado
 @export var degress_rotation: float = 90 ## Grados de rotación del sprite al arrastrarlo
+@export var in_or_out_zoom: float = 0.5 ## Valor por el que se incrementa el texto a través del zoom de la cámara
+@export var can_assemble: bool = false ## ¿Los Pufs se pueden unir?
+@export var is_in_or_out_zoom: bool ## Booleana que controla si se incrementa o decrementa el zoom
 
 var myself: Puf: 
 	get: return myself
@@ -64,7 +66,7 @@ var target_grid_position: Vector2
 @onready var shape_puf: CollisionShape2D = $ShapePuf
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
-@onready var camera: Camera2D = get_tree().get_first_node_in_group(DefinitionsHelper.group)
+@onready var camera: Camera2D = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_CAMERA)
 
 func _init():
 	myself = Puf.new(social_class, is_baby)
@@ -78,6 +80,7 @@ func _ready():
 	manager_puf.connect("celebration_all_pufs", Callable(self, "_on_celebration_all_pufs"))
 	emit_signal("cell_ocuppied", initial_grid_cell)
 	tilemap.connect("death_coordinates", Callable(self, "_on_death_cells"))
+	camera.connect("change_zoom", Callable(self, "_on_change_zoom"))
 
 func _process(delta):
 	_update_all_position_grid()
@@ -309,7 +312,9 @@ func _on_assemble_area_body_exited(body):
 		_emit_signal_to_rich_at_my_side(body, false)
 	else: _emit_signal_to_poor_at_my_side(body, false)
 
-
+##TODO: Hacer que los label se ajusten al tamaño del zoom de la cámara
+func _on_change_zoom(in_out: bool): 
+	pass
 
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():
