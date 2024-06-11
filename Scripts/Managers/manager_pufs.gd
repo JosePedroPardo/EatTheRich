@@ -2,53 +2,51 @@ class_name ManagerPufs
 extends Node2D
 
 signal ocuppied_cells_array(ocuppied_cells: Array[Vector2i])
+signal update_current_total_pufs(pufs: Array[Node2D])
+signal time_to_birth(time: float)
+signal time_to_rich()
 signal born_puf()
 signal born_a_rich()
 signal born_a_poor()
 signal dead_a_rich()
 signal dead_a_poor()
-signal update_current_total_pufs(pufs: Array[Node2D])
 signal celebration_all_pufs()
 
 @export_range(0, 100) var limit_initial_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20) ## 0 es equivalente a un número aleatorio entre 15 y 20
 @export var spawn_time: float = 10
-@export var spawn_time_to_rich: float = 30
-
-var selected_pufs: Array[Node2D]:
-	get: 
-		return selected_pufs
+@export var spawn_time_to_rich: float = 30  ## Cuando se pone a false, comienzan a spawnear únicamente ricos
+@export var is_time_to_spawn_rich: bool = false 
 
 var spawn_cells: Array[Vector2i] 
 var ocuppied_cells: Array[Vector2i] 
 var rich_pufs: Array[Node2D] 
 var poor_pufs: Array[Node2D] 
 var current_pufs: Array[Node2D]
-var rich_pufs_adjacent: Array[Node2D]
-var poor_pufs_adjacent: Array[Node2D]
+var rich_pufs_adjacent: Array
+var poor_pufs_adjacent: Array
+var existings_groups: Array[Group]
+var total_time_of_spawn: float 
 
 var is_picked_up: bool = false
-var is_spawn_initial_pufs: bool = true # Cuando se pone a false, comienzan a spawnear únicamente ricos
 var is_first_puf: bool = true
 var is_dragging = false
 
 # Variables para el sistema de selección de pufs
 @onready var parent: Node2D = get_node("../")
 @onready var puf: PackedScene = preload(PathsHelper.PATH_PUF)
+@onready var blood_stain_sprite: PackedScene = preload(PathsHelper.SPRITE_BLOOD_STAIN_PATH)
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var timer_spawn: Timer = $TimerSpawn
-@onready var blood_stain_sprite: PackedScene = preload(PathsHelper.SPRITE_BLOOD_STAIN_PATH)
+@onready var debugs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_DEBUG) 
+@onready var debug_toogle_spawn_button: Button =  PathsHelper.get_node_by_name(debugs, "TSButton")
 
 func _ready():
 	timer_spawn.wait_time = spawn_time
 	timer_spawn.start()
+	debug_toogle_spawn_button.connect("pressed", Callable(self, "_on_button_debug_toogle_spawn_button_toggled"))
 
 func _process(delta):
-	is_picked_up = true if selected_pufs.is_empty() else false
-	if is_spawn_initial_pufs:
-		if current_pufs.size() == limit_initial_spawn_puf:
-			timer_spawn.stop() 
-	if is_dragging:
-		_deselect_all_pufs_selected()
+	pass
 
 func _born_a_puf():
 	var new_puf: Node2D
@@ -56,7 +54,7 @@ func _born_a_puf():
 	var flip: int = RandomHelper.get_random_int_in_range(0, 1)
 	var random_global_position = tilemap.astar_grid.get_point_position(Vector2(random_position.x, random_position.y)) # Transforma las coordenadas locales del grid en globales
 	new_puf = puf.instantiate()
-	if not is_spawn_initial_pufs:
+	if not is_time_to_spawn_rich:
 		new_puf.social_class = DefinitionsHelper.RICH_SOCIAL_CLASS
 	new_puf.position = random_global_position
 	new_puf.get_node("SpritePuf").flip_h = flip # Cambia la dirección hacia la que mira el puf al instanciarse
@@ -81,10 +79,14 @@ func _emit_signal_according_born_social_class_puf(new_puf):
 		_save_puf_in_array(new_puf, poor_pufs)
 
 func _finished_spawn_initial_pufs():
-	timer_spawn.wait_time = spawn_time_to_rich
-	timer_spawn.stop()
-	await get_tree().create_timer(spawn_time_to_rich).timeout
-	timer_spawn.start()
+	if not is_time_to_spawn_rich:
+		print("ES TIEMPO DE RICOS")
+		timer_spawn.wait_time = spawn_time_to_rich
+		timer_spawn.stop()
+		await get_tree().create_timer(spawn_time_to_rich).timeout
+		timer_spawn.start()
+		time_to_rich.emit()
+		is_time_to_spawn_rich = true
 
 func _save_puf_in_array(puf: Node2D, array: Array):
 	array.push_back(puf)
@@ -96,30 +98,26 @@ func _remove_puf_in_array(puf: Node2D, array: Array):
 	if not array.is_empty() and array.has(puf):
 		array.erase(puf)
 
-func _deselect_all_pufs_selected():
-	if not selected_pufs.is_empty():
-		for puf in selected_pufs:
-			puf.stop_immediately()
-
 func _emit_signal_assemble():
 	pass # TODO: Hacer que mande la señal de assemble
 
+func _put_blood_stain(death_position: Vector2i):
+	emit_signal("update_current_total_pufs", current_pufs.size())
+	await get_tree().create_timer(2).timeout
+	var blood_stain = blood_stain_sprite.instantiate()
+	blood_stain.stop()
+	blood_stain.position = death_position
+	blood_stain.visible = true
+	blood_stain.play("default")
+	parent.add_child(blood_stain)
+
+func _create_groups_with_pufs() -> Group:
+	return null
+
 func _on_timer_spawn_timeout():
+	total_time_of_spawn += timer_spawn.wait_time
 	_born_a_puf()
-
-func _on_puf_selected(selected_puf):
-	_save_puf_in_array(selected_puf, selected_pufs)
-
-func _on_puf_deselected(selected_puf):
-	_remove_puf_in_array(selected_puf, selected_pufs)
-
-func _on_camera_2d_selected_pufs(selected_pufs_array):
-	for puf in selected_pufs:
-		puf.is_selected = false
-	selected_pufs.clear()
-	selected_pufs.append_array(selected_pufs_array)
-	for puf in selected_pufs:
-		puf.is_selected = true
+	emit_signal("time_to_birth", timer_spawn.time_left)
 
 func _on_ocupied_cell(cood_cell):
 	ocuppied_cells.append(cood_cell)
@@ -148,18 +146,13 @@ func _on_puf_smashed(death_puf: Node2D):
 	emit_signal("celebration_all_pufs", DefinitionsHelper.TYPE_CELEBRATION_SMASH_PUF)
 	dead_a_rich.emit()
 
+''' NO AGREGA EL ARRAY al array'''
 func _on_pufs_rich_at_my_side(pufs: Array[Node2D]):
-	rich_pufs_adjacent = pufs
+	rich_pufs_adjacent.append_array(pufs)
+	#print(pufs)
 
 func _on_pufs_poor_at_my_side(pufs: Array[Node2D]):
-	poor_pufs_adjacent = pufs
+	poor_pufs_adjacent.append_array(pufs)
 
-func _put_blood_stain(death_position: Vector2i):
-	emit_signal("update_current_total_pufs", current_pufs.size())
-	await get_tree().create_timer(2).timeout
-	var blood_stain = blood_stain_sprite.instantiate()
-	blood_stain.stop()
-	blood_stain.position = death_position
-	blood_stain.visible = true
-	blood_stain.play("default")
-	parent.add_child(blood_stain)
+func _on_button_debug_toogle_spawn_button_toggled():
+	timer_spawn.start() if timer_spawn.is_stopped() else timer_spawn.stop()

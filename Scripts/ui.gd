@@ -14,4 +14,3 @@ func _process(delta):
 	
 	if Input.is_action_just_pressed(InputsHelper.DEBUG_MODE):
 		debug_container.visible = not debug_container.visible
-

@@ -10,4 +10,4 @@ outline_size = 5
 outline_color = Color(0.207843, 0.207843, 0.25098, 1)
 shadow_size = 8
 shadow_color = Color(0.207843, 0.207843, 0.25098, 1)
-shadow_offset = Vector2(0, -2)
+shadow_offset = Vector2(0, 2)

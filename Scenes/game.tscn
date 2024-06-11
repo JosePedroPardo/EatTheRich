@@ -1,5 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://o0if5egfwut4"]
+[gd_scene load_steps=8 format=3 uid="uid://o0if5egfwut4"]
 
+[ext_resource type="Script" path="res://Scripts/managers/game_manager.gd" id="1_0wnol"]
 [ext_resource type="PackedScene" uid="uid://ls1sa1vyqjkn" path="res://Scenes/tilemap.tscn" id="1_1ss2t"]
 [ext_resource type="PackedScene" uid="uid://c0u0wjktdxrmo" path="res://Scenes/managers/mouse_manager.tscn" id="1_addr5"]
 [ext_resource type="PackedScene" uid="uid://bg2ohhatacu6c" path="res://Scenes/UI/ui.tscn" id="1_ct4x2"]
@@ -8,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://c30hichtn61t1" path="res://Scenes/camera_2d.tscn" id="3_ornbr"]
 
 [node name="Game" type="Node2D"]
+script = ExtResource("1_0wnol")
 
 [node name="UI" parent="." instance=ExtResource("1_ct4x2")]
 
@@ -35,5 +37,7 @@ spawn_time = 0.2
 [connection signal="born_puf" from="ManagerPufs" to="TileMap" method="_on_manager_pufs_born_puf"]
 [connection signal="dead_a_poor" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_dead_a_poor"]
 [connection signal="dead_a_rich" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_dead_a_rich"]
+[connection signal="time_to_birth" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_time_to_birth"]
+[connection signal="time_to_rich" from="ManagerPufs" to="StatisticsManager" method="_on_manager_pufs_time_to_rich"]
 [connection signal="ocuppied_coordinates" from="TileMap" to="ManagerPufs" method="_on_tile_map_ocuppied_coordinates"]
 [connection signal="spawn_coordinates" from="TileMap" to="ManagerPufs" method="_on_tile_map_spawn_coordinates"]

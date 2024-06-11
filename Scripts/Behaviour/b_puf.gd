@@ -1,3 +1,4 @@
+class_name BehaviourPuf
 extends CharacterBody2D
 
 signal cell_ocuppied(cood_cell: Vector2i)
@@ -63,6 +64,7 @@ var target_grid_position: Vector2
 @onready var shape_puf: CollisionShape2D = $ShapePuf
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
+@onready var camera: Camera2D = get_tree().get_first_node_in_group(DefinitionsHelper.group)
 
 func _init():
 	myself = Puf.new(social_class, is_baby)
@@ -79,6 +81,10 @@ func _ready():
 
 func _process(delta):
 	_update_all_position_grid()
+	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
+		current_clic_position = get_global_mouse_position()
+	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
+		is_dragging = false
 	if is_mouse_top:
 		if is_myself_rich():
 			if Input.is_action_just_pressed(InputsHelper.SMASH_PUF):
@@ -89,16 +95,19 @@ func _process(delta):
 				_change_interact_ui_label(InteractHelper.INTERACTION_ASSEMBLE_TEXT)
 
 func _physics_process(delta):
+	if is_dragging:
+		_move_to_clic_position_according_to_speed(current_clic_position, move_drag_speed)
+	else: stop_immediately()
+	
 	if not is_myself_rich():
 		if not puf_poor_at_my_side.is_empty():
-			print(puf_poor_at_my_side.size() % minimum_poor_pufs_to_join)
 			if (puf_poor_at_my_side.size() % minimum_poor_pufs_to_join) == 0:
 				_assemble_pufs()
-	if is_dragging:
-		current_clic_position = get_global_mouse_position()
-		_move_to_clic_position_according_to_speed(current_clic_position, move_drag_speed)
-		_look_to_mouse(current_clic_position)
-	else: _stop_rotation()
+
+func _on_mouse_area_input_event(viewport, event, shape_idx):  #Cuando un evento interactua con el area
+	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
+		_look_to_mouse(local_cursor_map_position_relative_local_tilemap)
+		is_dragging = true
 
 func _assemble_pufs():
 	var interact_text: String = ""
@@ -174,6 +183,7 @@ func _change_sprite_according_social_class():
 
 func stop_immediately():
 	is_dragging = false
+	self.velocity = Vector2.ZERO
 	_reproduce_animation(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _die(die: String):
@@ -241,14 +251,6 @@ func _emit_signal_to_poor_at_my_side(body, is_add: bool):
 			if puf_poor_at_my_side.has(body):
 				puf_poor_at_my_side.erase(body)
 	emit_signal("pufs_poor_at_my_side", puf_poor_at_my_side)
-
-func _on_mouse_area_input_event(viewport, event, shape_idx):  #Cuando un evento interactua con el area
-	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
-		current_clic_position = get_global_mouse_position()
-		is_dragging = true
-		_look_to_mouse(current_clic_position)
-	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
-		is_dragging = false
 
 func _on_ocuppied_cells(_ocuppied_cells):
 	ocuppied_cells = _ocuppied_cells

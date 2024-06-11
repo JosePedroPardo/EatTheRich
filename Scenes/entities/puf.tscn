@@ -112,9 +112,16 @@ input_pickable = true
 platform_floor_layers = 4294901761
 platform_wall_layers = 10
 script = ExtResource("1_q7ds5")
+minimum_poor_pufs_to_join = null
+minimum_rich_pufs_to_join = null
+wait_time_move = null
+wait_time_finish_celebration = null
+can_assemble = null
+move_grid_speed = null
+move_drag_speed = null
+degress_rotation = null
 
 [node name="NameLabel" type="Label" parent="."]
-visible = false
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -126,7 +133,6 @@ grow_horizontal = 2
 scale = Vector2(0.3, 0.3)
 size_flags_horizontal = 4
 size_flags_vertical = 0
-text = "Name"
 label_settings = ExtResource("2_i6v8b")
 vertical_alignment = 1
 

@@ -102,4 +102,10 @@ const GROUP_PUFS: String = "pufs"
 const GROUP_MANAGER_PUFS: String = "manager_pufs"
 const GROUP_UI_LABELS_RESULT: String = "ui_labels_result"
 const GROUP_UI_STATISTICS_ANIMATIONS: String = "ui_statistics_animations"
+const GROUP_UI_DEBUG: String = "debug"
 const GROUP_TILEMAP: String = "tilemap"
+const GROUP_CAMERA: String = "camera"
+
+''' Definition statistics '''
+const UI_LABEL_STATISTICS_TIME_TO_RICH: String = "next rich in..."
+const UI_LABEL_STATISTICS_INITIAL_TIME: String = "next Puf in..."

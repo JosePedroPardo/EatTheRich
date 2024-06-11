@@ -245,18 +245,44 @@ label_settings = ExtResource("9_gndac")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SILeft" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
+[node name="SIPollution" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="SICenter" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
+[node name="SIYear" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
+
+[node name="PoorPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIYear"]
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="NewPuf" type="Label" parent="VBoxContainer/SubinfoContainer/SIYear/PoorPoblation" groups=["ui_labels_result"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "next puf in..."
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 2
+
+[node name="NPResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIYear/PoorPoblation" groups=["ui_labels_result"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "0 "
+label_settings = ExtResource("9_gndac")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
-visible = false
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
@@ -316,7 +342,7 @@ theme_override_fonts/font = ExtResource("1_0nux4")
 text = "Camera Move Mouse"
 label_settings = ExtResource("4_hep84")
 
-[node name="Button" type="CheckButton" parent="VBoxContainer/PanelContainer/DebugContainer/MouseContainer" groups=["debug_move_mouse"]]
+[node name="MMButton" type="CheckButton" parent="VBoxContainer/PanelContainer/DebugContainer/MouseContainer" groups=["debug"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -332,7 +358,39 @@ theme_override_fonts/font = ExtResource("1_0nux4")
 text = "Invert Pollution"
 label_settings = ExtResource("4_hep84")
 
-[node name="Button" type="CheckButton" parent="VBoxContainer/PanelContainer/DebugContainer/InvertContainer" groups=["debug_invert_pollution_button"]]
+[node name="IPButton" type="CheckButton" parent="VBoxContainer/PanelContainer/DebugContainer/InvertContainer" groups=["debug"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
+icon_alignment = 1
+
+[node name="ChangeSpawn" type="HBoxContainer" parent="VBoxContainer/PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="ToogleSpawn" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer/ChangeSpawn"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Toogle Spawn Puf"
+label_settings = ExtResource("4_hep84")
+
+[node name="TSButton" type="CheckButton" parent="VBoxContainer/PanelContainer/DebugContainer/ChangeSpawn" groups=["debug"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+tooltip_text = "Cambia el movimiento de la cámara y activa el del mouse"
+icon_alignment = 1
+
+[node name="ResetGame" type="HBoxContainer" parent="VBoxContainer/PanelContainer/DebugContainer"]
+layout_mode = 2
+
+[node name="Reset" type="Label" parent="VBoxContainer/PanelContainer/DebugContainer/ResetGame"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Reset Game"
+label_settings = ExtResource("4_hep84")
+
+[node name="ResetButton" type="CheckButton" parent="VBoxContainer/PanelContainer/DebugContainer/ResetGame" groups=["debug"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -373,6 +431,7 @@ theme_override_constants/separation = -7
 alignment = 1
 
 [node name="PollutionSprite" type="Sprite2D" parent="AnimationContainer/PollutionContainer" groups=["ui_statistics_animations"]]
+visible = false
 light_mask = 32
 visibility_layer = 32
 texture_filter = 1

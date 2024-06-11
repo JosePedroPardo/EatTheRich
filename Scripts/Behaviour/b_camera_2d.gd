@@ -1,7 +1,6 @@
 extends Camera2D
 
-signal area_selected
-signal selected_pufs(selected_pufs_array)
+signal change_zoom(new_zoom: float, in_out: bool)
 
 @export var multiplier_speed: float = 4
 @export var zoom_speed: float = 10.0
@@ -23,9 +22,10 @@ var end: Vector2 = Vector2()
 var end_v: Vector2 = Vector2()
 var is_dragging: bool = false
 var is_mouse_move: bool = false
-
-@onready var box: Panel = get_node(PathsHelper.UI_PANEL_TO_SELECTED_AREA)
-@onready var mouse_camera_button: Button = get_tree().get_first_node_in_group("debug_move_mouse")
+var current_global_
+@onready var tilemap: TileMap = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_TILEMAP) 
+@onready var debugs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_DEBUG) 
+@onready var mouse_camera_button: Button =  PathsHelper.get_node_by_name(debugs, "MMButton")
 
 func _ready():
 	mouse_camera_button.connect("pressed", Callable(self, "_on_toogle_button_changes_mouse_move"))
@@ -70,43 +70,19 @@ func _input(event: InputEvent) -> void:
 
 func _zoom_out():
 	zoom_factor -= 0.01 * zoom_speed
-	zoom_pos = get_global_mouse_position()
+	zoom_pos = tilemap.map_to_local(tilemap.local_to_map(get_global_mouse_position()))
+	emit_signal("change_zoom", self.zoom, false)
 
 func _zoom_in():
 	zoom_factor += 0.01 * zoom_speed
-	zoom_pos = get_global_mouse_position()
+	zoom_pos = tilemap.map_to_local(tilemap.local_to_map(get_global_mouse_position()))
+	emit_signal("change_zoom", self.zoom, false)
 
 func get_input_x() -> int:
 	return int(Input.is_action_pressed(InputsHelper.CAMERA_RIGHT)) - int(Input.is_action_pressed(InputsHelper.CAMERA_LEFT))
 
 func get_input_y() -> int:
 	return int(Input.is_action_pressed(InputsHelper.CAMERA_BACKWARD)) - int(Input.is_action_pressed(InputsHelper.CAMERA_FORWARD))
-
-func process_select_area() -> void:
-	if Input.is_action_just_pressed(InputsHelper.LEFT_CLICK):
-		start = mouse_pos_global
-		start_v = mouse_pos
-		is_dragging = true
-	
-	if is_dragging:
-		end = mouse_pos_global
-		end_v = mouse_pos
-		draw_area()
-	
-	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
-		if start_v.distance_to(mouse_pos) > 20:
-			end = mouse_pos_global
-			end_v = mouse_pos
-			is_dragging = false
-			draw_area(false)
-			
-			var selected_pufs = get_objects_in_area(start, end)
-			
-			emit_signal("selected_pufs", selected_pufs)
-		else:
-			end = start
-			is_dragging = false
-			draw_area(false)
 
 func zoom_camera(delta: float) -> void:
 	zoom.x = lerp(zoom.x, zoom.x * zoom_factor, zoom_speed * delta)
@@ -144,14 +120,6 @@ func input_for_zoom(event: InputEvent) -> void:
 			_zoom_in()
 	else:
 		zooming = true
-
-func draw_area(s: bool = true) -> void:
-	box.size = Vector2(abs(start_v.x - end_v.x), abs(start_v.y - end_v.y))
-	var pos = Vector2()
-	pos.x = min(start_v.x, end_v.x)
-	pos.y = min(start_v.y, end_v.y)
-	box.position = pos
-	box.size *= int(s)
 
 func get_objects_in_area(start: Vector2, end: Vector2) -> Array:
 	var area_rect = Rect2(start, end - start)

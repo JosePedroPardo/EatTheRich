@@ -1,7 +1,8 @@
 class_name RandomHelper
 
 static func get_random_string_in_array(options: Array) -> String:
-	return options[randi() % options.size()]
+	#return options[randi() % options.size()]
+	return options.pick_random()
 
 static func get_random_enum(options: Dictionary) -> int:
 	var keys = options.keys()
