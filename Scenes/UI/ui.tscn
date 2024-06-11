@@ -255,7 +255,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
 
-[node name="PoorPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIYear"]
+[node name="NYContainer" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIYear"]
+visible = false
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
@@ -263,7 +264,7 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="NewPuf" type="Label" parent="VBoxContainer/SubinfoContainer/SIYear/PoorPoblation" groups=["ui_labels_result"]]
+[node name="NewPuf" type="Label" parent="VBoxContainer/SubinfoContainer/SIYear/NYContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -273,7 +274,7 @@ text = "next puf in..."
 label_settings = ExtResource("9_gndac")
 horizontal_alignment = 2
 
-[node name="NPResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIYear/PoorPoblation" groups=["ui_labels_result"]]
+[node name="NPResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIYear/NYContainer" groups=["ui_labels_result"]]
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
@@ -283,6 +284,7 @@ text = "0 "
 label_settings = ExtResource("9_gndac")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+visible = false
 light_mask = 16
 visibility_layer = 16
 texture_filter = 1
