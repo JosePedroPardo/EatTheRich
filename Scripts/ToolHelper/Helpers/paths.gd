@@ -9,8 +9,9 @@ const JSON_PATH_NOBLE_TITLE: String = "res://SaveData/GenerateDates/ESP/noble_ti
 const JSON_PATH_JOBS: String = "res://SaveData/GenerateDates/ESP/jobs.json"
 
 ''' SCENE PATHS '''
-const PATH_PUF: String = "res://Scenes/entities/puf.tscn"
-const PATH_BUILDING: String = "res://Scenes/entities/building.tscn"
+const PATH_SCENE_BLOOD_STAIN: String = "res://Scenes/blood_stain.tscn"
+const PATH_SCENE_BUILDING: String = "res://Scenes/entities/building.tscn"
+const PATH_SCENE_PUF: String = "res://Scenes/entities/puf.tscn"
 
 ''' TEXTURE PUFS PATHS'''
 const SPRITE_RICH_001: String = "res://Resources/Tileset/pufs/rich.png"
@@ -20,10 +21,8 @@ const SPRITE_POOR_002: String = "res://Resources/Tileset/pufs/poorv2.png"
 const SPRITE_POOR_003: String = "res://Resources/Tileset/pufs/poorv3.png"
 const SPRITE_BABY_POOR: String = "res://Resources/Tileset/pufs/babypuf.png"
 const SPRITE_BABY_RICH: String = "res://Resources/Tileset/pufs/babypuf.png"
-const SPRITE_BLOOD_STAIN_PATH: String = "res://Scenes/blood_stain.tscn"
 
 ''' TEXTURE CURSORS PATHS '''
-
 const CURSOR_POINT_OUT: String = "res://Resources/UI/Hands/cursor_normal.png"
 const CURSOR_CLICK : String =  "res://Resources/UI/Hands/cursor_normal_click.png"
 const CURSOR_GRAB: String =  "res://Resources/UI/Hands/cursor_normal_close.png"

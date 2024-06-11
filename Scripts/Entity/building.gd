@@ -39,22 +39,22 @@ var structural_health: float:
 	set(new_structural_health):
 		structural_health = clampf(new_structural_health, MIN_STRUCTURAL_HEALTH, MAX_STRUCTURAL_HEALTH)
 		emit_signal('change_structural_health', new_structural_health)
-var owner_of_build: Puf: 
+var owner_of_build: Node2D: 
 	get:
 		return owner_of_build
 	set(new_owner):
 		owner_of_build = new_owner
 		emit_signal('change_owner', new_owner)
-var tenants: Array[Puf]
+var tenants: Array[Node2D]
 var jm: Json_manager
 
-func _init(owner_: Puf):
+func _init(owner_: Node2D):
 	jm = Json_manager.new()
 	_next_id()
 	self.owner_of_build = owner_
 	_set_quality_of_building()
 	self.gauging = _get_gauging()
-	self.name_of_structure = _get_random_string(owner_of_build.social_class, PathsHelper.PATH_BUILDING, DefinitionsHelper.NAMES)
+	self.name_of_structure = _get_random_string(owner_of_build.social_class, PathsHelper.PATH_ENTITY_BUILDING, DefinitionsHelper.NAMES)
 	self.structural_health = MAX_STRUCTURAL_HEALTH
 
 func _next_id():

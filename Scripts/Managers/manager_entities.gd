@@ -1,4 +1,4 @@
-class_name ManagerPufs
+class_name ManagerEntities
 extends Node2D
 
 signal ocuppied_cells_array(ocuppied_cells: Array[Vector2i])
@@ -29,12 +29,12 @@ var total_time_of_spawn: float
 
 var is_picked_up: bool = false
 var is_first_puf: bool = true
-var is_dragging = false
 
 # Variables para el sistema de selección de pufs
 @onready var parent: Node2D = get_node("../")
-@onready var puf: PackedScene = preload(PathsHelper.PATH_PUF)
-@onready var blood_stain_sprite: PackedScene = preload(PathsHelper.SPRITE_BLOOD_STAIN_PATH)
+@onready var puf: PackedScene = preload(PathsHelper.PATH_SCENE_PUF)
+@onready var blood_stain_sprite: PackedScene = preload(PathsHelper.PATH_SCENE_BLOOD_STAIN)
+@onready var building: PackedScene = preload(PathsHelper.PATH_SCENE_BUILDING)
 @onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
 @onready var timer_spawn: Timer = $TimerSpawn
 @onready var debugs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_DEBUG) 
@@ -102,7 +102,7 @@ func _emit_signal_assemble():
 	pass # TODO: Hacer que mande la señal de assemble
 
 func _put_blood_stain(death_position: Vector2i):
-	emit_signal("update_current_total_pufs", current_pufs.size())
+	_emit_signal_to_update_total_pufs()
 	await get_tree().create_timer(2).timeout
 	var blood_stain = blood_stain_sprite.instantiate()
 	blood_stain.stop()
@@ -113,6 +113,15 @@ func _put_blood_stain(death_position: Vector2i):
 
 func _create_groups_with_pufs() -> Group:
 	return null
+
+func _new_building():
+	emit_signal("update_current_total_pufs", current_pufs.size())
+	await get_tree().create_timer(0.5).timeout
+	var new_building = building.instantiate()
+	new_building.connect("building_construction", Callable(self, "_on_building_consruction"))
+
+func _emit_signal_to_update_total_pufs():
+	emit_signal("update_current_total_pufs", current_pufs.size())
 
 func _on_timer_spawn_timeout():
 	total_time_of_spawn += timer_spawn.wait_time
@@ -130,7 +139,7 @@ func _on_unocupied_cell(cood_cell):
 			emit_signal("ocuppied_cells_array", ocuppied_cells)
 
 func _on_puf_dragging():
-	is_dragging = true
+	pass
 
 func _on_puf_undragging():
 	pass

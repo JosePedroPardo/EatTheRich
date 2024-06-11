@@ -6,14 +6,16 @@ extends Node
 @export var slow_increment: float = wait_year / 100
 @export var is_debug_invert_pollution: bool = false
 
-var total_rich_pufs: int = 0
-var total_poor_pufs: int = 0
-var total_buildings: int = 0
-var total_rich_buildings: int = 0
-var total_poor_buildings: int = 0
 var year: int = 0:
 	get:
 		return year
+
+var total_rich_pufs: int = 0
+var total_poor_pufs: int = 0
+var total_buildings: int = 0
+var total_rich_buildings: array[int] = DefinitionsHelper.TOTAL_TYPE_BUILDING
+var total_poor_buildings: array[int] = DefinitionsHelper.TOTAL_TYPE_BUILDING
+
 var previous_pollution: float
 var actual_pollution: float
 var target_pollution: float
@@ -43,6 +45,8 @@ var next_spawn_in: float
 @onready var ui_pollution_sprite_player: AnimationPlayer = ui_pollution_sprite.get_child(0)
 @onready var year_timer: Timer = $YearsTimer
 
+@onready var building = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_BUILDING) 
+
 @onready var debugs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_DEBUG) 
 @onready var debug_invert_pollution_button: Button =  PathsHelper.get_node_by_name(debugs, "IPButton")
 
@@ -51,6 +55,7 @@ func _ready():
 	year_timer.start()
 	ui_new_puf_label.text = DefinitionsHelper.UI_LABEL_STATISTICS_INITIAL_TIME
 	debug_invert_pollution_button.connect("pressed", Callable(self, "_on_button_debug_invert_pollution_toggled"))
+	building.connect("building_construction",Callable(self, "_on_building_construction"))
 
 func _process(delta):
 	ui_pollution_label.text = String.num(actual_pollution, 2)
@@ -161,3 +166,20 @@ func _on_manager_pufs_time_to_birth(time):
 func _on_button_debug_invert_pollution_toggled():
 	is_debug_invert_pollution = !is_debug_invert_pollution
 
+func _on_building_construction(type: String, is_rich_building: bool):
+	match type:
+		"negative":
+			if is_rich_building: total_rich_buildings[0] += 1
+			else: total_poor_buildings[0] += 1 
+		"low": 
+			if is_rich_building: total_rich_buildings[0] += 1
+			else: total_poor_buildings[0] += 1 
+		"medium": 
+			if is_rich_building: total_rich_buildings[0] += 1
+			else: total_poor_buildings[0] += 1 
+		"advanced": 
+			if is_rich_building: total_rich_buildings[0] += 1
+			else: total_poor_buildings[0] += 1 
+		"hardcore":
+			if is_rich_building: total_rich_buildings[0] += 1
+			else: total_poor_buildings[0] += 1 

@@ -185,7 +185,6 @@ position = Vector2(0, 3)
 texture = ExtResource("4_dve2d")
 hframes = 4
 vframes = 4
-region_filter_clip_enabled = true
 
 [node name="SmashSprite" parent="." instance=ExtResource("7_tlyfv")]
 visible = false

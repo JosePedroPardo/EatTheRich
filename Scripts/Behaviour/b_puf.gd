@@ -46,7 +46,6 @@ var puf_poor_at_my_side: Array[Node2D]
 var ocuppied_cells: Array[Vector2i]
 var death_cells: Array[Vector2i]
 var current_paths: Array[Vector2i]
-var initial_grid_cell: Vector2i
 var global_cursor_map_position_relative_local_tilemap: Vector2i
 var local_cursor_map_position_relative_local_tilemap: Vector2i
 var global_cursor_map_position_relative_global_tilemap: Vector2i
@@ -75,7 +74,7 @@ func _init():
 func _ready():
 	social_class = myself.social_class
 	_change_sprite_according_social_class()
-	initial_grid_cell = tilemap.local_to_map(self.position)
+	var initial_grid_cell: Vector2i = tilemap.local_to_map(self.position)
 	
 	shape_puf.shape = RectangleShape2D.new()
 	shape_puf.shape.size = Vector2(16, 16)
@@ -234,6 +233,7 @@ func _update_all_position_grid():
 
 func _destroy_after_time(time: float):
 	await get_tree().create_timer(time).timeout
+	emit_signal("cell_unocuppied", tilemap.local_to_map(self.position))
 	self.queue_free()
 	
 func _invisible_after(node: Node2D, time: float):
