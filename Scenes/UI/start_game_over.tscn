@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ydd02kwkiq5t"]
+[gd_scene load_steps=9 format=3 uid="uid://ydd02kwkiq5t"]
 
 [ext_resource type="Texture2D" uid="uid://c61jv8s2d41o4" path="res://Resources/UI/background_gameover.png" id="2_8ag8a"]
 [ext_resource type="Script" path="res://Scripts/managers/start_game_over.gd" id="2_62gfs"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://ls1sa1vyqjkn" path="res://Scenes/tilemap.tscn" id="3_fpjca"]
 [ext_resource type="LabelSettings" uid="uid://8078t72si18o" path="res://Resources/tres/title_ui_label_settings.tres" id="3_up3um"]
 [ext_resource type="PackedScene" uid="uid://b4xp0w52hwj68" path="res://Scenes/entities/puf.tscn" id="4_2pgad"]
+[ext_resource type="LabelSettings" uid="uid://vvygoxaewh6j" path="res://Resources/tres/secundary_label_settings.tres" id="4_rnek6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_abmnm"]
 shader = ExtResource("2_jqunb")
@@ -22,6 +23,7 @@ script = ExtResource("2_62gfs")
 [node name="CLSGO" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="CLSGO"]
+visible = false
 modulate = Color(1, 1, 1, 0.12549)
 self_modulate = Color(1, 1, 1, 0.203922)
 light_mask = 32
@@ -53,13 +55,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="BoxContainer" type="BoxContainer" parent="CLSGO/FlowContainer"]
+[node name="HeaderContainer" type="BoxContainer" parent="CLSGO/FlowContainer"]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TitleLabel" type="Label" parent="CLSGO/FlowContainer/BoxContainer"]
+[node name="TitleLabel" type="Label" parent="CLSGO/FlowContainer/HeaderContainer"]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
@@ -69,18 +71,27 @@ label_settings = ExtResource("3_up3um")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BoxContainer2" type="BoxContainer" parent="CLSGO/FlowContainer"]
+[node name="BodyContainer" type="BoxContainer" parent="CLSGO/FlowContainer"]
 texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 vertical = true
 
-[node name="AuthorLabel" type="Label" parent="CLSGO/FlowContainer"]
+[node name="FoodContainer" type="BoxContainer" parent="CLSGO/FlowContainer"]
 texture_filter = 1
 layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+vertical = true
 
-[node name="PressLabel" type="Label" parent="CLSGO/FlowContainer"]
+[node name="AuthorLabel" type="Label" parent="CLSGO/FlowContainer/FoodContainer"]
+texture_filter = 1
+layout_mode = 2
+text = "by José Pedro"
+label_settings = ExtResource("4_rnek6")
+
+[node name="PressLabel" type="Label" parent="CLSGO/FlowContainer/FoodContainer"]
 texture_filter = 1
 layout_mode = 2
 

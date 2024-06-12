@@ -13,9 +13,6 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="FlowContainer"]
-layout_mode = 2
-
 [node name="AuthorLabel" type="Label" parent="FlowContainer"]
 layout_mode = 2
 

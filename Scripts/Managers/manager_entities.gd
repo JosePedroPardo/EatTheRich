@@ -13,8 +13,8 @@ signal dead_a_poor()
 signal celebration_all_pufs()
 
 @export_range(0, 100) var limit_initial_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20) ## 0 es equivalente a un número aleatorio entre 15 y 20
-@export var spawn_time: float = 10 ## Tiempo entre spawn y spawn
-@export var spawn_time_to_rich: float = 30  ## Cuando se pone a false, comienzan a spawnear únicamente ricos
+@export var spawn_time: float = 3 ## Tiempo entre spawn y spawn
+@export var spawn_time_to_rich: float = 13  ## Cuando se pone a false, comienzan a spawnear únicamente ricos
 @export var is_time_to_spawn_rich: bool = false ## ¿Es tiempo de que solo spawneen ricos?
 
 var spawn_cells: Array[Vector2i] 
@@ -22,9 +22,7 @@ var ocuppied_cells: Array[Vector2i]
 var rich_pufs: Array[Node2D] 
 var poor_pufs: Array[Node2D] 
 var current_pufs: Array[Node2D]
-var rich_pufs_adjacent: Array
-var poor_pufs_adjacent: Array
-var existings_groups: Array[Group]
+var selected_puf: Array[Node2D]
 var total_time_of_spawn: float 
 
 var is_finished_initial_spawn: bool = false
@@ -69,8 +67,6 @@ func _born_a_puf():
 	new_puf.connect("cell_ocuppied", Callable(self, "_on_ocupied_cell"))
 	new_puf.connect("cell_unocuppied", Callable(self, "_on_unocupied_cell"))
 	new_puf.connect("puf_smashed", Callable(self, "_on_puf_smashed"))
-	new_puf.connect("pufs_rich_at_my_side", Callable(self, "_on_pufs_rich_at_my_side"))
-	new_puf.connect("pufs_poor_at_my_side", Callable(self, "_on_pufs_poor_at_my_side"))
 	parent.add_child(new_puf)
 
 func _emit_signal_according_born_social_class_puf(new_puf):
@@ -146,10 +142,10 @@ func _on_unocupied_cell(cood_cell):
 			ocuppied_cells.erase(cood_cell)
 			emit_signal("ocuppied_cells_array", ocuppied_cells)
 
-func _on_puf_dragging():
+func _on_puf_dragging(puf):
 	pass
 
-func _on_puf_undragging():
+func _on_puf_undragging(puf):
 	pass
 
 func _on_tile_map_ocuppied_coordinates(ocuppied_coordinates):
@@ -163,13 +159,8 @@ func _on_puf_smashed(death_puf: Node2D):
 	emit_signal("celebration_all_pufs", DefinitionsHelper.TYPE_CELEBRATION_SMASH_PUF)
 	dead_a_rich.emit()
 
-''' NO AGREGA EL ARRAY al array'''
-func _on_pufs_rich_at_my_side(pufs: Array[Node2D]):
-	rich_pufs_adjacent.append_array(pufs)
-	#print(pufs)
-
-func _on_pufs_poor_at_my_side(pufs: Array[Node2D]):
-	poor_pufs_adjacent.append_array(pufs)
-
 func _on_button_debug_toogle_spawn_button_toggled():
 	timer_spawn.start() if timer_spawn.is_stopped() else timer_spawn.stop()
+
+func _on_mouse_manager_change_selected_pufs(pufs):
+	selected_puf = pufs

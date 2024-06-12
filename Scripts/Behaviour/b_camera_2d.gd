@@ -1,7 +1,5 @@
 extends Camera2D
 
-signal change_zoom(in_out: bool)
-
 @export var multiplier_speed: float = 4
 @export var zoom_speed: float = 10.0
 @export var zoom_margin: float = 0.1
@@ -33,7 +31,6 @@ func _ready():
 func _process(delta):
 	zoom_camera(delta)
 	move_camera(delta)
-	#process_select_area()
 
 func _on_toogle_button_changes_mouse_move():
 	is_mouse_move = !is_mouse_move
@@ -44,26 +41,21 @@ func _mouse_move(direction: Vector2) -> Vector2:
 			direction.x = -1
 		elif mouse_pos.x > get_viewport_rect().size.x - edge_margin:
 			direction.x = 1
-
 		if mouse_pos.y < edge_margin:
 			direction.y = -1
 		elif mouse_pos.y > get_viewport_rect().size.y - edge_margin:
 			direction.y = 1
-	
 	return direction
 
 func _awsd_move(direction: Vector2) -> Vector2:
 	var inputX: int = get_input_x()
 	var inputY: int = get_input_y()
-
 	direction.x += inputX
 	direction.y += inputY
-	
 	return direction
 
 func _input(event: InputEvent) -> void:
 	input_for_zoom(event)
-
 	if event is InputEventMouse:
 		mouse_pos = event.position
 		mouse_pos_global = get_global_mouse_position()
@@ -71,12 +63,10 @@ func _input(event: InputEvent) -> void:
 func _zoom_out():
 	zoom_factor -= 0.01 * zoom_speed
 	zoom_pos = get_global_mouse_position()
-	emit_signal("change_zoom", false)
 
 func _zoom_in():
 	zoom_factor += 0.01 * zoom_speed
 	zoom_pos = get_global_mouse_position()
-	emit_signal("change_zoom", true)
 
 func get_input_x() -> int:
 	return int(Input.is_action_pressed(InputsHelper.CAMERA_RIGHT)) - int(Input.is_action_pressed(InputsHelper.CAMERA_LEFT))
@@ -94,14 +84,10 @@ func zoom_camera(delta: float) -> void:
 		zoom_factor = 1.0
 
 func move_camera(delta: float) -> void:
-	if zoom.x == zoom_max and zoom.y == zoom_max:
+	if zoom.x == zoom_min and zoom.y == zoom_min:
 		center_camera()
 	var direction = Vector2()
-
-	# Movimiento por bordes de pantalla
 	direction = _mouse_move(direction)
-	
-	# Movimiento por teclas
 	direction = _awsd_move(direction)
 
 	if direction != Vector2():
@@ -120,16 +106,6 @@ func input_for_zoom(event: InputEvent) -> void:
 			_zoom_in()
 	else:
 		zooming = true
-
-func get_objects_in_area(start: Vector2, end: Vector2) -> Array:
-	var area_rect = Rect2(start, end - start)
-	var selected_objects = []
-	
-	for object in get_tree().get_nodes_in_group("selectable"):
-		if area_rect.has_point(object.global_position):
-			selected_objects.append(object)
-	
-	return selected_objects
 
 func center_camera():
 	var viewport_size = get_viewport_rect().size

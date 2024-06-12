@@ -5,13 +5,9 @@ signal cell_ocuppied(cood_cell: Vector2i)
 signal cell_unocuppied(cood_cell: Vector2i)
 signal puf_dead(puf: Vector2i)
 signal puf_smashed(puf: Node2D)
-signal pufs_rich_at_my_side(puf_rich_at_my_side: Array[Node2D])
-signal pufs_poor_at_my_side(puf_poor_at_my_side: Array[Node2D])
-signal puf_dragging
-signal puf_undragging
+signal puf_dragging(puf: Node2D)
+signal puf_undragging(puf: Node2D)
 
-@export var minimum_poor_pufs_to_join: int = 3 ## Unidades mínimas de puf pobres para unirse
-@export var minimum_rich_pufs_to_join: int = 2 ## Unidades mínimas de puf ricos para unirse
 @export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
 @export var wait_time_finish_celebration: float = 2 ## Tiempo de espera entre un movimiento y el siguiente
 @export var wait_time_stop_rich: float = 0.5 ## Tiempo de espera hasta que el rico se para
@@ -21,8 +17,10 @@ signal puf_undragging
 @export var degress_rotation: float = 90 ## Grados de rotación del sprite al arrastrarlo
 @export var in_or_out_zoom: float = 0.5 ## Valor por el que se incrementa el texto a través del zoom de la cámara
 @export var can_assemble: bool = false ## ¿Los Pufs se pueden unir?
-@export var is_in_or_out_zoom: bool ## Booleana que controla si se incrementa o decrementa el zoom
+@export var is_in_or_out_zoom: bool = false ## Booleana que controla si se incrementa o decrementa el zoom
 @export var knockback_strength: float = 30 ## Fuerza del knockback
+@export var is_selected: bool = false ## ¿Está el puf seleccionado?
+@export var is_smashed_now: bool = false ## ¿Estoy aplastando ahora mismo?
 
 var myself: Puf: 
 	get: return myself
@@ -63,8 +61,10 @@ var target_grid_position: Vector2
 @onready var smash_sprite: Sprite2D = $SmashSprite
 @onready var sprite_puf: Sprite2D = $SpritePuf
 @onready var smash_animation_player: AnimationPlayer = smash_sprite.get_child(0)
+@onready var selected_sprite: AnimatedSprite2D = $SelectedPuf
 @onready var assemble_shape: CollisionShape2D = $InteractionAreas/AssembleArea/AssembleShape
 @onready var repulsion_shape: CollisionShape2D = $InteractionAreas/RepulsionArea/RepulsionShape
+@onready var mouse_shape: CollisionShape2D = $InteractionAreas/MouseArea/MouseShape
 @onready var shape_puf: CollisionShape2D = $ShapePuf
 @onready var tilemap: TileMap = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_TILEMAP)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
@@ -90,7 +90,6 @@ func _ready():
 	manager_puf.connect("ocuppied_cells_array", Callable(self, "_on_ocuppied_cells"))
 	manager_puf.connect("celebration_all_pufs", Callable(self, "_on_celebration_all_pufs"))
 	tilemap.connect("death_coordinates", Callable(self, "_on_death_cells"))
-	camera.connect("change_zoom", Callable(self, "_on_change_zoom"))
 	
 	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
@@ -103,8 +102,8 @@ func _change_sprite_according_social_class():
 	sprite_puf.texture = load(path_texture)
 
 func _process(delta):
+	selected_sprite.visible = true if is_selected else false
 	_update_all_position_grid()
-	
 	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
 		current_clic_position = get_global_mouse_position()
 	
@@ -116,11 +115,10 @@ func _process(delta):
 	if is_mouse_top:
 		if is_myself_rich():
 			if Input.is_action_just_pressed(InputsHelper.SMASH_PUF):
-				_smash_rich()
-				_die(way_diying)
-		else: 
-			if Input.is_action_just_pressed(InputsHelper.ASSEMBLE_PUF) and can_assemble:
-				_change_interact_ui_label(InteractHelper.INTERACTION_ASSEMBLE_TEXT)
+				if not is_smashed_now:
+					_smash_rich()
+					_die(way_diying)
+	_emit_signal_if_dragging()
 
 func _physics_process(delta):
 	if is_dragging:
@@ -129,22 +127,10 @@ func _physics_process(delta):
 		if is_myself_rich():
 			_look_to_mouse(-get_local_mouse_position())
 			_stop_move_is_rich()
-	
-	if not is_myself_rich():
-		if not puf_poor_at_my_side.is_empty():
-			if (puf_poor_at_my_side.size() % minimum_poor_pufs_to_join) == 0:
-				_assemble_pufs()
 
 func _on_mouse_area_input_event(viewport, event, shape_idx):  #Cuando un evento interactua con el area
 	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
 		is_dragging = true
-
-func _assemble_pufs():
-	var interact_text: String = ""
-	match puf_poor_at_my_side.size():
-		minimum_poor_pufs_to_join: interact_text = InteractHelper.INTERACTION_ASSEMBLE_TEXT
-		_: interact_text = InteractHelper.INTERACTION_ASSEMBLE_TEXT
-	_change_interact_ui_label(interact_text)
 
 func _look_to_mouse(clic_position: Vector2):
 	#var direction = (clic_position - self.global_position).normalized()
@@ -152,15 +138,30 @@ func _look_to_mouse(clic_position: Vector2):
 
 func _move_to_clic_position(clic_position: Vector2):
 	_look_to_mouse(get_local_mouse_position())
-	var new_position = tilemap.map_to_local(tilemap.local_to_map(clic_position))
+	var new_position_relative_to_map = tilemap.local_to_map(clic_position)
+	var new_position = tilemap.map_to_local(new_position_relative_to_map)
 	var direction = (new_position - self.position).normalized()
-	if not _is_not_ocuppied_position(new_position):
+	if _is_not_ocuppied_position(clic_position):
 		if not is_myself_rich():
-			if _is_wall_position(new_position) or _is_death_position(new_position):
+			if _is_wall_position(clic_position) or _is_death_position(clic_position):
+				stop_immediately()
 				return
-	
 	self.velocity = (direction * move_drag_speed)
 	move_and_slide()
+	if is_myself_rich(): _message_if_move_me("Get off, commoner!", "May you hang!")
+	else: 
+		await get_tree().create_timer(0.5).timeout
+		_message_if_move_me("I'm coming!", "Wait for me, dammit!")
+
+func _message_if_move_me(first_text: String, text_to_wait_time: String):
+	_change_interact_ui_label(first_text)
+	await get_tree().create_timer(0.5).timeout
+	_change_interact_ui_label("")
+	await get_tree().create_timer(2).timeout
+	_change_interact_ui_label(text_to_wait_time)
+	await get_tree().create_timer(1).timeout
+	_change_interact_ui_label("")
+	
 
 func _animation_to_run_pufs():
 	var animation_to_play = ""
@@ -173,7 +174,6 @@ func _stop_move_is_rich():
 	is_dragging = false
 	await get_tree().create_timer(wait_time_stop_rich).timeout
 	reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_DIE_PUF)
-	await get_tree().create_timer(wait_time_stop_rich).timeout
 	_look_to_mouse(get_local_mouse_position())
 	await get_tree().create_timer(wait_time_stop_rich * 2).timeout
 	reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_RESET_PUF)
@@ -215,7 +215,7 @@ func _is_wall_position(current_position: Vector2i) -> bool:
 
 func _is_death_position(current_position: Vector2i) -> bool:
 	current_position = tilemap.local_to_map(current_position)
-	return not tilemap.is_point_death_cells(current_position)
+	return tilemap.is_point_death_cells(current_position)
 
 func _die(die: String):
 	var animation_to_reproduce: String = ""
@@ -226,13 +226,20 @@ func _die(die: String):
 		DefinitionsHelper.WAY_DYING_NEEDS: animation_to_reproduce = DefinitionsHelper.ANIMATION_DIE_PUF
 	reproduce_animation_without_queue(animation_to_reproduce)
 	stop_immediately()
-	_destroy_after_time(2)
+	_change_interact_ui_label("&@$#/°")
+	await get_tree().create_timer(1).timeout
+	_change_interact_ui_label("")
+	_destroy_after_time(1)
 
 func _smash_rich():
+	is_smashed_now = true
+	is_dragging = false
 	emit_signal("puf_smashed", self)
 	smash_sprite.visible = true
 	smash_animation_player.play(DefinitionsHelper.ANIMATION_DEATH_BY_SMASH_CURSOR)
 	way_diying = DefinitionsHelper.WAY_DYING_SMASH
+	await get_tree().create_timer(1.7).timeout 
+	smash_sprite.visible = false
 
 func _update_all_position_grid():
 	local_cursor_map_position_relative_local_tilemap = tilemap.local_to_map(get_local_mouse_position())
@@ -242,9 +249,10 @@ func _update_all_position_grid():
 
 func _destroy_after_time(time: float):
 	await get_tree().create_timer(time).timeout
+	is_smashed_now = false
 	emit_signal("cell_unocuppied", tilemap.local_to_map(self.position))
 	self.queue_free()
-	
+
 func _invisible_after(node: Node2D, time: float):
 	await get_tree().create_timer(time).timeout
 	node.visible = false
@@ -308,27 +316,9 @@ func _emit_signal_with_ocuppied_grid_position(current_grid_cell: Vector2, free_o
 	var signal_name = "cell_unocuppied" if free_or_not else "cell_ocuppied"  
 	emit_signal(signal_name, Vector2i(current_grid_cell))
 
-func _emit_signal_to_rich_at_my_side(body, is_add: bool):
-	if body != self:
-		if is_add:
-			if not puf_rich_at_my_side.has(body):
-				puf_rich_at_my_side.append(body)
-				emit_signal("pufs_rich_at_my_side", puf_rich_at_my_side)
-		else: 
-			if puf_rich_at_my_side.has(body):
-				puf_rich_at_my_side.erase(body)
-	emit_signal("pufs_rich_at_my_side", puf_rich_at_my_side)
-
-func _emit_signal_to_poor_at_my_side(body, is_add: bool):
-	if body != self:
-		if is_add:
-			if puf_poor_at_my_side.has(body):
-				puf_poor_at_my_side.append(body)
-				print(puf_poor_at_my_side)
-		else: 
-			if puf_poor_at_my_side.has(body):
-				puf_poor_at_my_side.erase(body)
-	emit_signal("pufs_poor_at_my_side", puf_poor_at_my_side)
+func _emit_signal_if_dragging():
+	var signal_name = "puf_dragging" if is_dragging else "puf_undragging"  
+	emit_signal(signal_name, self)
 
 func _on_ocuppied_cells(_ocuppied_cells):
 	ocuppied_cells = _ocuppied_cells
@@ -357,6 +347,8 @@ func _on_mouse_area_mouse_exited():
 		reproduce_animation_with_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _on_celebration_all_pufs(type_celebration: String):
+	if is_smashed_now:
+		return
 	var animation_to_play: String = ""
 	match type_celebration:
 		DefinitionsHelper.TYPE_CELEBRATION_SMASH_PUF:
@@ -366,16 +358,6 @@ func _on_celebration_all_pufs(type_celebration: String):
 			reproduce_animation_without_queue(animation_to_play)
 	await get_tree().create_timer(wait_time_finish_celebration).timeout
 	reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
-
-func _on_assemble_area_body_entered(body):
-	if is_myself_rich():
-		_emit_signal_to_rich_at_my_side(body, true)
-	else: _emit_signal_to_poor_at_my_side(body, true)
-
-func _on_assemble_area_body_exited(body):
-	if is_myself_rich():
-		_emit_signal_to_rich_at_my_side(body, false)
-	else: _emit_signal_to_poor_at_my_side(body, false)
 
 func _on_repulsion_area_body_entered(body): ##TODO: Poner un globo de alegria si se acerca un rico, de asco si es un pobre
 	if is_myself_rich():
@@ -387,11 +369,6 @@ func _on_repulsion_area_body_exited(body):
 		if not body.is_myself_rich():
 			#_kockback(body)
 			pass
-
-
-##TODO: Hacer que los label se ajusten al tamaño del zoom de la cámara
-func _on_change_zoom(in_out: bool): 
-	pass
 
 ''' Getters del Puf asociado a este CharacterBody2D '''
 func get_social_class():

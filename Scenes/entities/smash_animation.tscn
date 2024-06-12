@@ -27,8 +27,9 @@ _data = {
 texture_filter = 1
 texture = ExtResource("1_lwvpt")
 flip_h = true
-hframes = 7
-frame = 3
+hframes = 8
+vframes = 2
+frame = 4
 
 [node name="SmashAnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

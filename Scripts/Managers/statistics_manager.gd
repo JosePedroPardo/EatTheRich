@@ -1,10 +1,9 @@
 class_name StatisticsManager
 extends Node
 
-@export var wait_year: float = 60 ## La duración de un año
-@export var max_pollution: float = 100
-@export var slow_increment: float = wait_year / 100
-@export var is_debug_invert_pollution: bool = false
+@export var wait_year: float = 3 ## Los segundos equivalentes a un año
+@export var max_pollution: float = 100 ## Polución máxima
+@export var is_debug_invert_pollution: bool = false ## Invertir la polución
 @export var pollution_change_rate: float = 0.1 ## Tasa de cambio por frame
 @export var rich_pollution: float = 0.067 ## Cantidad de pollution generada por año por un rico
 @export var poor_pollution: float = 0.033 ## Cantidad de pollution generada por año por un rico
@@ -25,7 +24,6 @@ extends Node
 var year: int = 0:
 	get:
 		return year
-
 var total_rich_pufs: int = 0
 var total_poor_pufs: int = 0
 var total_buildings: int = 0
@@ -37,6 +35,7 @@ var actual_pollution: float
 var target_pollution: float
 var building_rich_pollution: float = rich_pollution * 0.3
 var building_poor_pollution: float = poor_pollution * 0.3
+var slow_increment: float = wait_year / 100
 var next_spawn_in: float
 
 var buildings: Array
@@ -59,7 +58,6 @@ var buildings: Array
 @onready var ui_poblation_animation_player: AnimationPlayer = ui_poblation_sprite.get_child(0)
 @onready var ui_pollution_sprite_player: AnimationPlayer = ui_pollution_sprite.get_child(0)
 @onready var year_timer: Timer = $YearsTimer
-
 
 @onready var debugs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_DEBUG) 
 @onready var debug_invert_pollution_button: Button =  PathsHelper.get_node_by_name(debugs, "IPButton")
@@ -97,15 +95,15 @@ func _change_visibility_sprite(sprite: Sprite2D, visibility: bool):
 
 func _update_pollution(delta): 
 	var slow_delta: float = delta * slow_increment
-	var visibility: bool = false
-	var animation_to_play: String = ""
 	previous_pollution = actual_pollution
 	if actual_pollution < target_pollution:
 		actual_pollution += pollution_change_rate * slow_delta
 		if actual_pollution > target_pollution:
 			actual_pollution = target_pollution
+		_shake_node(ui_pollution_label, delta, actual_pollution, slow_delta)
 	elif actual_pollution > target_pollution:
 		actual_pollution -= pollution_change_rate * slow_delta
+		_shake_node(ui_pollution_label, delta, actual_pollution, slow_delta)
 		if actual_pollution < target_pollution:
 			actual_pollution = target_pollution
 	if actual_pollution != 0:
@@ -141,7 +139,6 @@ func _calculate_total_pollution() -> float:
 	var total_pollution = total_rich_pollution + total_poor_pollution
 	if is_debug_invert_pollution:
 		total_pollution *= -1
-	print(total_pollution)
 	return total_pollution
 
 func _update_animations_to_pollution(animation_to_play: String):
@@ -159,30 +156,26 @@ func _reproduce_animation(animation_sprite: Sprite2D, animation_player: Animatio
 	elif animation_player.get_queue().is_empty(): 
 		animation_player.play(animation)
 
-func _shake_label(label: Label, intensity: float, duration: float, frequency: float):
-	var original_position = label.position
-	var elapsed_time = 0
-	while elapsed_time < duration:
-		await get_tree().create_timer(frequency).timeout
-		label.position = original_position + Vector2(
-			randf_range(-intensity, intensity),
-			0  # Solo movimiento horizontal
-		)
-		elapsed_time += frequency
-	label.position = original_position
+func _shake_node(node: Node, delta: float, shake_intensity: float, shake_duration: float):
+	var shake_timer = shake_duration
+	while shake_timer > 0:
+		var shake_offset: float = randf_range(-shake_intensity, shake_intensity)
+		node.position.x += shake_offset
+		shake_timer -= delta
+		await get_tree().create_timer(delta).timeout
+	node.position.x = 0
 
 func _change_time_to_spawn_label(delta):
 	if next_spawn_in > 0:
 		next_spawn_in -= delta
 		if next_spawn_in < 0:
 			next_spawn_in = 0
-	ui_new_puf_time_label.text = String.num(next_spawn_in, 2)  
+	ui_new_puf_time_label.text = String.num(next_spawn_in, 2)
 
 func connect_to_buildings():
 	if not buildings.is_empty(): 
 		for building in buildings:
 			building.connect("building_construction", Callable(self, "_on_building_construction"))
-
 
 func _on_manager_pufs_born_a_rich():
 	total_rich_pufs += 1
@@ -199,10 +192,10 @@ func _on_manager_pufs_dead_a_poor():
 func _on_years_timer_timeout():
 	year += 1
 	ui_years_label.text = str(year)
-	target_pollution += _calculate_total_pollution()
 	_reproduce_animation(ui_year_sprite, ui_year_animation_player, DefinitionsHelper.ANIMATION_PLUS_UI, false)
 	var animation_to_play = DefinitionsHelper.ANIMATION_DOWN_UI if actual_pollution > target_pollution else DefinitionsHelper.ANIMATION_UP_UI
 	_update_animations_to_pollution(animation_to_play)
+	target_pollution += _calculate_total_pollution()
 
 func _on_manager_pufs_time_to_rich():
 	ui_new_puf_label.text = DefinitionsHelper.UI_LABEL_STATISTICS_TIME_TO_RICH

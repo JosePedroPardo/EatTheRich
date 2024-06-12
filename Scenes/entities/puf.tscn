@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b4xp0w52hwj68"]
+[gd_scene load_steps=19 format=3 uid="uid://b4xp0w52hwj68"]
 
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_q7ds5"]
 [ext_resource type="AnimationLibrary" uid="uid://ig4s8klxx25" path="res://Resources/Animations/Pufs/Pufs.res" id="2_54i3k"]
@@ -8,7 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="3_dpvcn"]
 [ext_resource type="Material" uid="uid://cy7iwjou25tgf" path="res://Resources/tres/smooth_pixel_shader_material.tres" id="6_eyk88"]
 [ext_resource type="Texture2D" uid="uid://cjkyqlgkn2ami" path="res://Resources/Tileset/pufs/poor.png" id="8_em6a3"]
+[ext_resource type="Texture2D" uid="uid://b66mb70cikal5" path="res://Resources/Tileset/pufs/Selected_puf/Selected_e.png" id="9_c25bi"]
 [ext_resource type="PackedScene" uid="uid://cxplgw56ji1xh" path="res://Scenes/entities/smash_animation.tscn" id="9_p56fm"]
+[ext_resource type="Texture2D" uid="uid://c6pua88wjwxqw" path="res://Resources/Tileset/pufs/Selected_puf/Selected_i.png" id="10_qp6ew"]
 
 [sub_resource type="Animation" id="Animation_r0hht"]
 length = 0.001
@@ -105,6 +107,20 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ug8ye"]
 size = Vector2(16, 16)
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_rlhu7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_c25bi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_qp6ew")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_y8cgo"]
 size = Vector2(8, 8)
 
@@ -195,6 +211,12 @@ texture = ExtResource("8_em6a3")
 hframes = 4
 vframes = 4
 
+[node name="SelectedPuf" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(0, 2)
+sprite_frames = SubResource("SpriteFrames_rlhu7")
+frame_progress = 0.414586
+
 [node name="SmashSprite" parent="." instance=ExtResource("9_p56fm")]
 visible = false
 light_mask = 2
@@ -226,6 +248,7 @@ shape = SubResource("RectangleShape2D_7sdfx")
 debug_color = Color(0.870588, 0, 0.0117647, 0.113725)
 
 [node name="AssembleArea" type="Area2D" parent="InteractionAreas"]
+visible = false
 light_mask = 2
 visibility_layer = 2
 collision_layer = 2
@@ -242,5 +265,3 @@ debug_color = Color(0.164706, 0.643137, 0, 0.113725)
 [connection signal="mouse_exited" from="InteractionAreas/MouseArea" to="." method="_on_mouse_area_mouse_exited"]
 [connection signal="body_entered" from="InteractionAreas/RepulsionArea" to="." method="_on_repulsion_area_body_entered"]
 [connection signal="body_exited" from="InteractionAreas/RepulsionArea" to="." method="_on_repulsion_area_body_exited"]
-[connection signal="body_entered" from="InteractionAreas/AssembleArea" to="." method="_on_assemble_area_body_entered"]
-[connection signal="body_exited" from="InteractionAreas/AssembleArea" to="." method="_on_assemble_area_body_exited"]

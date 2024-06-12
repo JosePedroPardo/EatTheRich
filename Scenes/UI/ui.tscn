@@ -63,6 +63,7 @@ offset_bottom = 97.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
 alignment = 1
 
 [node name="InfoContainer" type="HBoxContainer" parent="VBoxContainer"]
@@ -122,11 +123,10 @@ alignment = 1
 light_mask = 16
 visibility_layer = 16
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "12.25"
 label_settings = ExtResource("6_rsfbn")
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="PercentResult" type="Label" parent="VBoxContainer/InfoContainer/PollutionContainer/HBoxContainer"]
 light_mask = 16
