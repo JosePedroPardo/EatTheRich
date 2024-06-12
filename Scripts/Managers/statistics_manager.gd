@@ -5,7 +5,23 @@ extends Node
 @export var max_pollution: float = 100
 @export var slow_increment: float = wait_year / 100
 @export var is_debug_invert_pollution: bool = false
-
+@export var pollution_change_rate: float = 0.1 ## Tasa de cambio por frame
+@export var rich_pollution: float = 0.067 ## Cantidad de pollution generada por año por un rico
+@export var poor_pollution: float = 0.033 ## Cantidad de pollution generada por año por un rico
+@export var polluted_according_to_the_type_rich: Dictionary = {
+	"negative": 0.0,
+	"low": 0.06,
+	"medium": 0.10,
+	"advanced": 0.25,
+	"hardcore": 0.50
+}
+@export var polluted_according_to_the_type_poor: Dictionary = {
+	"negative": -0.50,
+	"low": -0.06,
+	"medium": -0.10,
+	"advanced": -0.25,
+	"hardcore": -0.50
+}
 var year: int = 0:
 	get:
 		return year
@@ -13,18 +29,17 @@ var year: int = 0:
 var total_rich_pufs: int = 0
 var total_poor_pufs: int = 0
 var total_buildings: int = 0
-var total_rich_buildings: array[int] = DefinitionsHelper.TOTAL_TYPE_BUILDING
-var total_poor_buildings: array[int] = DefinitionsHelper.TOTAL_TYPE_BUILDING
+var total_rich_buildings: Array[int]
+var total_poor_buildings: Array[int]
 
 var previous_pollution: float
 var actual_pollution: float
 var target_pollution: float
-var pollution_change_rate: float = 0.1 ## Tasa de cambio por frame
-var rich_pollution: float = 0.067 ## Cantidad de pollution generada por año por un rico
-var poor_pollution: float = 0.033 ## Cantidad de pollution generada por año por un rico
 var building_rich_pollution: float = rich_pollution * 0.3
 var building_poor_pollution: float = poor_pollution * 0.3
 var next_spawn_in: float
+
+var buildings: Array
 
 @onready var total_pufs: Array
 @onready var ui_labels = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_LABELS_RESULT)
@@ -45,7 +60,6 @@ var next_spawn_in: float
 @onready var ui_pollution_sprite_player: AnimationPlayer = ui_pollution_sprite.get_child(0)
 @onready var year_timer: Timer = $YearsTimer
 
-@onready var building = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_BUILDING) 
 
 @onready var debugs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_DEBUG) 
 @onready var debug_invert_pollution_button: Button =  PathsHelper.get_node_by_name(debugs, "IPButton")
@@ -55,13 +69,14 @@ func _ready():
 	year_timer.start()
 	ui_new_puf_label.text = DefinitionsHelper.UI_LABEL_STATISTICS_INITIAL_TIME
 	debug_invert_pollution_button.connect("pressed", Callable(self, "_on_button_debug_invert_pollution_toggled"))
-	building.connect("building_construction",Callable(self, "_on_building_construction"))
 
 func _process(delta):
 	ui_pollution_label.text = String.num(actual_pollution, 2)
 	_change_time_to_spawn_label(delta)
 	_update_poblation()
 	_update_pollution(delta)
+	buildings = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_BUILDING) 
+	connect_to_buildings()
 
 func _update_poblation():
 	var global_puf: int = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_PUFS).size()
@@ -99,9 +114,35 @@ func _update_pollution(delta):
 		_change_visibility_sprite(ui_pollution_sprite, false)
 
 func _calculate_total_pollution() -> float:
-	if is_debug_invert_pollution: 
-		return -1 * ((total_rich_pufs + total_rich_buildings) * rich_pollution) + ((total_poor_pufs + total_poor_buildings) * poor_pollution)
-	return ((total_rich_pufs + total_rich_buildings) * rich_pollution) + ((total_poor_pufs + total_poor_buildings) * poor_pollution)
+	var total_rich_pollution: float = 0.0
+	var total_poor_pollution: float = 0.0
+	for i in range(total_rich_buildings.size()):
+		var building_count = total_rich_buildings[i]
+		var pollution_multiplier = 0.0
+		match i:
+			0: pollution_multiplier = polluted_according_to_the_type_rich["negative"]
+			1: pollution_multiplier = polluted_according_to_the_type_rich["low"]
+			2: pollution_multiplier = polluted_according_to_the_type_rich["medium"]
+			3: pollution_multiplier = polluted_according_to_the_type_rich["advanced"]
+			4: pollution_multiplier = polluted_according_to_the_type_rich["hardcore"]
+		total_rich_pollution += building_count * pollution_multiplier
+	for i in range(total_poor_buildings.size()):
+		var building_count = total_poor_buildings[i]
+		var pollution_multiplier = 0.0
+		match i:
+			0: pollution_multiplier = polluted_according_to_the_type_poor["negative"]
+			1: pollution_multiplier = polluted_according_to_the_type_poor["low"]
+			2: pollution_multiplier = polluted_according_to_the_type_poor["medium"]
+			3: pollution_multiplier = polluted_according_to_the_type_poor["advanced"]
+			4: pollution_multiplier = polluted_according_to_the_type_poor["hardcore"]
+		total_poor_pollution += building_count * pollution_multiplier
+	total_rich_pollution += total_rich_pufs * rich_pollution 
+	total_poor_pollution += total_poor_pufs * poor_pollution
+	var total_pollution = total_rich_pollution + total_poor_pollution
+	if is_debug_invert_pollution:
+		total_pollution *= -1
+	print(total_pollution)
+	return total_pollution
 
 func _update_animations_to_pollution(animation_to_play: String):
 	ui_pollution_sprite_player.stop()
@@ -132,10 +173,16 @@ func _shake_label(label: Label, intensity: float, duration: float, frequency: fl
 
 func _change_time_to_spawn_label(delta):
 	if next_spawn_in > 0:
-		next_spawn_in -= delta * 1000  # Reducir el tiempo restante cada frame
+		next_spawn_in -= delta
 		if next_spawn_in < 0:
 			next_spawn_in = 0
-	ui_new_puf_time_label.text = String.num(next_spawn_in, 3)  # Mostrar el tiempo con 3 decimales
+	ui_new_puf_time_label.text = String.num(next_spawn_in, 2)  
+
+func connect_to_buildings():
+	if not buildings.is_empty(): 
+		for building in buildings:
+			building.connect("building_construction", Callable(self, "_on_building_construction"))
+
 
 func _on_manager_pufs_born_a_rich():
 	total_rich_pufs += 1

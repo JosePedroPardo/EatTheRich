@@ -9,7 +9,7 @@ const JSON_PATH_NOBLE_TITLE: String = "res://SaveData/GenerateDates/ESP/noble_ti
 const JSON_PATH_JOBS: String = "res://SaveData/GenerateDates/ESP/jobs.json"
 
 ''' SCENE PATHS '''
-const PATH_SCENE_BLOOD_STAIN: String = "res://Scenes/blood_stain.tscn"
+const PATH_SCENE_BLOOD_STAIN: String = "res://Scenes/entities/blood_stain.tscn"
 const PATH_SCENE_BUILDING: String = "res://Scenes/entities/building.tscn"
 const PATH_SCENE_PUF: String = "res://Scenes/entities/puf.tscn"
 
@@ -36,10 +36,6 @@ const UI_TOOGLE_BUTTON_MOUSE_CAMERA: String = ("../UI/PanelContainer/DebugContai
 const UI_LABEL_YEAR_RESULT: String = ("../UI/SuperiorContainer/YearContainer/YResult")
 const UI_LABEL_POLLUTION_RESULT: String = ("../UI/SuperiorContainer/PollutionContainer/PResut")
 const UI_LABEL_POBLATION_RESULT: String = ("../UI/SuperiorContainer/PoblationContainer/PoResult")
-
-''' PATHS OF ELEMENTS IN RELATION TO THE MAIN SCENE '''
-const TILEMAP_PATH: String = ("../TileMap")
-const MANAGER_PUF_PATH: String = ("../ManagerPufs")
 
 static func get_node_by_name(nodes: Array, name: String) -> Node:
 	for node in nodes:

@@ -54,7 +54,7 @@ func _init(owner_: Node2D):
 	self.owner_of_build = owner_
 	_set_quality_of_building()
 	self.gauging = _get_gauging()
-	self.name_of_structure = _get_random_string(owner_of_build.social_class, PathsHelper.PATH_ENTITY_BUILDING, DefinitionsHelper.NAMES)
+	self.name_of_structure = _get_random_string(owner_of_build.social_class, PathsHelper.JSON_PATH_NAMES, DefinitionsHelper.NAMES)
 	self.structural_health = MAX_STRUCTURAL_HEALTH
 
 func _next_id():

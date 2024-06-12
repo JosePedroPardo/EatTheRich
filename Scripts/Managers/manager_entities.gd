@@ -13,9 +13,9 @@ signal dead_a_poor()
 signal celebration_all_pufs()
 
 @export_range(0, 100) var limit_initial_spawn_puf: int = RandomHelper.get_random_int_in_range(15, 20) ## 0 es equivalente a un número aleatorio entre 15 y 20
-@export var spawn_time: float = 10
+@export var spawn_time: float = 10 ## Tiempo entre spawn y spawn
 @export var spawn_time_to_rich: float = 30  ## Cuando se pone a false, comienzan a spawnear únicamente ricos
-@export var is_time_to_spawn_rich: bool = false 
+@export var is_time_to_spawn_rich: bool = false ## ¿Es tiempo de que solo spawneen ricos?
 
 var spawn_cells: Array[Vector2i] 
 var ocuppied_cells: Array[Vector2i] 
@@ -27,23 +27,26 @@ var poor_pufs_adjacent: Array
 var existings_groups: Array[Group]
 var total_time_of_spawn: float 
 
+var is_finished_initial_spawn: bool = false
 var is_picked_up: bool = false
 var is_first_puf: bool = true
 
 # Variables para el sistema de selección de pufs
-@onready var parent: Node2D = get_node("../")
+@onready var parent: Node2D = get_tree().get_first_node_in_group("game")
 @onready var puf: PackedScene = preload(PathsHelper.PATH_SCENE_PUF)
 @onready var blood_stain_sprite: PackedScene = preload(PathsHelper.PATH_SCENE_BLOOD_STAIN)
 @onready var building: PackedScene = preload(PathsHelper.PATH_SCENE_BUILDING)
-@onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
+@onready var tilemap: TileMap = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_TILEMAP)
 @onready var timer_spawn: Timer = $TimerSpawn
 @onready var debugs = get_tree().get_nodes_in_group(DefinitionsHelper.GROUP_UI_DEBUG) 
-@onready var debug_toogle_spawn_button: Button =  PathsHelper.get_node_by_name(debugs, "TSButton")
+@onready var debug_toogle_spawn_button: Button = PathsHelper.get_node_by_name(debugs, "TSButton")
 
 func _ready():
 	timer_spawn.wait_time = spawn_time
 	timer_spawn.start()
-	debug_toogle_spawn_button.connect("pressed", Callable(self, "_on_button_debug_toogle_spawn_button_toggled"))
+	emit_signal("time_to_birth", timer_spawn.time_left)
+	if not debugs.is_empty():
+		debug_toogle_spawn_button.connect("pressed", Callable(self, "_on_button_debug_toogle_spawn_button_toggled"))
 
 func _process(delta):
 	pass
@@ -79,14 +82,16 @@ func _emit_signal_according_born_social_class_puf(new_puf):
 		_save_puf_in_array(new_puf, poor_pufs)
 
 func _finished_spawn_initial_pufs():
-	if not is_time_to_spawn_rich:
-		print("ES TIEMPO DE RICOS")
+	if is_finished_initial_spawn:
+		return
+	is_finished_initial_spawn = true
+	
+	if is_time_to_spawn_rich:
 		timer_spawn.wait_time = spawn_time_to_rich
 		timer_spawn.stop()
 		await get_tree().create_timer(spawn_time_to_rich).timeout
 		timer_spawn.start()
 		time_to_rich.emit()
-		is_time_to_spawn_rich = true
 
 func _save_puf_in_array(puf: Node2D, array: Array):
 	array.push_back(puf)
@@ -126,6 +131,9 @@ func _emit_signal_to_update_total_pufs():
 func _on_timer_spawn_timeout():
 	total_time_of_spawn += timer_spawn.wait_time
 	_born_a_puf()
+	if current_pufs.size() >= limit_initial_spawn_puf:
+		is_time_to_spawn_rich = true
+		_finished_spawn_initial_pufs()
 	emit_signal("time_to_birth", timer_spawn.time_left)
 
 func _on_ocupied_cell(cood_cell):

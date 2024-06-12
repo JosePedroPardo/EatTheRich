@@ -4,6 +4,9 @@
 
 [node name="StatisticsManager" type="Node" groups=["statistics"]]
 script = ExtResource("1_lqohq")
+wait_year = null
+max_pollution = null
+is_debug_invert_pollution = null
 
 [node name="YearsTimer" type="Timer" parent="."]
 wait_time = 30.0

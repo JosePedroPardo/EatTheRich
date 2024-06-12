@@ -178,13 +178,43 @@ horizontal_alignment = 1
 
 [node name="SubinfoContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 alignment = 1
 
 [node name="SIPoblation" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
+light_mask = 32
+visibility_layer = 32
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_constants/separation = -8
+
+[node name="NYContainer" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIPoblation"]
+light_mask = 16
+visibility_layer = 16
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="NewPuf" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/NYContainer" groups=["ui_labels_result"]]
+light_mask = 16
+visibility_layer = 16
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = -10
-alignment = 1
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "Next Puf in:"
+label_settings = ExtResource("9_gndac")
+
+[node name="NPResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/NYContainer" groups=["ui_labels_result"]]
+light_mask = 16
+visibility_layer = 16
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1_0nux4")
+text = "0 "
+label_settings = ExtResource("9_gndac")
+horizontal_alignment = 2
 
 [node name="PoorPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIPoblation"]
 light_mask = 16
@@ -200,9 +230,8 @@ visibility_layer = 16
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = " workers"
+text = "Workforce:"
 label_settings = ExtResource("9_gndac")
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="WResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/PoorPoblation" groups=["ui_labels_result"]]
@@ -213,7 +242,7 @@ size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "0 "
 label_settings = ExtResource("9_gndac")
-horizontal_alignment = 1
+horizontal_alignment = 2
 
 [node name="RichPoblation" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIPoblation"]
 light_mask = 16
@@ -229,10 +258,12 @@ visibility_layer = 16
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("1_0nux4")
-text = "bourgeois"
+text = "Dirty bourgeois:"
 label_settings = ExtResource("9_gndac")
-horizontal_alignment = 1
-vertical_alignment = 1
+
+[node name="Spacer" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/RichPoblation"]
+layout_mode = 2
+text = "     "
 
 [node name="BResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIPoblation/RichPoblation" groups=["ui_labels_result"]]
 light_mask = 16
@@ -242,7 +273,7 @@ size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("1_0nux4")
 text = "0 "
 label_settings = ExtResource("9_gndac")
-horizontal_alignment = 1
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="SIPollution" type="VBoxContainer" parent="VBoxContainer/SubinfoContainer"]
@@ -254,34 +285,6 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 alignment = 1
-
-[node name="NYContainer" type="HBoxContainer" parent="VBoxContainer/SubinfoContainer/SIYear"]
-visible = false
-light_mask = 16
-visibility_layer = 16
-texture_filter = 1
-layout_mode = 2
-size_flags_vertical = 3
-alignment = 1
-
-[node name="NewPuf" type="Label" parent="VBoxContainer/SubinfoContainer/SIYear/NYContainer" groups=["ui_labels_result"]]
-light_mask = 16
-visibility_layer = 16
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "next puf in..."
-label_settings = ExtResource("9_gndac")
-horizontal_alignment = 2
-
-[node name="NPResult" type="Label" parent="VBoxContainer/SubinfoContainer/SIYear/NYContainer" groups=["ui_labels_result"]]
-light_mask = 16
-visibility_layer = 16
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("1_0nux4")
-text = "0 "
-label_settings = ExtResource("9_gndac")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 visible = false

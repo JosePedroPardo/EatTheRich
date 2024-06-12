@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="3_dpvcn"]
 [ext_resource type="Texture2D" uid="uid://di573c1n2ua1r" path="res://Resources/Tileset/pufs/richv2.png" id="4_dve2d"]
 [ext_resource type="Material" uid="uid://cy7iwjou25tgf" path="res://Resources/tres/smooth_pixel_shader_material.tres" id="6_eyk88"]
-[ext_resource type="PackedScene" uid="uid://cxplgw56ji1xh" path="res://Scenes/smash_animation.tscn" id="7_tlyfv"]
+[ext_resource type="PackedScene" uid="uid://cxplgw56ji1xh" path="res://Scenes/entities/smash_animation.tscn" id="9_p56fm"]
 
 [sub_resource type="Animation" id="Animation_r0hht"]
 length = 0.001
@@ -124,9 +124,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = 7.0
-offset_top = -14.0
+offset_top = -22.0
 offset_right = 75.0
-offset_bottom = 18.0
+offset_bottom = 10.0
 grow_horizontal = 2
 scale = Vector2(0.5, 0.5)
 size_flags_horizontal = 4
@@ -154,7 +154,6 @@ theme_override_fonts/font = ExtResource("2_lhnqg")
 text = "[Q] to assemble"
 label_settings = ExtResource("3_6n6o7")
 horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -186,7 +185,7 @@ texture = ExtResource("4_dve2d")
 hframes = 4
 vframes = 4
 
-[node name="SmashSprite" parent="." instance=ExtResource("7_tlyfv")]
+[node name="SmashSprite" parent="." instance=ExtResource("9_p56fm")]
 visible = false
 light_mask = 2
 visibility_layer = 2

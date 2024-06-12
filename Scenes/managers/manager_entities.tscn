@@ -6,9 +6,6 @@
 z_index = 2
 texture_filter = 1
 script = ExtResource("1_k17n5")
-spawn_time = null
-spawn_time_to_rich = null
-is_time_to_spawn_rich = null
 
 [node name="TimerSpawn" type="Timer" parent="."]
 

@@ -57,14 +57,14 @@ var target_grid_position: Vector2
 @onready var interact_label: Label = $InteractLabel
 @onready var name_label: Label = $NameLabel
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var manager_puf: Node2D = get_node(PathsHelper.MANAGER_PUF_PATH)
+@onready var manager_puf: Node2D = get_tree().get_first_node_in_group("manager_pufs")
 @onready var smash_sprite: Sprite2D = $SmashSprite
 @onready var sprite_puf: Sprite2D = $SpritePuf
 @onready var smash_animation_player: AnimationPlayer = smash_sprite.get_child(0)
 @onready var assemble_shape: CollisionShape2D = $InteractionAreas/AssembleArea/AssembleShape
 @onready var repulsion_shape: CollisionShape2D = $InteractionAreas/RepulsionArea/RepulsionShape
 @onready var shape_puf: CollisionShape2D = $ShapePuf
-@onready var tilemap: TileMap = get_node(PathsHelper.TILEMAP_PATH)
+@onready var tilemap: TileMap = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_TILEMAP)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
 @onready var camera: Camera2D = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_CAMERA)
 
@@ -92,16 +92,25 @@ func _ready():
 	
 	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
+func _change_sprite_according_social_class():
+	var path_texture: String
+	if social_class == DefinitionsHelper.INDEX_RICH_SOCIAL_CLASS:
+		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_rich_pufs)
+	elif social_class == DefinitionsHelper.INDEX_POOR_SOCIAL_CLASS:
+		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_poor_pufs)
+	sprite_puf.texture = load(path_texture)
+
 func _process(delta):
 	_update_all_position_grid()
-	if is_dragging: 
-		_look_to_mouse(get_local_mouse_position())
+	
 	if Input.is_action_pressed(InputsHelper.LEFT_CLICK):
 		current_clic_position = get_global_mouse_position()
+	
 	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
 		if is_dragging:
 			is_dragging = false
 			_reproduce_animation(DefinitionsHelper.ANIMATION_IDLE_PUF, true)
+	
 	if is_mouse_top:
 		if is_myself_rich():
 			if Input.is_action_just_pressed(InputsHelper.SMASH_PUF):
@@ -133,11 +142,11 @@ func _assemble_pufs():
 	_change_interact_ui_label(interact_text)
 
 func _look_to_mouse(clic_position: Vector2):
-	print_debug(clic_position)
-	var direction = (clic_position - self.global_position).normalized()
-	sprite_puf.flip_h = direction.x < 0
+	#var direction = (clic_position - self.global_position).normalized()
+	sprite_puf.flip_h = clic_position.x < 0
 
 func _move_to_clic_position(clic_position: Vector2):
+	_look_to_mouse(get_local_mouse_position())
 	var animation_to_play = ""
 	var new_position = tilemap.map_to_local(tilemap.local_to_map(clic_position))
 	var direction = (new_position - self.position).normalized()
@@ -146,7 +155,7 @@ func _move_to_clic_position(clic_position: Vector2):
 			if _is_wall_position(new_position) or _is_death_position(new_position):
 				return
 	
-	if is_myself_rich(): animation_to_play = DefinitionsHelper.ANIMATION_TERROR_PUF
+	if is_myself_rich(): animation_to_play = DefinitionsHelper.ANIMATION_RUN_PUF
 	else: animation_to_play = DefinitionsHelper.ANIMATION_JUMP_PUF
 	_reproduce_animation(animation_to_play, false)
 	self.velocity = (direction * move_drag_speed)
@@ -201,14 +210,6 @@ func _add_animation_to_queue(animation: String):
 	if animation_player.has_animation(animation):
 		animation_player.queue(animation)
 
-func _change_sprite_according_social_class():
-	var path_texture: String
-	if social_class == DefinitionsHelper.INDEX_RICH_SOCIAL_CLASS:
-		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_rich_pufs)
-	elif social_class == DefinitionsHelper.INDEX_POOR_SOCIAL_CLASS:
-		path_texture = RandomHelper.get_random_string_in_array(DefinitionsHelper.texture_poor_pufs)
-	sprite_puf.texture = load(path_texture)
-
 func _die(die: String):
 	var animation_to_reproduce: String = ""
 	match die:
@@ -251,6 +252,7 @@ func _change_interact_ui_label(text: String):
 func stop_immediately():
 	is_dragging = false
 	self.velocity = Vector2.ZERO
+	_reproduce_animation(DefinitionsHelper.ANIMATION_DROP_PUF, false)
 
 ''' Métodos de señales '''
 func _emit_signal_with_ocuppied_grid_position(current_grid_cell: Vector2, free_or_not: bool):
