@@ -14,6 +14,8 @@ signal puf_undragging
 @export var minimum_rich_pufs_to_join: int = 2 ## Unidades mínimas de puf ricos para unirse
 @export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
 @export var wait_time_finish_celebration: float = 2 ## Tiempo de espera entre un movimiento y el siguiente
+@export var wait_time_stop_rich: float = 0.5 ## Tiempo de espera hasta que el rico se para
+@export var wait_time_disappear_name: float = 2 ## Tiempo de espera hasta que desaparece el nombre del puf
 @export var move_grid_speed: float = 1 ## Velocidad a la que se desplaza el puf por el grid
 @export var move_drag_speed: float = 80 ## Velocidad a la que se desplaza el puf al ser arrastrado
 @export var degress_rotation: float = 90 ## Grados de rotación del sprite al arrastrarlo
@@ -82,7 +84,7 @@ func _ready():
 		assemble_shape.shape = RectangleShape2D.new()
 		assemble_shape.shape.size = Vector2(32, 32)
 		repulsion_shape.shape = RectangleShape2D.new()
-		repulsion_shape.shape.size = Vector2(24, 24)
+		repulsion_shape.shape.size = Vector2(20, 20)
 	
 	emit_signal("cell_ocuppied", initial_grid_cell)
 	manager_puf.connect("ocuppied_cells_array", Callable(self, "_on_ocuppied_cells"))
@@ -109,7 +111,7 @@ func _process(delta):
 	if Input.is_action_just_released(InputsHelper.LEFT_CLICK):
 		if is_dragging:
 			is_dragging = false
-			_reproduce_animation(DefinitionsHelper.ANIMATION_IDLE_PUF, true)
+			reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
 	
 	if is_mouse_top:
 		if is_myself_rich():
@@ -122,8 +124,11 @@ func _process(delta):
 
 func _physics_process(delta):
 	if is_dragging:
+		_animation_to_run_pufs()
 		_move_to_clic_position(current_clic_position)
-	else: stop_immediately()
+		if is_myself_rich():
+			_look_to_mouse(-get_local_mouse_position())
+			_stop_move_is_rich()
 	
 	if not is_myself_rich():
 		if not puf_poor_at_my_side.is_empty():
@@ -147,7 +152,6 @@ func _look_to_mouse(clic_position: Vector2):
 
 func _move_to_clic_position(clic_position: Vector2):
 	_look_to_mouse(get_local_mouse_position())
-	var animation_to_play = ""
 	var new_position = tilemap.map_to_local(tilemap.local_to_map(clic_position))
 	var direction = (new_position - self.position).normalized()
 	if not _is_not_ocuppied_position(new_position):
@@ -155,11 +159,25 @@ func _move_to_clic_position(clic_position: Vector2):
 			if _is_wall_position(new_position) or _is_death_position(new_position):
 				return
 	
-	if is_myself_rich(): animation_to_play = DefinitionsHelper.ANIMATION_RUN_PUF
-	else: animation_to_play = DefinitionsHelper.ANIMATION_JUMP_PUF
-	_reproduce_animation(animation_to_play, false)
 	self.velocity = (direction * move_drag_speed)
 	move_and_slide()
+
+func _animation_to_run_pufs():
+	var animation_to_play = ""
+	if is_myself_rich(): animation_to_play = DefinitionsHelper.ANIMATION_RUN_PUF
+	else: animation_to_play = DefinitionsHelper.ANIMATION_JUMP_PUF
+	reproduce_animation_without_queue(animation_to_play)
+
+func _stop_move_is_rich():
+	await get_tree().create_timer(wait_time_stop_rich).timeout
+	is_dragging = false
+	await get_tree().create_timer(wait_time_stop_rich).timeout
+	reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_DIE_PUF)
+	await get_tree().create_timer(wait_time_stop_rich).timeout
+	_look_to_mouse(get_local_mouse_position())
+	await get_tree().create_timer(wait_time_stop_rich * 2).timeout
+	reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_RESET_PUF)
+	reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _calculate_current_paths_through_clic_position(clic_position: Vector2):
 	var myself_local_position = tilemap.local_to_map(self.position)
@@ -175,14 +193,14 @@ func _move_to_grid_position_through_current_paths():
 		is_your_moving = false
 		is_look_to_target_position = false
 		return
-	_reproduce_animation(DefinitionsHelper.ANIMATION_RUN_PUF, false)
+	reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_RUN_PUF)
 	var target_position = tilemap.map_to_local(current_paths.front())
 	is_look_to_target_position = true
 	_emit_signal_with_ocuppied_grid_position(tilemap.local_to_map(self.global_position), true)
 	self.global_position = self.global_position.move_toward(target_position, move_grid_speed)
 	await get_tree().create_timer(wait_time_move).timeout
 	if self.global_position == target_position:
-		_reproduce_animation(DefinitionsHelper.ANIMATION_IDLE_PUF, false)
+		reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
 		is_your_moving = true
 		current_paths.pop_front()
 		_emit_signal_with_ocuppied_grid_position(target_position, true)
@@ -199,24 +217,14 @@ func _is_death_position(current_position: Vector2i) -> bool:
 	current_position = tilemap.local_to_map(current_position)
 	return not tilemap.is_point_death_cells(current_position)
 
-func _reproduce_animation(animation: String, play_immediately: bool):
-	if play_immediately: 
-		animation_player.stop()
-		animation_player.play(animation)
-	elif not animation_player.get_queue().has(animation):
-		animation_player.play(animation)
-
-func _add_animation_to_queue(animation: String):
-	if animation_player.has_animation(animation):
-		animation_player.queue(animation)
-
 func _die(die: String):
 	var animation_to_reproduce: String = ""
+	await get_tree().create_timer(1).timeout 
 	match die:
 		DefinitionsHelper.WAY_DYING_SMASH: animation_to_reproduce = DefinitionsHelper.ANIMATION_DEATH_BY_SMASH_PUF
 		DefinitionsHelper.WAY_DYING_BY_FALL_PUF: animation_to_reproduce = DefinitionsHelper.ANIMATION_DEATH_BY_FALL_PUF
 		DefinitionsHelper.WAY_DYING_NEEDS: animation_to_reproduce = DefinitionsHelper.ANIMATION_DIE_PUF
-	_reproduce_animation(animation_to_reproduce, true)
+	reproduce_animation_without_queue(animation_to_reproduce)
 	stop_immediately()
 	_destroy_after_time(2)
 
@@ -249,10 +257,51 @@ func _change_interact_ui_label(text: String):
 		interact_label.visible = false
 		interact_label.text = ""
 
+func _kockback(body: CharacterBody2D):
+	var body_to_knockback: CharacterBody2D = body
+	var other_body: CharacterBody2D = self
+	if not is_myself_rich():
+		body_to_knockback = self
+		other_body = body
+	var knockback_direction = (body_to_knockback.velocity - other_body.velocity).normalized() * -knockback_strength
+	body_to_knockback.stop_immediately()
+	body_to_knockback.reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_KNOCKBACK_JUMP_PUF)
+	body_to_knockback.velocity = knockback_direction
+	body_to_knockback.global_position += body_to_knockback.velocity
+	await get_tree().create_timer(1).timeout
+	body_to_knockback.rotation = 0
+
 func stop_immediately():
 	is_dragging = false
 	self.velocity = Vector2.ZERO
-	_reproduce_animation(DefinitionsHelper.ANIMATION_DROP_PUF, false)
+	await get_tree().create_timer(0.5).timeout
+	reproduce_animation_with_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
+
+func reproduce_animation_without_queue(animation: String):
+	animation_player.play(animation)
+
+func reproduce_animation_with_queue(animation: String):
+	var actual_animation_name = animation_player.get_current_animation()
+	var actual_animation = animation_player.get_animation(actual_animation_name)
+	
+	if animation_player.is_playing() and actual_animation_name == animation:
+		if actual_animation.loop_mode == Animation.LoopMode.LOOP_NONE:
+			if not animation_player.has_animation(animation):
+				animation_player.queue(animation)
+		else:
+			return
+	elif animation_player.is_playing() and actual_animation_name != animation:
+		if actual_animation.loop_mode != Animation.LoopMode.LOOP_NONE:
+			animation_player.stop()
+			animation_player.play(animation)
+		elif not animation_player.has_animation(animation):
+			animation_player.queue(animation)
+	else:
+		animation_player.play(animation)
+
+func _disappear_name_label():
+	await get_tree().create_timer(wait_time_disappear_name).timeout
+	name_label.text = ""
 
 ''' Métodos de señales '''
 func _emit_signal_with_ocuppied_grid_position(current_grid_cell: Vector2, free_or_not: bool):
@@ -281,13 +330,6 @@ func _emit_signal_to_poor_at_my_side(body, is_add: bool):
 				puf_poor_at_my_side.erase(body)
 	emit_signal("pufs_poor_at_my_side", puf_poor_at_my_side)
 
-func _kockback(body: CharacterBody2D):
-	var knockback_direction = (body.velocity - self.velocity).normalized() * -knockback_strength
-	body.velocity = knockback_direction
-	#await get_tree().create_timer(0.05).timeout
-	body.global_position += body.velocity
-	body.stop_immediately()
-
 func _on_ocuppied_cells(_ocuppied_cells):
 	ocuppied_cells = _ocuppied_cells
 
@@ -299,19 +341,20 @@ func _on_mouse_area_mouse_entered():
 	name_label.text = get_name_of_puf()
 	self.position.y += -2
 	if is_myself_rich():
-		_reproduce_animation(DefinitionsHelper.ANIMATION_TERROR_PUF, false)
 		_change_interact_ui_label(InteractHelper.INTERACTION_SMASH_TEXT)
+		reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_TERROR_PUF)
 	else: 
-		_reproduce_animation(DefinitionsHelper.ANIMATION_PICK_ME, false)
+		reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_PICK_ME)
 
 func _on_mouse_area_mouse_exited():
 	is_mouse_top = false
-	name_label.text = ""
 	self.position.y += +2
+	_disappear_name_label()
 	if is_myself_rich():
 		_change_interact_ui_label("")
-	_reproduce_animation(DefinitionsHelper.ANIMATION_DROP_PUF, true)
-	_add_animation_to_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
+	if not is_dragging:
+		reproduce_animation_with_queue(DefinitionsHelper.ANIMATION_DROP_PUF)
+		reproduce_animation_with_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _on_celebration_all_pufs(type_celebration: String):
 	var animation_to_play: String = ""
@@ -320,9 +363,9 @@ func _on_celebration_all_pufs(type_celebration: String):
 			if not is_myself_rich(): animation_to_play = DefinitionsHelper.ANIMATION_CELEBRATION_PUF
 			else: animation_to_play = DefinitionsHelper.ANIMATION_TERROR_PUF
 			await get_tree().create_timer(1).timeout
-			_reproduce_animation(animation_to_play, true)
+			reproduce_animation_without_queue(animation_to_play)
 	await get_tree().create_timer(wait_time_finish_celebration).timeout
-	_reproduce_animation(DefinitionsHelper.ANIMATION_IDLE_PUF, true)
+	reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _on_assemble_area_body_entered(body):
 	if is_myself_rich():
@@ -342,7 +385,8 @@ func _on_repulsion_area_body_entered(body): ##TODO: Poner un globo de alegria si
 func _on_repulsion_area_body_exited(body):
 	if is_myself_rich():
 		if not body.is_myself_rich():
-			_kockback(body)
+			#_kockback(body)
+			pass
 
 
 ##TODO: Hacer que los label se ajusten al tamaño del zoom de la cámara

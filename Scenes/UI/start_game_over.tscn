@@ -1,16 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://ydd02kwkiq5t"]
+[gd_scene load_steps=8 format=3 uid="uid://ydd02kwkiq5t"]
 
 [ext_resource type="Texture2D" uid="uid://c61jv8s2d41o4" path="res://Resources/UI/background_gameover.png" id="2_8ag8a"]
 [ext_resource type="Script" path="res://Scripts/managers/start_game_over.gd" id="2_62gfs"]
 [ext_resource type="Shader" path="res://Scripts/shaders/chromatic_aberration.gdshader" id="2_jqunb"]
 [ext_resource type="PackedScene" uid="uid://ls1sa1vyqjkn" path="res://Scenes/tilemap.tscn" id="3_fpjca"]
 [ext_resource type="LabelSettings" uid="uid://8078t72si18o" path="res://Resources/tres/title_ui_label_settings.tres" id="3_up3um"]
+[ext_resource type="PackedScene" uid="uid://b4xp0w52hwj68" path="res://Scenes/entities/puf.tscn" id="4_2pgad"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_abmnm"]
 shader = ExtResource("2_jqunb")
-shader_parameter/r_displacement = Vector2(3, 0)
+shader_parameter/r_displacement = Vector2(2, 0)
 shader_parameter/g_displacement = Vector2(0, 0)
-shader_parameter/b_displacement = Vector2(-3, 0)
+shader_parameter/b_displacement = Vector2(2, 0)
 
 [node name="StartGameOver" type="Node2D"]
 light_mask = 32
@@ -25,14 +26,15 @@ modulate = Color(1, 1, 1, 0.12549)
 self_modulate = Color(1, 1, 1, 0.203922)
 light_mask = 32
 visibility_layer = 32
+texture_filter = 1
 material = SubResource("ShaderMaterial_abmnm")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -305.0
-offset_top = -199.0
-offset_right = 361.0
-offset_bottom = 182.0
+offset_left = -357.0
+offset_top = -260.0
+offset_right = 309.0
+offset_bottom = 121.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.207843, 0.207843, 0.25098, 0.47451)
@@ -83,6 +85,9 @@ texture_filter = 1
 layout_mode = 2
 
 [node name="IdleLayer" type="Node2D" parent="."]
+
+[node name="CharacterBody2D" parent="IdleLayer" instance=ExtResource("4_2pgad")]
+position = Vector2(443, 398)
 
 [node name="Sprite2D" type="Sprite2D" parent="IdleLayer"]
 modulate = Color(1, 1, 1, 0.392157)

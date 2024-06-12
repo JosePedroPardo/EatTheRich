@@ -6,8 +6,8 @@
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="2_lhnqg"]
 [ext_resource type="LabelSettings" uid="uid://o82i14c0vrio" path="res://Resources/tres/interact_label_settings.tres" id="3_6n6o7"]
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="3_dpvcn"]
-[ext_resource type="Texture2D" uid="uid://di573c1n2ua1r" path="res://Resources/Tileset/pufs/richv2.png" id="4_dve2d"]
 [ext_resource type="Material" uid="uid://cy7iwjou25tgf" path="res://Resources/tres/smooth_pixel_shader_material.tres" id="6_eyk88"]
+[ext_resource type="Texture2D" uid="uid://cjkyqlgkn2ami" path="res://Resources/Tileset/pufs/poor.png" id="8_em6a3"]
 [ext_resource type="PackedScene" uid="uid://cxplgw56ji1xh" path="res://Scenes/entities/smash_animation.tscn" id="9_p56fm"]
 
 [sub_resource type="Animation" id="Animation_r0hht"]
@@ -58,7 +58,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 3)]
+"values": [Vector2(0, 2)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -83,6 +83,18 @@ tracks/5/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(1, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Shadow:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 9)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ngbqv"]
@@ -111,6 +123,7 @@ material = ExtResource("6_eyk88")
 collision_layer = 15
 collision_mask = 2
 input_pickable = true
+up_direction = Vector2(0, 1)
 platform_floor_layers = 4294901761
 platform_wall_layers = 10
 script = ExtResource("1_q7ds5")
@@ -120,19 +133,16 @@ light_mask = 32
 visibility_layer = 32
 z_index = 1
 texture_filter = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = 7.0
+anchors_preset = 9
+anchor_bottom = 1.0
 offset_top = -22.0
-offset_right = 75.0
+offset_right = 240.0
 offset_bottom = 10.0
-grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(0.5, 0.5)
 size_flags_horizontal = 4
 size_flags_vertical = 0
 label_settings = ExtResource("2_i6v8b")
-vertical_alignment = 1
 
 [node name="InteractLabel" type="Label" parent="."]
 visible = false
@@ -172,7 +182,7 @@ light_mask = 2
 visibility_layer = 2
 texture_filter = 2
 use_parent_material = true
-position = Vector2(-1, 9)
+position = Vector2(0, 9)
 texture = ExtResource("3_dpvcn")
 
 [node name="SpritePuf" type="Sprite2D" parent="."]
@@ -180,8 +190,8 @@ light_mask = 2
 visibility_layer = 2
 texture_filter = 1
 use_parent_material = true
-position = Vector2(0, 3)
-texture = ExtResource("4_dve2d")
+position = Vector2(0, 2)
+texture = ExtResource("8_em6a3")
 hframes = 4
 vframes = 4
 
