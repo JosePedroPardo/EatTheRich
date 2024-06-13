@@ -3,7 +3,9 @@ extends Node2D
 
 signal ocuppied_cells_array(ocuppied_cells: Array[Vector2i])
 signal update_current_total_pufs(pufs: Array[Node2D])
+signal total_draggin_pufs(pufs: int)
 signal time_to_birth(time: float)
+signal mouse_over_puf(text: String)
 signal time_to_rich()
 signal born_puf()
 signal born_a_rich()
@@ -23,6 +25,7 @@ var rich_pufs: Array[Node2D]
 var poor_pufs: Array[Node2D] 
 var current_pufs: Array[Node2D]
 var selected_puf: Array[Node2D]
+var dragging_pufs: Array[Node2D]
 var total_time_of_spawn: float 
 
 var is_finished_initial_spawn: bool = false
@@ -67,6 +70,8 @@ func _born_a_puf():
 	new_puf.connect("cell_ocuppied", Callable(self, "_on_ocupied_cell"))
 	new_puf.connect("cell_unocuppied", Callable(self, "_on_unocupied_cell"))
 	new_puf.connect("puf_smashed", Callable(self, "_on_puf_smashed"))
+	new_puf.connect("enter_mouse_above_me", Callable(self, "_on_mouse_enter_above_puf"))
+	new_puf.connect("exit_mouse_above_me", Callable(self, "_on_mouse_exit_above_puf"))
 	parent.add_child(new_puf)
 
 func _emit_signal_according_born_social_class_puf(new_puf):
@@ -143,10 +148,14 @@ func _on_unocupied_cell(cood_cell):
 			emit_signal("ocuppied_cells_array", ocuppied_cells)
 
 func _on_puf_dragging(puf):
-	pass
+	if not dragging_pufs.has(puf):
+		dragging_pufs.append(puf)
+	emit_signal("total_draggin_pufs", dragging_pufs.size())
 
 func _on_puf_undragging(puf):
-	pass
+	if dragging_pufs.has(puf):
+		dragging_pufs.erase(puf)
+	emit_signal("total_draggin_pufs", dragging_pufs.size())
 
 func _on_tile_map_ocuppied_coordinates(ocuppied_coordinates):
 	ocuppied_cells = ocuppied_coordinates
@@ -164,3 +173,13 @@ func _on_button_debug_toogle_spawn_button_toggled():
 
 func _on_mouse_manager_change_selected_pufs(pufs):
 	selected_puf = pufs
+
+func _on_mouse_enter_above_puf(puf: Node2D):
+	var text: String = ""
+	if puf.is_myself_rich():
+		text = "[SPACE] to smash"
+	else: text = "[Left Click] to drag"
+	emit_signal("mouse_over_puf", text)
+
+func _on_mouse_exit_above_puf(puf: Node2D):
+	emit_signal("mouse_over_puf", "")

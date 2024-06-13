@@ -43,4 +43,12 @@ animations = [{
 "loop": true,
 "name": &"default",
 "speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4olp2")
+}],
+"loop": true,
+"name": &"unic_default",
+"speed": 4.0
 }]

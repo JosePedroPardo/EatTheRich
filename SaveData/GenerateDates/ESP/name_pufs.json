@@ -65,7 +65,7 @@
 	},
 	"rich": {
 		"names": [
-			"Santiago", "Isabel", "Javier", "Carmen", "Carlos", 
+			"Santiagini", "Isabelina", "Javiescu", "Carmentratra", "Carlinios", 
 			"María", "Juan", "Sofía", "Diego", "Elena", 
 			"Fernando", "Ana", "Álvaro", "Beatriz", "Ignacio", 
 			"Marta", "Pedro", "Victoria", "Alejandro", "Eva", 
@@ -85,7 +85,7 @@
 			"Juliet", "Michael", "Louisa", "Thomas", "Madeleine", 
 			"Robert", "Cecilia", "Daniel", "Annabelle", "Christopher", 
 			"Rosalind", "Patrick", "Aurelia", "Timothy", "Charlotte",
-			"Cayetano", "Cayetanito", "Cayetana", "Amancio",
+			"Cayetano", "Cayetanito", "Cayetana", "Amancio"
 		],
 	"surnames": [
 			"Azmondeo", "Moráles", "Ortíz", "Marínz", "Iglesíez", "Medína",
@@ -97,7 +97,15 @@
 			"Reyés", "Caballéro", "Nietó", "Pascuál", "Aguilár",
 			"Santánna", "Herréro", "Ferrér", "Lorenzó", "Giménz",
 			"Hidágo", "Monteró", "Ibáñez", "Santiáguez", "Ramírezález",
-			"Serránz", "Blanquéz", "Sanrro", "Castérez", "Suárezález"
+			"Serránz", "Blanquéz", "Sanrro", "Castérez", "Suárezález",
+			"Bezos", "Arnault", "Gates", "Buffett", "Zuckerberg",
+			"Walton", "Ambani", "Slim", "Koch", "Bloomberg",
+			"Ortega", "Ellison", "Mars", "Al Saud", "Kwok",
+			"Johnson", "Lauder", "Pritzker", "Rothschild", "Bettencourt",
+			"Page", "Brin", "Walton", "Ma", "Albrecht",
+			"Hoffmann", "Musk", "Slim", "Albrecht", "Koch",
+			"Mars", "Walton", "Koch", "Cargill", "Mars",
+			"Al Saud", "Cargill", "Kwok", "Hoffmann", "Mars"
 		]
 	}
 }

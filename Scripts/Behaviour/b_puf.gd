@@ -7,6 +7,8 @@ signal puf_dead(puf: Vector2i)
 signal puf_smashed(puf: Node2D)
 signal puf_dragging(puf: Node2D)
 signal puf_undragging(puf: Node2D)
+signal enter_mouse_above_me(puf: Node2D)
+signal exit_mouse_above_me(puf: Node2D)
 
 @export var wait_time_move: float = 0.4 ## Tiempo de espera entre un movimiento y el siguiente
 @export var wait_time_finish_celebration: float = 2 ## Tiempo de espera entre un movimiento y el siguiente
@@ -30,7 +32,10 @@ var is_baby: bool = false:
 	get: return is_baby
 	set(_is_baby):
 		is_baby = _is_baby
-
+var inside_the_birthroom_area: bool = false:
+	get: return inside_the_birthroom_area
+	set(_inside_area):
+		inside_the_birthroom_area = _inside_area
 var social_class: int = DefinitionsHelper.INDEX_RANDOM_SOCIAL_CLASS:
 	set(_social_class):
 		social_class = _social_class
@@ -69,6 +74,7 @@ var target_grid_position: Vector2
 @onready var tilemap: TileMap = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_TILEMAP)
 @onready var astar_grid: AStarGrid2D = tilemap.astar_grid
 @onready var camera: Camera2D = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_CAMERA)
+@onready var birthroom: Node2D = get_tree().get_first_node_in_group(DefinitionsHelper.GROUP_BIRTHROOM)
 
 func _init():
 	myself = Puf.new(social_class, is_baby)
@@ -90,7 +96,6 @@ func _ready():
 	manager_puf.connect("ocuppied_cells_array", Callable(self, "_on_ocuppied_cells"))
 	manager_puf.connect("celebration_all_pufs", Callable(self, "_on_celebration_all_pufs"))
 	tilemap.connect("death_coordinates", Callable(self, "_on_death_cells"))
-	
 	animation_player.play(DefinitionsHelper.ANIMATION_IDLE_PUF)
 
 func _change_sprite_according_social_class():
@@ -111,6 +116,9 @@ func _process(delta):
 		if is_dragging:
 			is_dragging = false
 			reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
+	if inside_the_birthroom_area:
+		if Input.is_action_just_pressed("assemble_puf"):
+			print("ESTOY DENTRO, SACRIFICAME")
 	
 	if is_mouse_top:
 		if is_myself_rich():
@@ -141,6 +149,7 @@ func _move_to_clic_position(clic_position: Vector2):
 	var new_position_relative_to_map = tilemap.local_to_map(clic_position)
 	var new_position = tilemap.map_to_local(new_position_relative_to_map)
 	var direction = (new_position - self.position).normalized()
+	_emit_signal_with_ocuppied_grid_position(tilemap.local_to_map(self.position), true)
 	if _is_not_ocuppied_position(clic_position):
 		if not is_myself_rich():
 			if _is_wall_position(clic_position) or _is_death_position(clic_position):
@@ -148,20 +157,24 @@ func _move_to_clic_position(clic_position: Vector2):
 				return
 	self.velocity = (direction * move_drag_speed)
 	move_and_slide()
-	if is_myself_rich(): _message_if_move_me("Get off, commoner!", "May you hang!")
-	else: 
-		await get_tree().create_timer(0.5).timeout
-		_message_if_move_me("I'm coming!", "Wait for me, dammit!")
+	_emit_signal_with_ocuppied_grid_position(new_position_relative_to_map, false)
+	if is_myself_rich() and is_dragging: _message_if_move_me("Get off, commoner!", "May you hang!")
+	else:_message_if_move_me("I'm coming!", "Wait for me, dammit!")
 
 func _message_if_move_me(first_text: String, text_to_wait_time: String):
-	_change_interact_ui_label(first_text)
-	await get_tree().create_timer(0.5).timeout
-	_change_interact_ui_label("")
-	await get_tree().create_timer(2).timeout
-	_change_interact_ui_label(text_to_wait_time)
-	await get_tree().create_timer(1).timeout
-	_change_interact_ui_label("")
-	
+	while is_dragging:
+		await get_tree().create_timer(1).timeout
+		_change_interact_ui_label(first_text)
+		await get_tree().create_timer(0.5).timeout
+		_change_interact_ui_label("")
+		await get_tree().create_timer(2).timeout
+		_change_interact_ui_label(text_to_wait_time)
+		await get_tree().create_timer(1).timeout
+		_change_interact_ui_label("")
+
+func _messages_interspersed_over_time(time: float, text: String):
+	await get_tree().create_timer(time).timeout
+	_change_interact_ui_label(text)
 
 func _animation_to_run_pufs():
 	var animation_to_play = ""
@@ -331,20 +344,19 @@ func _on_mouse_area_mouse_entered():
 	name_label.text = get_name_of_puf()
 	self.position.y += -2
 	if is_myself_rich():
-		_change_interact_ui_label(InteractHelper.INTERACTION_SMASH_TEXT)
 		reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_TERROR_PUF)
 	else: 
 		reproduce_animation_without_queue(DefinitionsHelper.ANIMATION_PICK_ME)
+	emit_signal("enter_mouse_above_me", self)
 
 func _on_mouse_area_mouse_exited():
 	is_mouse_top = false
 	self.position.y += +2
 	_disappear_name_label()
-	if is_myself_rich():
-		_change_interact_ui_label("")
 	if not is_dragging:
 		reproduce_animation_with_queue(DefinitionsHelper.ANIMATION_DROP_PUF)
 		reproduce_animation_with_queue(DefinitionsHelper.ANIMATION_IDLE_PUF)
+	emit_signal("exit_mouse_above_me", self)
 
 func _on_celebration_all_pufs(type_celebration: String):
 	if is_smashed_now:

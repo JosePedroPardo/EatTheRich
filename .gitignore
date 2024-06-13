@@ -19,3 +19,9 @@ mono_crash.*.json
 .~*
 *.docx
 *.doc
+
+# Archivos de asesprite
+*.asesprite
+*.aseprite
+*.ase
+*.psd

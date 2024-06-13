@@ -18,6 +18,7 @@ signal change_selected_pufs(pufs: Node2D)
 @export var x_axis_offset: float = 4 ## Desfase en el eje x con respecto al puntero original
 @export var y_axis_offset: float = 13 ## Desfase en el eje y con respecto al puntero original
 @export var time_tomatic_cleaning: float = 30 ## Tiempo hasta la limpieza automática del cursor
+@export var time_until_the_message_disappears: float = 2 ## Tiempo hasta que los mensajes desaparezcan por sí solos
 
 var cursor_map_position_relative_global_tilemap: Vector2i
 var cursor_map_position_relative_local_tilemap: Vector2i
@@ -34,6 +35,8 @@ var pufs
 @onready var mouse_sprite: AnimatedSprite2D = $MouseSprite
 @onready var grid_sprite: AnimatedSprite2D = $GridSprite
 @onready var notice_label: Label = $MouseSprite/NoticeLabel
+@onready var count_label: Label = $MouseSprite/CountLabel
+@onready var interact_label: Label = $MouseSprite/InteractLabel
 @onready var camera: Camera2D = get_tree().get_first_node_in_group("camera")
 @onready var tilemap: TileMap = get_tree().get_first_node_in_group("tilemap")
 
@@ -42,19 +45,19 @@ func _ready():
 	grid_sprite.play("default")
 	grid_sprite.visible = true
 	mouse_sprite.play(actual_cursor_sprite)
-	area_selection_sprite.play("default")
+	area_selection_sprite.play("unic_default")
 
 func _process(delta: float) -> void:
 	if is_cursor_blood or is_time_to_clean:
 		if Input.is_action_just_pressed("clean_blood_mouse"):
 			_clean_blood(delta)
-			_active_notice_label("")
 	
 	_connect_to_signals_pufs()
 	_update_travel_grid()
 	_change_sprite_cursor_according_cell()
 	_on_change_zoom(delta)
 	_change_visibility_selection_area()
+	_display_message_to_assemble_pufs()
 
 func _physics_process(delta):
 	_move_cursor_sprite()
@@ -70,8 +73,15 @@ func _increment_or_decrement_area():
 		area_selection_shape.shape.size -= increment_decrement_area
 		area_selection_sprite.scale -= increment_decrement_area_sprite
 
+func _display_message_to_assemble_pufs():
+	if selected_pufs.size() >= 2:
+		_active_text_label("[" + str(selected_pufs.size()) + "]", count_label, -1)
+	else: _active_text_label("", count_label)
+
 func _change_visibility_selection_area():
 	if area_selection_shape.shape.size > min_area_selection_size:
+		area_selection.visible = true
+		area_selection.monitoring = true
 		area_selection.visible = true
 		grid_sprite.visible = false
 		if area_selection_shape.shape.size >= max_area_selection_size: 
@@ -79,6 +89,7 @@ func _change_visibility_selection_area():
 			area_selection_sprite.scale = max_area_sprite
 	elif area_selection_shape.shape.size <= min_area_selection_size:
 		area_selection.visible = false
+		area_selection.monitoring = false
 		grid_sprite.visible = true
 		if area_selection_shape.shape.size <= min_area_selection_size: 
 			area_selection_shape.shape.size = min_area_selection_size
@@ -114,7 +125,7 @@ func _move_cursor_grid():
 	grid_sprite.global_position = cursor_map_position_relative_global_tilemap
 
 func _move_cursor_sprite():
-	mouse_sprite.global_position = Vector2i(get_global_mouse_position().x + x_axis_offset, 
+	mouse_sprite.global_position = Vector2(get_global_mouse_position().x + x_axis_offset, 
 	get_global_mouse_position().y + y_axis_offset)
 
 func _move_cursor_selection_area():
@@ -129,10 +140,16 @@ func _clean_blood(delta):
 	_shake_node(mouse_sprite, delta)
 	is_cursor_blood = false
 
-func _active_notice_label(text: String):
-	print(text)
-	notice_label.visible = true if (text.length() > 0 and not text.is_empty()) else false
-	notice_label.text = text
+func _active_text_label(text: String, label: Label, time_to_disappears: float = 0):
+	label.visible = true if text.length() > 0 else false
+	label.text = text
+	if time_to_disappears == -1:
+		return
+	var wait_time = time_to_disappears if time_to_disappears > 0 else time_until_the_message_disappears
+	if text.is_empty() or not text.length() > 0:
+		wait_time = 0 
+	await get_tree().create_timer(wait_time).timeout
+	label.visible = false
 
 func _shake_node(node: Node2D, delta: float):
 	var shake_timer = shake_duration
@@ -150,14 +167,12 @@ func _is_time_to_clean():
 func _on_smashed_puf(puf):
 	await get_tree().create_timer(2).timeout
 	is_cursor_blood = true
-	_active_notice_label("[C] to clean cursor")
-	await get_tree().create_timer(5).timeout
-	_active_notice_label("")
+	_active_text_label("[C] to clean cursor", notice_label, 2)
 
 func _on_change_zoom(delta: float):
 	var initial_scale: Vector2 = mouse_sprite.scale
 	var target_scale: Vector2 = initial_scale
-	var _ratio_camera = camera.zoom * ratio_camera
+	var _ratio_camera = camera.zoom * delta
 	if Input.is_action_pressed("camera_zoom_in"):
 		target_scale /= _ratio_camera
 	elif Input.is_action_pressed("camera_zoom_out"):
@@ -169,16 +184,14 @@ func _on_selection_area_body_entered(body):
 	if selected_pufs.is_empty() or not selected_pufs.has(body):
 		selected_pufs.append(body)
 		emit_signal("change_selected_pufs", selected_pufs)
-		if selected_pufs.size() > 2:
-			_active_notice_label("[Pufs] " + str(selected_pufs.size()))
-		else: _active_notice_label("")
-	print_debug("[Pufs] " + str(selected_pufs.size()))
 
 func _on_selection_area_body_exited(body):
 	if not selected_pufs.is_empty() and selected_pufs.has(body):
 		selected_pufs.erase(body)
 		emit_signal("change_selected_pufs", selected_pufs)
-		if selected_pufs.size() > 2:
-			_active_notice_label("[Pufs] " + str(selected_pufs.size()))
-		else: _active_notice_label("")
-	print_debug("[Pufs] " + str(selected_pufs.size()))
+
+func _on_manager_entities_total_draggin_pufs(pufs):
+	if pufs > 0: _active_text_label("[" + str(pufs) + "]", count_label, 2)
+
+func _on_manager_entities_mouse_over_puf(text):
+	_active_text_label(text, interact_label, 1)

@@ -38,8 +38,6 @@ func _ready():
 				if tile_data:
 					var cell_point_solid: bool = false
 					if self.get_cell_source_id(h, coordinates) >= 0:
-						if h == 2:
-							self.set_cell(2, coordinates, 0)
 						if (tile_data.get_custom_data(DefinitionsHelper.TILEMAP_LAYER_TYPE_WALL) == true):
 							cell_point_solid = true
 							wall_cells.append(coordinates)
@@ -50,6 +48,9 @@ func _ready():
 							cell_point_solid = false
 							death_cells.append(coordinates)
 						astar_grid.set_point_solid(coordinates, cell_point_solid)
+					else: 
+						if h == 3:
+							self.set_cell(h, coordinates, 0) 
 	spawn_cells = get_cells_between(spawn_cells[0], spawn_cells[1]) 
 
 		# self.set_cell(0,coor_wall,30) # Muestra los espacios intransitables

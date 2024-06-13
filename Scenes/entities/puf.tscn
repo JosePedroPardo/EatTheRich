@@ -1,10 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://b4xp0w52hwj68"]
+[gd_scene load_steps=18 format=3 uid="uid://b4xp0w52hwj68"]
 
 [ext_resource type="Script" path="res://Scripts/Behaviour/b_puf.gd" id="1_q7ds5"]
 [ext_resource type="AnimationLibrary" uid="uid://ig4s8klxx25" path="res://Resources/Animations/Pufs/Pufs.res" id="2_54i3k"]
 [ext_resource type="LabelSettings" uid="uid://vvygoxaewh6j" path="res://Resources/tres/secundary_label_settings.tres" id="2_i6v8b"]
 [ext_resource type="FontFile" uid="uid://bsyvuiskmanxx" path="res://Resources/Fonts/GrapeSoda.ttf" id="2_lhnqg"]
-[ext_resource type="LabelSettings" uid="uid://o82i14c0vrio" path="res://Resources/tres/interact_label_settings.tres" id="3_6n6o7"]
 [ext_resource type="Texture2D" uid="uid://ceqt72a6dvh3m" path="res://Resources/Tileset/pufs/shadow.png" id="3_dpvcn"]
 [ext_resource type="Material" uid="uid://cy7iwjou25tgf" path="res://Resources/tres/smooth_pixel_shader_material.tres" id="6_eyk88"]
 [ext_resource type="Texture2D" uid="uid://cjkyqlgkn2ami" path="res://Resources/Tileset/pufs/poor.png" id="8_em6a3"]
@@ -133,7 +132,7 @@ size = Vector2(16, 16)
 [node name="CharacterBody2D" type="CharacterBody2D" groups=["pufs"]]
 light_mask = 2
 visibility_layer = 2
-z_index = 1
+z_index = 4
 texture_filter = 1
 material = ExtResource("6_eyk88")
 collision_layer = 15
@@ -151,9 +150,10 @@ z_index = 1
 texture_filter = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_top = -22.0
-offset_right = 240.0
-offset_bottom = 10.0
+offset_left = 12.0
+offset_top = -17.0
+offset_right = 252.0
+offset_bottom = 15.0
 grow_vertical = 2
 scale = Vector2(0.5, 0.5)
 size_flags_horizontal = 4
@@ -161,7 +161,6 @@ size_flags_vertical = 0
 label_settings = ExtResource("2_i6v8b")
 
 [node name="InteractLabel" type="Label" parent="."]
-visible = false
 light_mask = 16
 visibility_layer = 16
 z_index = 20
@@ -169,16 +168,15 @@ texture_filter = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -96.0
-offset_top = -38.0
-offset_right = 102.0
-offset_bottom = -6.0
+offset_left = -45.0
+offset_top = -32.0
+offset_right = 153.0
 grow_horizontal = 2
+scale = Vector2(0.5, 0.5)
 size_flags_horizontal = 6
 size_flags_vertical = 2
 theme_override_fonts/font = ExtResource("2_lhnqg")
-text = "[Q] to assemble"
-label_settings = ExtResource("3_6n6o7")
+label_settings = ExtResource("2_i6v8b")
 horizontal_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

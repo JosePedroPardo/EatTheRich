@@ -135,6 +135,7 @@ const GROUP_UI_STATISTICS_ANIMATIONS: String = "ui_statistics_animations"
 const GROUP_UI_DEBUG: String = "debug"
 const GROUP_TILEMAP: String = "tilemap"
 const GROUP_CAMERA: String = "camera"
+const GROUP_BIRTHROOM: String = "birthroom"
 
 ''' Definition statistics '''
 const UI_LABEL_STATISTICS_TIME_TO_RICH: String = "next rich in..."
