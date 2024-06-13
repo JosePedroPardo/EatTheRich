@@ -43,7 +43,7 @@ z_index = 2
 texture_filter = 1
 use_parent_material = true
 sprite_frames = ExtResource("4_v1v6e")
-frame_progress = 0.625502
+frame_progress = 0.314795
 
 [node name="SelectionArea" type="Area2D" parent="." groups=["mouse_selection_area"]]
 visible = false
@@ -60,7 +60,7 @@ visibility_layer = 32
 z_index = 2
 texture_filter = 1
 sprite_frames = ExtResource("5_1v4p5")
-frame_progress = 0.222765
+frame_progress = 0.601352
 
 [node name="SelectionAreaShape" type="CollisionShape2D" parent="SelectionArea"]
 light_mask = 0
